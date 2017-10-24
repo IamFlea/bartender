@@ -13,7 +13,7 @@ Requires Python 3.6+
  - pypiwin32
  - cx_Freeze (for build only)
 
-```pip install numpy, Pillow, opencv-python, pypiwin32, cx_Freeze```
+```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze```
 
 # Build
 ```python setup.py build```
