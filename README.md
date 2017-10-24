@@ -12,8 +12,9 @@ Requires Python 3.6+
  - opencv-python
  - pypiwin32
  - cx_Freeze (for build only)
-
-```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze```
+ - pygame 
+ 
+```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze pygame```
 
 # Build
 ```python setup.py build```
