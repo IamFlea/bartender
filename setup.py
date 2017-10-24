@@ -1,7 +1,7 @@
 from cx_Freeze import setup, Executable
 import os
-os.environ['TCL_LIBRARY'] = 'c:\\Users\\Flea\\AppData\\Local\\Programs\\Python\\Python36\\tcl\\tcl8.6'
-os.environ['TK_LIBRARY'] = 'c:\\Users\\Flea\\AppData\\Local\\Programs\\Python\\Python36\\tcl\\tk8.6'
+#os.environ['TCL_LIBRARY'] = 'c:\\Users\\Flea\\AppData\\Local\\Programs\\Python\\Python36\\tcl\\tcl8.6'
+#os.environ['TK_LIBRARY'] = 'c:\\Users\\Flea\\AppData\\Local\\Programs\\Python\\Python36\\tcl\\tk8.6'
 
 executables = [Executable("bartender.py", base = "Win32GUI")]
 
