@@ -17,6 +17,8 @@ Requires Python 3.6+
 ```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze pygame```
 
 # Build
+Edit `setup.py` and assign path to TK and TCL libraries if needed.
+
 ```python setup.py build```
 
 # Usage
