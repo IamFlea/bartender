@@ -3,23 +3,25 @@ A window addon to game called Age of Empires II (HD). The addon parses usefull i
 
 ![Image](http://flea.name/data/image.png)
 
-# Dependencies
 
+# Dependencies
 Requires Python 3.6+
 
- - numpy
- - Pillow
- - opencv-python
- - pypiwin32
- - cx_Freeze (for build only)
- - pygame
+- numpy
+- Pillow
+- opencv-python
+- pypiwin32
+- cx_Freeze (for build only)
+- pygame
 
 ```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze pygame```
+
 
 # Build
 Edit `setup.py` and assign path to TK and TCL libraries if needed.
 
 ```python setup.py build```
+
 
 # Usage
 1) Run bartender `python bartender.py` or `bartender.exe`
@@ -31,8 +33,16 @@ Edit `setup.py` and assign path to TK and TCL libraries if needed.
 7) If you don't have the time shown on top left corner, press [F11] in game
 8) Press [Esc] to quit Bartender.
 
-# FAQ
+## command line parameters
+usage: bartender.py [-help] [-hide]
 
+| parameter | description |
+|-----------|---------------------------------------------------------------------|
+| -h/-help | Gives a message what bartender is, which parameters are supported and how to use it. |
+| -hide | Hides the bartender window when AoE2 is not the active window. This also pauses screenparsing to use less resources. |
+
+
+# FAQ
 *How does it work?*
 
 Bartender takes a screenshot and parses the resources, game time, and researched technologies from the screeshot. Then it prints the usefull information in a window.
@@ -41,6 +51,8 @@ Bartender takes a screenshot and parses the resources, game time, and researched
 
 Indeed, `PrintWindow()` would be better. However, it returned black screen on my desktop.
 
+
 # Known bugs
 - If the research is started in a laggy game, it may not show the research bar.
 - If the research is cancelled in a game, it is not cancelled in the bartender.
+

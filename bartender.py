@@ -1,43 +1,66 @@
 # -*- coding: utf-8 -*-
-from screenshooter import ScreenShooter
+from operator import sub
+from os.path import basename
 from pygame_window import PyGameWindow
+from research_queue import ResearchQueue
+from screenshooter import ScreenShooter
 from screen_parser import *
 from technologies import Technologies
-from research_queue import ResearchQueue
-from operator import sub
+from win32gui import GetWindowText, GetForegroundWindow, ShowWindow, FindWindow
+import argparse
+import sys
 
 
-###
-# User defined fancy stuff 
+### TODO: make these into commandline arguments like -hide
+# User defined variables
 WINDOW_SIZE = (360, 160) # Width and height (or vice versa)
-BACKGROUND_COLOUR = (244, 214, 172) # RGB 
+BACKGROUND_COLOUR = (244, 214, 172) # RGB
 FONT_SIZE = 12
 FONT_COLOUR = (0x00, 0x00, 0x00) # RGB
-
 MAX_FPS = 40
-
 ###
+
+# Parse arguments
+# https://docs.python.org/3/library/argparse.html#module-argparse
+parser = argparse.ArgumentParser(description='Bartender shows some useful information (while playing AoE2) in an always on top window.')
+parser.add_argument('-hide', action='store_true', help='hides the bartender window when AoE2 is not the active window')
+args = parser.parse_args()
+HIDE_WHEN_AOE_INACTIVE = args.hide
 
 # Creates the window
 window = PyGameWindow(WINDOW_SIZE, MAX_FPS)
-
-# Set our fancy stuff
-window.background = BACKGROUND_COLOUR 
+# Set user preferences
+window.background = BACKGROUND_COLOUR
 window.font_size = FONT_SIZE
 window.font_colour = FONT_COLOUR
 
-# Init the stuff here.
+# Initalization
 window.on_top()
 screen = ScreenShooter()
+time = None
+civ = None
+hidden = False
 
 # Filter functions for gathered resources (10, -50, 10)
 positive_sum = lambda x: sum(filter(lambda x: x > 0, x)) # Sum of positive values
 negative_sum = lambda x: -sum(filter(lambda x: x < 0, x)) # Sum of negative
 
-time = None
-civ = None
 # Lets not end this program now
 while window.update():
+    # Only visible/trying to parse when AoE2 is active, else minimize
+    fgWin = GetWindowText(GetForegroundWindow())
+    if not (fgWin == "Age of Empires II: HD Edition" or
+            fgWin == "Age of Empires II Expansion" or
+            fgWin == window.pygame.display.get_caption()[0]):
+        if not hidden and HIDE_WHEN_AOE_INACTIVE:
+            hidden = True
+            # Hide window; 0 = SW_HIDE -> Hides the window and activates another window.
+            ShowWindow(FindWindow(0, window.pygame.display.get_caption()[0]), 0)
+    else:
+        if hidden: # Restore
+            hidden = False
+            # Restore window; 8 = SW_SHOWNA -> Displays the window in its current size and position without activating it
+            ShowWindow(FindWindow(0, window.pygame.display.get_caption()[0]), 8)
         # Get screen shot
         try:
             img = screen.shot()
@@ -111,9 +134,8 @@ while window.update():
             spent_resources = map(negative_sum, zip(*merged_list))
             # Clear the sublist
             saved_values[time % 60] = [(0,0,0,0)]
-            if window.page == 1:
-                window.display_resources(gathered_resources, spent_resources, time)
-                window.display_researches(queue)
+            window.display_resources(gathered_resources, spent_resources, time)
+            window.display_researches(queue)
             #print(fps)
 # End while
 print(basename(sys.argv[0])+" finished - gg")
