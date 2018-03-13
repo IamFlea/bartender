@@ -12,8 +12,8 @@ Requires Python 3.6+
  - opencv-python
  - pypiwin32
  - cx_Freeze (for build only)
- - pygame 
- 
+ - pygame
+
 ```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze pygame```
 
 # Build
@@ -43,4 +43,4 @@ Indeed, `PrintWindow()` would be better. However, it returned black screen on my
 
 # Known bugs
 - If the research is started in a laggy game, it may not show the research bar.
-- If the research is cancelled in a game, it is not cancelled in the bartender. 
+- If the research is cancelled in a game, it is not cancelled in the bartender.
