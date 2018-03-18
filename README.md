@@ -1,46 +1,50 @@
 # Bartender
-A window addon to game called Age of Empires II (HD). The addon parses usefull information of the game screen such as time, resources, or currentelly researched technologies; and shows time bars of researched technologies with remaining time and analyzes gathered/spend wood, food, gold, or stone per minute.
+A window addon to game called Age of Empires II (HD). The addon displays additional information of the game, such as buildings, currently researched technologies, or training units. 
 
-![Image](http://flea.name/data/image.png)
+Bartender can be divided into five parts. 
+1) It displays information about your villagers, ships and trade on the top of your screen. Also, you can find there K/D ratios of units and buildings. 
+2) Researched technologies are shown right below the top bar. Currently researching technologies are next to it. 
+3) Buildings waiting for the construction or buildings that are currently constructed are displayed below the chat window.
+4) Military Buildings (including TC, docks and monastries) are shown on bottom left. Each icon represents a building. The icon changes to currently trained unit or researched technology. Moreover it shows the time in seconds when it will complete the training or the research. The bottom number is a queue. 
+5) If small army is selected. You can see your army composition on the bottom.
+
+Did I tell you that it highlights selected building?
+
 
 # Dependencies
 
-Requires Python 3.6+
+Requires Python 3.6
 
- - numpy
- - Pillow
- - opencv-python
- - pypiwin32
- - cx_Freeze (for build only)
- - pygame 
- 
-```pip install numpy Pillow opencv-python pypiwin32 cx_Freeze pygame```
+- PyQt5 
 
-# Build
-Edit `setup.py` and assign path to TK and TCL libraries if needed.
+#FAQ
 
-```python setup.py build```
-
-# Usage
-1) Run bartender `python bartender.py` or `bartender.exe`
-2) Run AoE II
-3) Make sure that you have only one screen on
-4) Set AoE II to be maximized
-5) Left click on the Bartender and set AoE dataset with [End] key
-6) Run the game
-7) If you don't have the time shown on top left corner, press [F11] in game
-8) Press [Esc] to quit Bartender.
-
-# FAQ
+*Can I us it in singleplayer/records/multiplayer?*
+Yes, yes, maybe. 
 
 *How does it work?*
+Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)
 
-Bartender takes a screenshot and parses the resources, game time, and researched technologies from the screeshot. Then it prints the usefull information in a window.
+*Why did you create this addon?*
+I just wanted to simplify my gameplay.
 
-*Why does it use `BitBlc()` function for taking screenshot?*
+*Voobly version?*
+That is not possible. Contact some administrators of Voobly
 
-Indeed, `PrintWindow()` would be better. However, it returned black screen on my desktop.
 
-# Known bugs
-- If the research is started in a laggy game, it may not show the research bar.
-- If the research is cancelled in a game, it is not cancelled in the bartender. 
+# TODO 
+1) User Interface is just porotyped need to be reworked.
+2) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25)
+3) Colourfull icons (Yay!).
+4) Record game version.
+5) Add on the side of screen selected units (showing the way where are the units.)
+
+
+# License
+Bartender, Copyright (C) 2018  Flea
+
+This program (located in this folder) is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
