@@ -17,7 +17,7 @@ Requires Python 3.6
 
 - PyQt5 
 
-#FAQ
+# FAQ
 
 *Can I us it in singleplayer/records/multiplayer?*
 Yes, yes, maybe. 
