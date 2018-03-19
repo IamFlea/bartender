@@ -1,4 +1,5 @@
-build/
+PyQt5/__pycache__/
+
 
 ## https://github.com/github/gitignore/blob/master/Python.gitignore
 
