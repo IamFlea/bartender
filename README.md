@@ -10,20 +10,23 @@ Bartender can be divided into five parts.
 
 Did I tell you that it highlights selected building?
 
+![](http://flea.name/data/scrot.png)
+
 
 # Dependencies
-- Python 3.6 <https://www.python.org/downloads/>
-- PyQt5 (pip3 install PyQt5)
+- [Python 3.6](https://www.python.org/downloads/ "Download Python | Python.org")
+- [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5/) (pip3 install PyQt5)
+
 
 # FAQ
-*Can I us it in singleplayer/records/multiplayer?*
-Yes, yes, maybe.
+*Can I use it in singleplayer/records/multiplayer?*
+> Yes, yes, maybe.
 *How does it work?*
-Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)
+> Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)
 *Why did you create this addon?*
-I just wanted to simplify my gameplay.
+> I just wanted to simplify my gameplay.
 *Voobly version?*
-That is not possible. Contact some administrators of Voobly.
+> That is not possible. Contact some administrators of Voobly.
 
 
 # TODO
@@ -32,6 +35,15 @@ That is not possible. Contact some administrators of Voobly.
 3) Colourfull icons (Yay!).
 4) Record game version.
 5) Add on the side of screen selected units (showing the way where are the units).
+6) Show which and how much units are selected (6 villagers, 3 militia -> Icons with number).
+7) Fix crashes.
+8) Make display unclickable.
+9) Hide display when AoE2HD is not the foreground window.
+10) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
+
+
+# Known Limitations
+1) Needs update when the AoE2HD version changes.
 
 
 # License
