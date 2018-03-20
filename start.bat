@@ -1,2 +1,2 @@
-python %cd%\bartender.py -hide
+python %cd%\bartender.py
 pause
