@@ -29,7 +29,7 @@ Did I tell you that it highlights selected building?
 > I just wanted to simplify my gameplay.
 
 *Voobly version?*
-> That is not possible. Contact some administrators of Voobly.
+> That is not possible. Contact some administrators of Voobly and tell them about Bartender. Maybe they will agree to use it in multiplayer or record games.
 
 
 # TODO
@@ -47,7 +47,7 @@ Did I tell you that it highlights selected building?
 
 # Known Limitations
 1) Needs update when the AoE2HD version changes.
-
+2) Requires 1920x1080 resolution.
 
 # License
 Bartender, Copyright (C) 2018 Flea, blk_panther
