@@ -10,7 +10,7 @@ Bartender can be divided into five parts.
 
 Did I tell you that it highlights selected building?
 
-![](http://flea.name/data/scrot.png)
+![Screenshot](http://flea.name/data/scrot2.png)
 
 
 # Dependencies
