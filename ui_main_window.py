@@ -6,6 +6,7 @@ from collections import OrderedDict
 from ui_header_sp import HeaderSP
 from ui_research import ResearchBar
 from ui_icon_army import IconArmy
+from ui_icon_waypoint import IconWaypoint
 import time
 
 class BartenderWindow(QtWidgets.QMainWindow):
@@ -17,6 +18,8 @@ class BartenderWindow(QtWidgets.QMainWindow):
         self.game = game
         self.setWindowTitle("Bartender")
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.width = width
+        self.height = height
         #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
         self.setGeometry(0,0,width,height)
@@ -81,6 +84,9 @@ class BartenderWindow(QtWidgets.QMainWindow):
         self.w_army.setGeometry(width//2 + 110, height - 140, 42*11, 42*3)
         #self.w_army.setStyleSheet("background: black")
         self.w_army.icons = OrderedDict()
+        self.w_leadpoint = QtWidgets.QWidget(self)
+        self.w_leadpoint.setGeometry(0, 32, self.width, self.height-32-175)
+        self.w_leadpoint.icons = OrderedDict()
         self.show()
         # Updating stuff
         self.timer = QtCore.QTimer()
@@ -109,7 +115,70 @@ class BartenderWindow(QtWidgets.QMainWindow):
         self.load_researches(self.w_research, player.research.progression, player)
         self.load_researches_done(self.w_research_done, player.research.done, player)
         self.load_army(self.w_army, player)
+        self.load_selected(player.selected, self.w_leadpoint)
         #    self.w_army.show()
+    def load_selected(self, selected, widget):
+        # if we want to clear icons . 
+        for icon in widget.icons:
+            widget.icons[icon].delete = True
+
+        # Need to transform the screen into game tiles
+        width = (self.width)/ 90 # Transform the width to the ratio. We got squares now
+        height = (self.height - 32 - 175)/45 # UI height contains a bar (32px) and bottom UI (175px)
+        
+        #print(width, height, width/height)
+        c_w = width/2
+        c_h = height/2
+        # Some weird math. I have no theoretical idea how it works. But hey, it works!
+        gx, gy = self.game.screen_position
+        c_a = gx+c_w + gy+c_w
+        c_b = -gx-c_h + gy-c_h +2
+        c_c = gx-c_w + gy-c_w
+        c_d = -gx+c_h + gy+c_h +1
+
+        for unit in selected:
+            x, y = unit.position
+            xy = x+y
+            xy_diff = y-x
+            if c_a > xy and c_b < xy_diff and c_c < xy and c_d > xy_diff:
+                #print("ON SCREEN")
+                pass
+            else:
+                if unit not in widget.icons:
+                    widget.icons[unit] = IconWaypoint(widget, unit)
+
+                #print("NOT ON SCREEN")
+                tx, ty = x-gx, y-gy
+                k = abs(tx/ty)/2 if abs(tx) < abs(ty) else 1 - abs(ty/tx)/2 # might divide by zero
+                if tx < 0 and ty < 0:
+                    #print("LEFT", k)
+                    widget.icons[unit].update_left(k)
+                elif tx < 0 and ty > 0:
+                    k = 1 - k
+                    widget.icons[unit].update_bottom(k)
+                elif tx > 0 and ty > 0:
+                    k = 1 - k
+                    #print("RIGHT", k)
+                    widget.icons[unit].update_right(k)
+                else: # tx > 0
+                    #print("TOP", k)
+                    widget.icons[unit].update_top(k)
+                
+                widget.icons[unit].delete = False
+        # stupid way how to get rid of not selcted units
+        remove_list = []
+        for icon in widget.icons:
+            if widget.icons[icon].delete:
+                remove_list += [icon]
+        if remove_list:
+            # Remove the stuff..
+            for i in remove_list:
+                widget.icons[i].deleteLater()
+                del widget.icons[i]
+
+        #exit(1)    
+            
+
 
     def load_army(self, widget, player):
         for icon in widget.icons:

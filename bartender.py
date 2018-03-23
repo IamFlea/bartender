@@ -13,6 +13,7 @@ from PyQt5 import QtWidgets
 
 import sys
 import time
+import win32gui
 print("Loading the process")
 try:
     pm.load_process("AoK HD.exe")
@@ -34,8 +35,24 @@ with pm:
     # create qapp 
     app = QtWidgets.QApplication(sys.argv)
     # getting screen resolution
-    screen_resolution = app.desktop().screenGeometry()
-    width, height = screen_resolution.width(), screen_resolution.height()
+    #screen_resolution = app.desktop().screenGeometry()
+    #width, height = screen_resolution.width(), screen_resolution.height()
+    # Getting aoe resolution
+    width, height = None, None
+    def callback(hwnd, extra):
+        global width, height
+        kk = win32gui.GetWindowText(hwnd)
+        if not "Age of Empires II" in kk:
+            return
+        rect = win32gui.GetWindowRect(hwnd)
+        x = rect[0]
+        y = rect[1]
+        width = rect[2] - x
+        height = rect[3] - y
+        #print("Window %s" % kk)
+        #print("\tLocation: (%d, %d)" % (x, y))
+        #print("\t    Size: (%d, %d)" % (w, h))
+    win32gui.EnumWindows(callback, None)
     # Load data in the window
     window = BartenderWindow(game, width, height)
     window.show()
@@ -44,3 +61,4 @@ with pm:
 print("Ending the session")
 sys.exit(result)
 
+        
