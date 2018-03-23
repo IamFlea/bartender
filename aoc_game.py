@@ -90,6 +90,7 @@ class Game(object):
         # Update all players data
         for player in self.players:
             player.update(market_price)
+        self.gaia.update(market_price)
         return True
 
         
