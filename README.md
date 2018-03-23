@@ -33,7 +33,7 @@ Did I tell you that it highlights selected building?
 
 
 # TODO
-*UI*
+**UI**
 1) User Interface is just porotyped need to be reworked. 
 2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
 3) Make an UI for managing bartander - quitting, or settings.
@@ -43,7 +43,7 @@ Did I tell you that it highlights selected building?
 7) Make display unclickable. (previous item (8) needs to be done before this)
 8) Hide display when AoE2HD is not the foreground window.
 
-*Mechanics*
+**Mechanics**
 1) If the selected unit is out of the screen, add selected units icon (or an arrow showing the way where are the units) on the side of screen.
 2) Record game version - add training/researches info about other players.
 3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
