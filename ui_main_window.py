@@ -108,11 +108,8 @@ class BartenderWindow(QtWidgets.QMainWindow):
         self.load_buildings(self.w_tc, player.town_centers, showidle=True)
         self.load_researches(self.w_research, player.research.progression, player)
         self.load_researches_done(self.w_research_done, player.research.done, player)
-        if len(player.selected) > 15:
-            self.w_army.hide()
-        else:
-            self.load_army(self.w_army, player)
-            self.w_army.show()
+        self.load_army(self.w_army, player)
+        #    self.w_army.show()
 
     def load_army(self, widget, player):
         for icon in widget.icons:

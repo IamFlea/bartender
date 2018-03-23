@@ -5,6 +5,7 @@ from pymemory import pymemory as pm
 from pymemory import NullAddress
 from aoc_player import *
 from aoc_time import GTime
+from aoc_objects import Objects
 # debug
 #from pymemory import print_addr
 
@@ -78,9 +79,15 @@ class Game(object):
         self.speed = pm.float(ptr + 0x16C)
         self.pov = self.players[pm.int8(ptr + 0x174) - 1] # Must be -1 
         if self.pov != self.player:
+            if self.player is not None:
+                self.player.pov = False 
+            self.player = self.pov # Set the new pov
+            self.player.pov = True
             self.__update_teams__()
-        self.player = self.pov # Yay.
         market_price = pm.struct(ptr + 0x238, "fff") # Wood, food, stone coeficient see spirit of the law - markets
+        Objects.selected.clear()
+        Objects.selected_pointers.clear()
+        # Update all players data
         for player in self.players:
             player.update(market_price)
         return True

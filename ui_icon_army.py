@@ -58,8 +58,8 @@ class IconArmy(QtWidgets.QWidget):
         view.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
         view.setGeometry(0, 0, 42,42)
         self.view = view
-        self.icon = units[0].udata.icon
-        self.add_icon()
+        self.icon = str(units[0].udata.icon).zfill(3)
+        self.add_icon(False)
         #self.label1 = QtWidgets.QLabel(self)
         #self.label1.setGeometry(42+3, 3, 42-3, 10)
         #self.label1.setFont(font_idle)
@@ -70,20 +70,22 @@ class IconArmy(QtWidgets.QWidget):
         self.position = (x*42, y*42)
 
 
-    def add_icon(self):
-        icon_filename = f"unit_{self.icon+1}.png"
-        stuff = QtGui.QPixmap(ospath + f"\\icons\\{icon_filename}")
-        self.scn.addPixmap(stuff).setPos(3,3)
-        frame = QtGui.QPixmap(ospath + f"\\ui\\frame{self.owner_color}.png")
+    def add_icon(self, selection):
+        icon = QtGui.QPixmap(ospath + f"\\icons\\units\\color_{self.player.color.unique}\\{self.icon}.bmp")
+        self.scn.addPixmap(icon).setPos(3,3)
+        if selection:
+            frame = QtGui.QPixmap(ospath + f"\\ui\\frame{self.owner_color}.png")
+        else:
+            frame = QtGui.QPixmap(ospath + f"\\ui\\frame.png")
         self.scn.addPixmap(frame).setPos(0,0)
 
-    def add_count(self, length):
+    def add_count(self, length, adj_top=21):
         text = QtWidgets.QGraphicsSimpleTextItem(str(length))
         text.setFont(font_icon)
         #text.setPen(pen)
         text.setBrush(brush)
         boundingRectangle = text.sceneBoundingRect()
-        x, y = 21 - boundingRectangle.width()//2, 21 - boundingRectangle.height()//2  # 21 21 the center
+        x, y = 21 - boundingRectangle.width()//2, adj_top - boundingRectangle.height()//2  # 21 21 the center
         text.setPos(x, y);
         self.scn.addRect(3,3,36,36, invisible_pen, idle_time_brush)
         self.shadow = True
@@ -93,8 +95,15 @@ class IconArmy(QtWidgets.QWidget):
 
     def update(self, units):
         self.scn.clear()
-        self.add_icon()
-        self.add_count(len(units))
+        selected_units = list(filter(lambda u, x=self.player.selected: u in x, units))
+        selection = len(selected_units) > 0 # At least one is selected
+        #selection = len(units) == len(selected_units) # All units are selected
+        self.add_icon(selection)
+        if selected_units:
+            self.add_count(len(selected_units), adj_top=12)
+            self.add_count(len(units), adj_top=30)
+        else:
+            self.add_count(len(units))
         
         #self.label1.setText(f"Total: {len(units)}")
         #self.label2.setText(f"HP: {len(units)}")

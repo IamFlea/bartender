@@ -38,6 +38,8 @@ class Objects(list):
             o.update()
     """
     _all = {}
+    selected = []
+    selected_pointers = []
     def __init__(self, ptr, owner):
         # ptr Pointer to objects
         # owner Player struct
@@ -51,6 +53,8 @@ class Objects(list):
         ptr_array = pm.pointer(self.ptr + 0x4)
         length = pm.uint32(self.ptr + 0x8)
         object_pointers = pm.struct(ptr_array, "I"*length)
+        length = pm.int8(self.owner.ptr + 0x254)
+        Objects.selected_pointers += pm.struct(self.owner.ptr + 0x160, "I" * length)
         for ptr in object_pointers:
             r = Objects._create_(ptr, self.owner)
             if r is not None:
@@ -58,7 +62,9 @@ class Objects(list):
                 self.append(r)
                 # Appends the object to the list and sets that the object will not be deleted
                 Objects._all[self.owner][ptr] = [r, False]
-              
+                # adds it into selected objects
+                if ptr in Objects.selected_pointers:
+                    Objects.selected.append(r)
 
     def __enter__(self):
         for ptr in Objects._all[self.owner]:
@@ -81,8 +87,8 @@ class Objects(list):
         # Load new data
         try:
             udata = UnitData(pm.pointer(ptr_object + 0xC), owner)
-        except: # Sometime it may fucks up
-            print("BEEP")
+        except: 
+            print("BEEP - wrong address. Skipping.")
             return None
         if udata is None:
             return None

@@ -33,21 +33,24 @@ Did I tell you that it highlights selected building?
 
 
 # TODO
-1) User Interface is just porotyped need to be reworked.
-2) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25)
-3) Colourfull icons (Yay!).
-4) Record game version.
-5) Add on the side of screen selected units (showing the way where are the units).
-6) Show which and how much units are selected (6 villagers, 3 militia -> Icons with number).
-7) Fix crashes.
-8) Make display unclickable.
-9) Hide display when AoE2HD is not the foreground window.
-10) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
+1)UI
+    1) User Interface is just porotyped need to be reworked. 
+    2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
+    3) Make an UI for managing bartander - quitting, or settings.
+    4) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
+    5) Fix crashes - during the game, during exitting/leaving the game.
+    6) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
+    7) Make display unclickable. (previous item (8) needs to be done before this)
+    8) Hide display when AoE2HD is not the foreground window.
 
+2)Mechanics
+    1) If the selected unit is out of the screen, add selected units icon (or an arrow showing the way where are the units) on the side of screen.
+    2) Record game version - add training/researches info about other players.
+    3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
 
 # Known Limitations
 1) Needs update when the AoE2HD version changes.
-2) Requires 1920x1080 resolution.
+
 
 # License
 Bartender, Copyright (C) 2018 Flea, blk_panther

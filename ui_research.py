@@ -85,15 +85,10 @@ class ResearchBar(QtWidgets.QWidget):
         self.position = (x*42, y*42)
 
 
-    def select_icon(self):
-        icon_filename = f"tech_{self.icon+1}.png"
-        return icon_filename
-
     def add_icon(self):
-        icon_filename = self.select_icon()
-        stuff = QtGui.QPixmap(ospath + f"\\icons\\{icon_filename}")
+        stuff = QtGui.QPixmap(ospath + f"/icons/researches/{str(self.icon).zfill(3)}.bmp")
         self.scn.addPixmap(stuff).setPos(3,3)
-        frame = QtGui.QPixmap(ospath + f"\\ui\\frame{self.owner_color}.png")
+        frame = QtGui.QPixmap(ospath + f"/ui/frame{self.owner_color}.png")
         self.scn.addPixmap(frame).setPos(0,0)
 
 
