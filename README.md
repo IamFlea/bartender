@@ -33,10 +33,10 @@ Did I tell you that it highlights selected building?
 
 
 # TODO
-1) User Interface is just porotyped need to be reworked.
+1) Rework User Interface.
 2) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25)
-3) Colourfull icons (Yay!).
-4) Record game version.
+3) Colourfull icons (Icons change with/to playercolor, yay!).
+4) Record game version (and use it to determine compatibility with bartender).
 5) Add on the side of screen selected units (showing the way where are the units).
 6) Show which and how much units are selected (6 villagers, 3 militia -> Icons with number).
 7) Fix crashes.
