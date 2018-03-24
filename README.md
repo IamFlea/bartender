@@ -34,13 +34,13 @@ Did I tell you that it highlights selected building?
 
 # TODO
 **UI**
-1) User Interface is just porotyped need to be reworked. 
+1) Rework User Interface.
 2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
-3) Make an UI for managing bartander - quitting, or settings.
+3) Make an UI for managing bartender - quitting, or settings.
 4) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
 5) Fix crashes - during the game, during exitting/leaving the game.
 6) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
-7) Make display unclickable. (previous item (8) needs to be done before this)
+7) Make display unclickable.
 8) Hide display when AoE2HD is not the foreground window.
 
 **Mechanics**
