@@ -7,7 +7,7 @@ Bartender can be divided into five parts.
 3) Buildings waiting for the construction or buildings that are currently constructed are displayed below the chat window.
 4) Military Buildings (including TC, docks and monastries) are shown on bottom left. Each icon represents a building. The icon changes to currently trained unit or researched technology. Moreover, it shows the time in seconds when it will complete the training or the research. The bottom number is a queue. Furthermore, the selected building is highlighted.
 5) You can see your army composition on the bottom and how much units are selected.
-6) If a unit, building, or gaia object is selected and it is out of the screen, then bartender displays an icon with the location to the object. 
+6) If the selected object is out of the screen, bartender shows its icon on the side of screen displaying the object location.
 
 ![Screenshot](https://i.imgur.com/JWsTbWB.jpg)
 
@@ -43,9 +43,8 @@ Bartender can be divided into five parts.
 8) Hide display when AoE2HD is not the foreground window.
 
 **Mechanics**
-1) If the selected unit is out of the screen, add selected units icon (or an arrow showing the way where are the units) on the side of screen.
-2) Record game version - add training/researches info about other players.
-3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
+1) Record game version - add training/researches info about other players.
+2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
 
 **This file**
 1) Update screenshot.
