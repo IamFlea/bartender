@@ -93,9 +93,6 @@ class Game(object):
         self.gaia.update(market_price)
         return True
 
-        
-       
-
 if __name__ == '__main__':
     import time
     proc_name = "AoK HD.exe"
@@ -103,4 +100,3 @@ if __name__ == '__main__':
     with pm:
         game = Game()
         game.update()
-

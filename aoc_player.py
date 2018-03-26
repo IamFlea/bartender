@@ -73,7 +73,7 @@ class Player(object):
                             Fills all the lists
 
     """
-    def __get_name__(self, number, ptr_ai):
+    def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
         ptr = pm.pointer(ptr + 0xD54) 
@@ -87,7 +87,7 @@ class Player(object):
     def __init__(self, ptr, number=None):
         super(Player, self).__init__()
         self.ptr = ptr
-        self.name = "Gaia" if number is None else self.__get_name__(number, ptr) 
+        self.name = "Gaia" if number is None else Player.__get_name__(number, ptr) 
 
         self.pov = False
         self.diplomacy = Diplomacy(self)
