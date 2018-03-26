@@ -45,8 +45,8 @@ Bartender can be divided into five parts.
 **Mechanics**
 1) Detect if the game is a record game or SP/MP game.
 2) Record game version - add training/researches info about other players.
-3) Improve performance of obtaining `rating` in file `aoc_lobby.py`. Use a different approach to getting the rating number (screenshot + number classifier).
-4) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
+3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
+4) Improve performance of obtaining `rating` in file `aoc_lobby.py`. Use a different approach to getting the rating number (screenshot + number classifier).
 
 **This file**
 1) Update screenshot.
