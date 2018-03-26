@@ -13,7 +13,7 @@ class BartenderWindow(QtWidgets.QMainWindow):
     #UPDATE_WINDOW_MS = 16 # 60 FPS 
     UPDATE_WINDOW_MS = 33 # 30 FPS
 
-    def __init__(self, game, width, height):
+    def __init__(self, game, x, y, width, height):
         super(BartenderWindow, self).__init__()
         self.game = game
         self.setWindowTitle("Bartender")
@@ -22,7 +22,7 @@ class BartenderWindow(QtWidgets.QMainWindow):
         self.height = height
         #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
-        self.setGeometry(0,0,width,height)
+        self.setGeometry(x,y,width,height)
         IconCooldownCount.game = game
         #####
         # Constructions
