@@ -5,7 +5,7 @@ from statistics import mode
 from copy import copy
 from pymemory import pymemory as pm
 from pymemory import NullAddress
-
+from collections import defaultdict
 class LobbyPlayer(object):
     def __init__(self):
         self.number = None
@@ -34,6 +34,7 @@ class Lobby(object):
     def update(self):
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
         ptr = pm.pointer(ptr + 0xD54) 
+        regex = b""
         for i in range(Lobby.SKIP_GAIA,9):
             p = ptr + 0x50 + 0x60*i
             player = self.players[i]
@@ -44,25 +45,34 @@ class Lobby(object):
                 player.color = None
                 player.ai =  None
                 player.rating = None
+                update = False
                 name = None
             else:
                 player.team = pm.int32(p + 0x0)
                 player.color = pm.int32(p + 0x44)
                 player.ai = False if player.name else True
                 name = pm.string(pm.pointer(p + 0xC)) if i > 0 else "Gaia"
-            if name != player.name and name is not None:
-                #update rating
+                update = name != player.name and name is not None
                 player.name = name
-                if i == 0:
-                    player.rating = None
-                else:
-                    regular_expression = b'\[\d{1,4}\] ' + str.encode(player.name)
-                    result = []
-                    for i in pm.re(regular_expression):
-                        fullname = i.group(0)[1:]
-                        rating_string = fullname.decode("utf-8").split("]")[0]
-                        result += [int(rating_string)]
-                    player.rating = mode(result)
+            if update:
+                regex += b'\[\d{1,4}\] ' + str.encode(player.name) + b'|'
+        tmp = defaultdict(list)
+        if regex: # not empty
+            regex = regex[:-1] # remove last | 
+            result = []
+            for i in pm.re(regex):
+                fullname = i.group(0)[1:] # remove [
+                rating_string, name = fullname.decode("utf-8").split("]") # split ]
+                name = name[1:]  # Remove space character
+                result += [(int(rating_string), name)]
+                tmp[name] += [int(rating_string)]
+        for p in self.players:
+            if tmp[p.name]:
+                p.rating = mode(tmp[p.name])
+            else:
+                p.rating = None
+
+
 
 if __name__ == '__main__':
     import time
