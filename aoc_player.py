@@ -78,7 +78,10 @@ class Player(object):
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
         ptr = pm.pointer(ptr + 0xD54) 
         ptr = pm.pointer(ptr + 0xb0 + 0x60*(number-1) + 0xC)
-        name = pm.string(ptr, 32)
+        try:
+            name = pm.string(ptr, 32)
+        except:
+            name = ""
         name = name if name else f"Player #{number}"
         if pm.int32(ptr_ai + 0x8) == 3: 
             name += " [AI]"

@@ -188,12 +188,16 @@ class PyMemory(object):
         self.buffer_load(address, 8)
         return unpack("d", self.buffer[:8])[0] 
 
-    def string(self, address, length=16):
+    def string(self, address, length=32):
         self.buffer_load(address, length)
         result = unpack(f"{length}s", self.buffer[:length])[0]
         if result[0] == b"\x00":
             return ""
         return result.split(b"\x00")[0].decode("utf-8")
+
+    def byte_string(self, address, length=32):
+        self.buffer_load(address, length)
+        return self.buffer[:length].split(b"\x00")[0]
 
     def struct(self, address, fmt):
         size = calcsize(fmt)
