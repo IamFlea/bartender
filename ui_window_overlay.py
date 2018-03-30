@@ -9,12 +9,12 @@ from ui_icon_army import IconArmy
 from ui_icon_waypoint import IconWaypoint
 import time
 
-class BartenderWindow(QtWidgets.QMainWindow):
+class BartenderOverlay(QtWidgets.QMainWindow):
     #UPDATE_WINDOW_MS = 16 # 60 FPS 
     UPDATE_WINDOW_MS = 33 # 30 FPS
 
     def __init__(self, game, x, y, width, height):
-        super(BartenderWindow, self).__init__()
+        super(BartenderOverlay, self).__init__()
         self.game = game
         self.setWindowTitle("Bartender")
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -91,7 +91,7 @@ class BartenderWindow(QtWidgets.QMainWindow):
         # Updating stuff
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.load)
-        self.timer.start(BartenderWindow.UPDATE_WINDOW_MS)
+        self.timer.start(BartenderOverlay.UPDATE_WINDOW_MS)
 
 
     def load(self):

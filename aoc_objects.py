@@ -16,6 +16,8 @@ class Objects(list):
     Class variable
         _all    Nested dictionary in format:  _all[player][pointer]
                 returns [Object, delete] 
+        selected  A list of selected objects
+        selected_pointer  A list of pointers to objects
     Class function
         create(pointer owner)   returns an object from `_all` if it is found
                                 else it creates a new object and put it in the `_all

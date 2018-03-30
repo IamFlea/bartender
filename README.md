@@ -32,21 +32,23 @@ Bartender can be divided into five parts.
 
 
 # TODO
+
+Watch for crashes & consistency of displayed data
+
 **UI**
 1) Rework User Interface.
 2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
 3) Make an UI for managing bartender - quitting, or settings.
-4) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
-5) Fix crashes - during the game, during exitting/leaving the game.
-6) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
-7) Make display unclickable.
-8) Hide display when AoE2HD is not the foreground window.
+4) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
+5) Make display unclickable.
+6) Hide display when AoE2HD is not the foreground window.
 
 **Mechanics**
 1) Detect if the game is a record game or SP/MP game.
 2) Record game version - add training/researches info about other players.
 3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
 4) Improve performance of obtaining `rating` in file `aoc_lobby.py`. Use a different approach to getting the rating number (screenshot + number classifier).
+5) Fix a bug when `inf` is printed while a villager is constructing a building 
 
 **This file**
 1) Update screenshot.

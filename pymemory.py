@@ -15,6 +15,7 @@ TODO
 """ 
 import sys
 import re 
+import os
 
 from ctypes import *
 from ctypes.wintypes import *
@@ -85,7 +86,7 @@ class PyMemory(object):
                     return pid
                 kernel.CloseHandle(hProcess)
         raise ProcessLookupError(f"Couldn't get PID of `{process_name}`.")
-    
+
     def __get_base_address__(self, module_name):
         """ Returns `base address` from the pid"""
         # const variable
@@ -115,7 +116,7 @@ class PyMemory(object):
             ret = windll.kernel32.Module32Next(hModuleSnap, pointer(me32))
         windll.kernel32.CloseHandle(hModuleSnap)
         raise ProcessLookupError(f"Process `{process_name}` not found.")
-    
+        
     def load_process(self, process_name, module_name=None, access=None):
         """ Loads PID and base address and set access"""
         if module_name is None:

@@ -6,6 +6,10 @@ from pymemory import NullAddress
 from aoc_player import *
 from aoc_time import GTime
 from aoc_objects import Objects
+from aoc_object_data import UnitData
+from aoc_object_unit import Unit
+
+
 # debug
 #from pymemory import print_addr
 
@@ -26,6 +30,7 @@ class Game(object):
             Game
                 screen_position  Position in format [float, float]
                 speed            Game speed
+                running          Boolean
     Methods:
         public 
             __init__()   Constructor
@@ -41,6 +46,21 @@ class Game(object):
             key = map(lambda x: str(x == 4), diplo)
             teams.setdefault("".join(key), []).append(value)
         return list(teams.values())
+
+    def __new__(cls):
+        if not pm.int32(pm.base_address + 0x9C8FB0):
+            return None
+        # Stupid way how to reset all CLASS variables (not object)
+        UnitData.all_names = None
+        Unit.graphics_data = {}
+        Objects._all = {}
+        Objects.selected = []
+        Objects.selected_pointers = []
+        GTime.time_delta = 0
+        GTime.time = 0
+
+        return super(Game, cls).__new__(cls)
+
     def __init__(self):
         super(Game, self).__init__()
         ptr = pm.pointer(pm.base_address + 0x006E62D8)
@@ -55,6 +75,7 @@ class Game(object):
         self.t2 = []
         self.player = None
         self.pov = None
+        self.running = False
         
     def __update_teams__(self):
         self.t1 = []
@@ -67,12 +88,19 @@ class Game(object):
 
         
     def update(self):
+        # Check if the game is running 
+        if not pm.int32(pm.base_address + 0x9C8FB0):
+            self.running = False
+            return False
+        # Second check.
         try:
-            ptr = pm.pointer(pm.base_address + 0x006E62D8) # Checking if the game is running 
+            ptr = pm.pointer(pm.base_address + 0x006E62D8) 
             pm.pointer(ptr + 0x184)
         except NullAddress:
+            self.running = False
             return False
-
+            
+        self.running = True
         # And get the common stuff
         GTime.set(pm.int32(ptr + 0x68))
         self.screen_position = pm.struct(ptr + 0xD8, "ff")
@@ -99,4 +127,5 @@ if __name__ == '__main__':
     pm.load_process(proc_name)
     with pm:
         game = Game()
-        game.update()
+        if game is not None:
+            game.update()
