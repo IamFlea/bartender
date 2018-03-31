@@ -81,11 +81,11 @@ class IconCooldownCount(QtWidgets.QWidget):
         self.scn.addItem(text)
 
     def select_icon(self):
-        icon_filename = f"building_{self.object.udata.icon+1}.png"
+        icon_filename = f"/icons/buildings/{str(self.object.udata.icon).zfill(3)}.bmp"
         if self.object.research:
-            icon_filename = f"tech_{self.object.research.icon+1}.png"
+            icon_filename = f"/icons/researches/{str(self.object.research.icon).zfill(3)}.bmp"
         elif self.object.queue:
-            icon_filename = f"unit_{self.object.queue[0][1]+1}.png"
+            icon_filename = f"/icons/units/color_{self.object.owner.color.unique}/{str(self.object.queue[0][1]).zfill(3)}.bmp"
         return icon_filename
 
     def get_cooldown(self):
@@ -108,13 +108,13 @@ class IconCooldownCount(QtWidgets.QWidget):
         
     def add_icon(self, show_idle=False):
         icon_filename = self.select_icon()
-        stuff = QtGui.QPixmap(ospath + f"\\icons\\{icon_filename}")
+        stuff = QtGui.QPixmap(ospath + icon_filename)
         self.scn.addPixmap(stuff).setPos(3,self.adj+3)
         self.add_idle(show_idle)
-        if self.object.ptr in IconCooldownCount.game.player.selected:
-            frame = QtGui.QPixmap(ospath + f"\\ui\\frame.png")
+        if self.object in IconCooldownCount.game.player.selected:
+            frame = QtGui.QPixmap(ospath + f"/ui/frame.png")
         else:
-            frame = QtGui.QPixmap(ospath + f"\\ui\\frame{self.owner_color}.png")
+            frame = QtGui.QPixmap(ospath + f"/ui/frame{self.owner_color}.png")
         self.scn.addPixmap(frame).setPos(0,self.adj+0)
 
     def add_cooldown(self):

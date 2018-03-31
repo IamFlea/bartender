@@ -8,7 +8,7 @@ from aoc_color import *
 from aoc_civ import *
 from aoc_object_building_research import BuildingResearch
 from aoc_object_consts import *
-from aoc_objects import *
+from aoc_objects import Objects
 from aoc_research import Research 
 
 class Player(object):
@@ -27,6 +27,7 @@ class Player(object):
             selected    Selected units pointers
             buildings   Buildings 
             farm_reseeds Number of reseeds in a mill
+            pov         Boolean
 
         Public object lists
             buildings_all   All buildings without trebuchets (not a joke, they are implemented as moving building)
@@ -72,12 +73,15 @@ class Player(object):
                             Fills all the lists
 
     """
-    def __get_name__(self, number, ptr_ai):
+    def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
         ptr = pm.pointer(ptr + 0xD54) 
         ptr = pm.pointer(ptr + 0xb0 + 0x60*(number-1) + 0xC)
-        name = pm.string(ptr, 32)
+        try:
+            name = pm.string(ptr, 32)
+        except:
+            name = ""
         name = name if name else f"Player #{number}"
         if pm.int32(ptr_ai + 0x8) == 3: 
             name += " [AI]"
@@ -86,8 +90,9 @@ class Player(object):
     def __init__(self, ptr, number=None):
         super(Player, self).__init__()
         self.ptr = ptr
-        self.name = "Gaia" if number is None else self.__get_name__(number, ptr) 
+        self.name = "Gaia" if number is None else Player.__get_name__(number, ptr) 
 
+        self.pov = False
         self.diplomacy = Diplomacy(self)
         self.resources = Resources(self)
         self.color = Color(self)
@@ -98,9 +103,9 @@ class Player(object):
         self.log = [] 
         #BuildingResearch.log[self] = [] # Better access for researches
         Objects._all[self] = {} # Dictionary of used objects
-        self.selected = []
         self.housed = False
         self.farm_reseeds  = 0
+        self.selected = None
         
     def __analyze_objects__(self):
         # This algorithms are optimal in the terms of typing... 
@@ -157,8 +162,9 @@ class Player(object):
         self.__analyze_objects__()
         self.research.update()
         self.farm_reseeds = pm.int16(self.ptr + 0x2708)
-        fmt = "I" * pm.int8(self.ptr + 0x254)
-        self.selected = pm.struct(self.ptr + 0x160, fmt)
+        self.selected = Objects.selected
+        #self.selected = [item for item in objects.selected]  # if buggy
+        #print(self.selected)
 
         
 if __name__ == '__main__' and True:

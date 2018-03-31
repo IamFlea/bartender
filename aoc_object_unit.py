@@ -41,6 +41,8 @@ class Unit(Primitive): # game obje
             _check_idle_()               Sets `self.idle` based on the graphics
             _check_idle_time_()          Calculates idle times of the unit if `self.idle` is set 
     """
+    graphics_data = {}
+    
     def __init__(self, ptr, owner, udata):
         super(Unit, self).__init__(ptr, owner, udata)
         #self.ptr_graphics = ptr + 0x14 # pointer 
@@ -69,7 +71,6 @@ class Unit(Primitive): # game obje
             return garrison
         return garrison
 
-    graphics_data = {}
     def _check_idle_(self):
         ## Checking if unit is idle need to write better way 
         # Load pointer
@@ -79,10 +80,14 @@ class Unit(Primitive): # game obje
             self.idle = Unit.graphics_data[pointer]
         else:
             # Load it inot the lookup table
-            splitted_name = pm.string(pointer+0x50).split("_")
-            result = len(splitted_name) > 1 and "FN" in splitted_name[-1] # idle through graphics.. suuucks
-            Unit.graphics_data[pointer] = result
-            self.idle = result
+            try:
+                splitted_name = pm.string(pointer+0x50).split("_")
+                result = len(splitted_name) > 1 and "FN" in splitted_name[-1] # idle through graphics.. suuucks
+                Unit.graphics_data[pointer] = result
+                self.idle = result
+            except UnicodeDecodeError:
+                print("WARNING aoc_object_unit.py in `_check_idle_(self)`: Couldn't parse SLP filename!")
+                self.idle = False
 
     def _check_idle_time_(self):
         if self.idle or (type(self) != Unit and self.construction and self.construction > 1.0):

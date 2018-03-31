@@ -63,7 +63,7 @@ class Primitive(object): # game object
         self.hp = pm.float(self.ptr + 0x34)
         self.status = pm.int8(self.ptr + 0x4C)
         self.resource = (pm.float(self.ptr + 0x48), pm.int8(self.ptr + 0x50)) # ??, type
-        #self.position = pm.struct(self.ptr + 0x3c, "ff")
+        self.position = pm.struct(self.ptr + 0x3c, "ff")
 
 if __name__ == '__main__':
     import bartender

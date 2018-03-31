@@ -5,10 +5,9 @@ Bartender can be divided into five parts.
 1) It displays information about your villagers, ships and trade on the top of your screen. Also, you can find there K/D ratios of units and buildings.
 2) Researched technologies are shown right below the top bar. Currently researching technologies are next to it.
 3) Buildings waiting for the construction or buildings that are currently constructed are displayed below the chat window.
-4) Military Buildings (including TC, docks and monastries) are shown on bottom left. Each icon represents a building. The icon changes to currently trained unit or researched technology. Moreover it shows the time in seconds when it will complete the training or the research. The bottom number is a queue.
-5) If small army is selected. You can see your army composition on the bottom.
-
-Did I tell you that it highlights selected building?
+4) Military Buildings (including TC, docks and monastries) are shown on bottom left. Each icon represents a building. The icon changes to currently trained unit or researched technology. Moreover, it shows the time in seconds when it will complete the training or the research. The bottom number is a queue. Furthermore, the selected building is highlighted.
+5) You can see your army composition on the bottom and how much units are selected.
+6) If the selected object is out of the screen, bartender shows its icon on the side of screen displaying the object location.
 
 ![Screenshot](https://i.imgur.com/JWsTbWB.jpg)
 
@@ -33,21 +32,30 @@ Did I tell you that it highlights selected building?
 
 
 # TODO
-1) Rework User Interface.
-2) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25)
-3) Colourfull icons (Icons change with/to playercolor, yay!).
-4) Record game version (and use it to determine compatibility with bartender).
-5) Add on the side of screen selected units (showing the way where are the units).
-6) Show which and how much units are selected (6 villagers, 3 militia -> Icons with number).
-7) Fix crashes.
-8) Make display unclickable.
-9) Hide display when AoE2HD is not the foreground window.
-10) Make starting and quitting bartender easier (wait for AoE2HD to be started and ingame, quit bartender when AoE2HD was closed).
 
+Watch for crashes & consistency of displayed data
+
+**UI**
+1) Rework User Interface.
+2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
+3) Make an UI for managing bartender - quitting, or settings.
+4) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
+5) Make display unclickable.
+6) Hide display when AoE2HD is not the foreground window.
+
+**Mechanics**
+1) Detect if the game is a record game or SP/MP game.
+2) Record game version - add training/researches info about other players.
+3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`
+4) Improve performance of obtaining `rating` in file `aoc_lobby.py`. Use a different approach to getting the rating number (screenshot + number classifier).
+5) Fix a bug when `inf` is printed while a villager is constructing a building 
+
+**This file**
+1) Update screenshot.
 
 # Known Limitations
 1) Needs update when the AoE2HD version changes.
-2) Requires 1920x1080 resolution.
+2) Requires 1920x1080-ish resolution
 
 # License
 Bartender, Copyright (C) 2018 Flea, blk_panther

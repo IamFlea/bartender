@@ -9,8 +9,13 @@ pm.load_process("notepad.exe")
 with pm:
     integer = pm.uint32(pm.base_address)
     print(hex(integer))
+
+TODO
+    1) get information if the process is 64 bit or 32bit (AoK HD.exe should be always 32bit anyway)
 """ 
 import sys
+import re 
+import os
 
 from ctypes import *
 from ctypes.wintypes import *
@@ -81,7 +86,7 @@ class PyMemory(object):
                     return pid
                 kernel.CloseHandle(hProcess)
         raise ProcessLookupError(f"Couldn't get PID of `{process_name}`.")
-    
+
     def __get_base_address__(self, module_name):
         """ Returns `base address` from the pid"""
         # const variable
@@ -111,7 +116,7 @@ class PyMemory(object):
             ret = windll.kernel32.Module32Next(hModuleSnap, pointer(me32))
         windll.kernel32.CloseHandle(hModuleSnap)
         raise ProcessLookupError(f"Process `{process_name}` not found.")
-    
+        
     def load_process(self, process_name, module_name=None, access=None):
         """ Loads PID and base address and set access"""
         if module_name is None:
@@ -122,7 +127,6 @@ class PyMemory(object):
         self.access = access if access else PyMemory.PROCESS_ALL_ACCESS
         self.process_name = process_name
         self.module_name = module_name
-        
 
     def __enter__(self):
         """ Open process handler """ 
@@ -185,10 +189,16 @@ class PyMemory(object):
         self.buffer_load(address, 8)
         return unpack("d", self.buffer[:8])[0] 
 
-    def string(self, address, length=16):
+    def string(self, address, length=32):
         self.buffer_load(address, length)
         result = unpack(f"{length}s", self.buffer[:length])[0]
+        if result[0] == b"\x00":
+            return ""
         return result.split(b"\x00")[0].decode("utf-8")
+
+    def byte_string(self, address, length=32):
+        self.buffer_load(address, length)
+        return self.buffer[:length].split(b"\x00")[0]
 
     def struct(self, address, fmt):
         size = calcsize(fmt)
@@ -236,11 +246,123 @@ class PyMemory(object):
 
     def buff_string(self, offset, length=16):
         result = unpack(f"{length}s", self.buffer[offset:offset+length])[0]
+        if result[0] == b"\x00":
+            return ""
         return result.split(b"\x00")[0].decode("utf-8")
 
     def buff_struct(self, offset, fmt):
         size = calcsize(fmt)
         return unpack(fmt, self.buffer[offset:offset+size])
+    
+    ## Regexp part ##
+    def _get_min_max_addr_(self):
+        """ Returns minimal and maximal address """
+        class SYSTEM_INFO(Structure):
+            _fields_ = [('wProcessorArchitecture', WORD),
+                        ('wReserved', WORD),
+                        ('dwPageSize', DWORD),
+                        ('lpMinimumApplicationAddress', LPVOID),
+                        ('lpMaximumApplicationAddress', LPVOID),
+                        ('dwActiveProcessorMask', c_ulonglong if sizeof(c_void_p) == 8 else c_ulong), # pointer size depends on the OS verision  (32b or 64b)
+                        ('dwNumberOfProcessors', DWORD),
+                        ('dwProcessorType', DWORD),
+                        ('dwAllocationGranularity', DWORD),
+                        ('wProcessorLevel', WORD),
+                        ('wProcessorRevision', WORD)]
+        si = SYSTEM_INFO()
+        is_64bit = False # TODO; however aok hd  is 32 bit anyway
+        if is_64bit:
+            windll.kernel32.GetNativeSystemInfo(byref(si))
+            max_addr = si.lpMaximumApplicationAddress
+        else:
+            windll.kernel32.GetNativeSystemInfo(byref(si))
+            max_addr = 2147418111
+        min_addr = si.lpMinimumApplicationAddress
+        return min_addr, max_addr
+
+
+    def _VirtualQueryEx_(self, ptr):
+        """ Returns filled memory basic informations about allocations """
+        class MEMORY_BASIC_INFORMATION(Structure):
+            _fields_ = [('BaseAddress', c_void_p),
+                        ('AllocationBase', c_void_p),
+                        ('AllocationProtect', DWORD),
+                        ('RegionSize', c_size_t),
+                        ('State', DWORD),
+                        ('Protect', DWORD),
+                        ('Type', DWORD)]
+        # set arguments
+        VirtualQueryEx = windll.kernel32.VirtualQueryEx
+        VirtualQueryEx.argtypes = [HANDLE, LPCVOID, POINTER(MEMORY_BASIC_INFORMATION), c_size_t]
+        VirtualQueryEx.restype = c_size_t
+        # load
+        mbi = MEMORY_BASIC_INFORMATION()
+        if not VirtualQueryEx(self.process_handle, ptr, byref(mbi), sizeof(mbi)):
+            ptr = hex(ptr)
+            raise ProcessException(f"Error VirtualQueryEx: {ptr}")
+        return mbi
+
+    def _iter_memory_region_(self):
+        """ Loads memory region, generator
+        Returns starting address and memory region size. 
+        """
+        min_address, max_address = self._get_min_max_addr_()
+        offset = min_address
+        #for offset, chunk_size in self.iter_region( protec=protec, optimizations=optimizations):
+        while True:
+            if offset >= max_address:
+                break
+            mbi = self._VirtualQueryEx_(offset)
+            offset = mbi.BaseAddress
+            chunk = mbi.RegionSize
+            protect = mbi.Protect
+            state = mbi.State
+            if state & 0x12000: # memfree nad memresrrve
+                offset += chunk
+                continue
+            if (not protect & 0x6) or protect & 0x700: # not readonly/rw page nocache, writecombine, guard
+                offset += chunk
+                continue
+            yield offset, chunk
+            offset += chunk
+        
+    def _get_chunk_(self, start, size):
+        """ Returns the whole chunk """
+        offset = start
+        result = b""
+        read = 0
+        while read < size:
+            try:
+                # Calculate how much stuff will be loaded into the buffer
+                if size - read <= PyMemory.BUFFER_SIZE:
+                    self.buffer_load(offset + read, size - read)
+                    result += self.buffer.raw[:size-read]
+                    read += size-read
+                    
+                else:
+                    self.buffer_load(offset + read, PyMemory.BUFFER_SIZE)
+                    result += self.buffer.raw
+                    read += PyMemory.BUFFER_SIZE
+            except:
+                return b""
+        return result
+
+
+    def re(self, regex): 
+        """ Bruteforce search in memory 
+        regex must be binary string 
+        """
+        if type(regex) != type(re.compile("")):
+            regex = re.compile(regex, re.IGNORECASE)
+
+        for offset, chunk in self._iter_memory_region_():
+            stuff = self._get_chunk_(offset, chunk)
+            for res in regex.finditer(stuff):
+                yield res
+        # Get the boundaries
+
+
+
 
 pymemory = PyMemory()
 
@@ -253,4 +375,5 @@ if __name__ == '__main__':
         print(f"Base address: {hex(pm.base_address)}")
         result = pm.int32(pm.base_address)
         result = pm.struct(pm.base_address, "II")
+        #result = pm.re(b"\[\d{1,4}\] Kova")
 # EOF
