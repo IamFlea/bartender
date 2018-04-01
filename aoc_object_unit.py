@@ -74,7 +74,12 @@ class Unit(Primitive): # game obje
     def _check_idle_(self):
         ## Checking if unit is idle need to write better way 
         # Load pointer
-        pointer = pm.pointer(self.ptr + 0x14)
+        try:
+            pointer = pm.pointer(self.ptr + 0x14)
+        except NullAddress:
+            print("WARNING aoc_object_unit.py in `_check_idle_(self)`: NULL pointer!")
+            self.idle = False
+            return
         if pointer in Unit.graphics_data:
             # Is it in look-up table?
             self.idle = Unit.graphics_data[pointer]

@@ -1,11 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from aoc_time import *
-font = QtGui.QFont("Georgia", 8)
-font.setBold(True)
-brush = Qt.QBrush(Qt.QColor(0xff,0xff,0xff))
-invisible_pen = Qt.QPen(Qt.QColor(0x00,0x00,0x00, 0x00))
-invisible_pen.setWidth(0)
-
+from ui_consts import *
 #font.setBold(True)
 
 class HeaderLabel(QtWidgets.QLabel):

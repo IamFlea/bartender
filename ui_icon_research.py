@@ -2,8 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets,  Qt
 from aoc_time import *
 from time import time
 
-import os
-ospath = os.path.dirname(os.path.abspath(__file__))
+from ui_consts import *
 
 #brush.setWidth(2)
 class IconResearch(QtWidgets.QWidget):
