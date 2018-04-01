@@ -194,7 +194,7 @@ class Bartender(QtWidgets.QMainWindow):
         if self.state == 3:
             self.print_info("Starting overlay.")
             self.start_overlay()
-            self.state = 4
+            self.state = 4  
         # Loop
         if self.state == 4:
             self.print_info("Waiting until the game is quitted.")

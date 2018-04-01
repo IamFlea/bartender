@@ -1,8 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets,  Qt
 from aoc_object_building import Building 
 
-import os
-ospath = os.path.dirname(os.path.abspath(__file__))
+from ui_consts import * 
 
 class IconWaypoint(QtWidgets.QWidget):
     """docstring for IconWaypoint"""
