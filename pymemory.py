@@ -51,6 +51,7 @@ class PyMemory(object):
         self.base_address = None
         self.process_handle = None
         self.fmt_size_lookup = None
+        self.memory_regions = None
         self.buffer = create_string_buffer(PyMemory.BUFFER_SIZE)
 
     def __get_pid__(process_name):
@@ -131,6 +132,7 @@ class PyMemory(object):
     def __enter__(self):
         """ Open process handler """ 
         self.process_handle = windll.kernel32.OpenProcess(self.access, False, self.pid)
+        self.update()
         return self
 
     def __exit__(self, type, value, traceback):
@@ -144,10 +146,10 @@ class PyMemory(object):
     def pointer(self, address):
         self.buffer_load(address, 4)
         address = unpack("I", self.buffer[:4])[0] 
-        if address:
-            return address
-        else:
-            raise NullAddress(address)
+        for start, end in self.memory_regions:
+            if address < end and address > start:
+                return address
+        raise NullAddress(address)
 
     def int8(self, address):
         self.buffer_load(address, 1)
@@ -207,6 +209,7 @@ class PyMemory(object):
             self.buffer_load(address, size)
             result += unpack(fmt, self.buffer[:size])
         return result
+
     def buff_pointer(self, offset):
         address = unpack("I", self.buffer[offset:offset+4])[0] 
         if address:
@@ -280,7 +283,6 @@ class PyMemory(object):
         min_addr = si.lpMinimumApplicationAddress
         return min_addr, max_addr
 
-
     def _VirtualQueryEx_(self, ptr):
         """ Returns filled memory basic informations about allocations """
         class MEMORY_BASIC_INFORMATION(Structure):
@@ -298,8 +300,8 @@ class PyMemory(object):
         # load
         mbi = MEMORY_BASIC_INFORMATION()
         if not VirtualQueryEx(self.process_handle, ptr, byref(mbi), sizeof(mbi)):
-            ptr = hex(ptr)
-            raise ProcessException(f"Error VirtualQueryEx: {ptr}")
+            print(f"Error VirtualQueryEx: {ptr}")
+            raise
         return mbi
 
     def _iter_memory_region_(self):
@@ -347,7 +349,6 @@ class PyMemory(object):
                 return b""
         return result
 
-
     def re(self, regex): 
         """ Bruteforce search in memory 
         regex must be binary string 
@@ -360,6 +361,10 @@ class PyMemory(object):
             for res in regex.finditer(stuff):
                 yield res
         # Get the boundaries
+
+    def update(self):
+        self.memory_regions = [(start, start+length) for start, length in self._iter_memory_region_()]
+
 
 
 

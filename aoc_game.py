@@ -89,6 +89,7 @@ class Game(object):
         
     def update(self):
         # Check if the game is running 
+        pm.update()
         if not pm.int32(pm.base_address + 0x9C8FB0):
             self.running = False
             return False
