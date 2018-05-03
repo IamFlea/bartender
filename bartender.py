@@ -18,8 +18,8 @@ from ui_window_overlay import BartenderOverlay
 
 class Bartender(QtWidgets.QMainWindow):
     AOK_PROCESS_NAME = "AoK HD.exe"
-    UPDATE_WINDOW_MS = 33  # 30 FPS 
-    #UPDATE_WINDOW_MS = 16  # 60 FPS 
+    BARTENDER_FRAMES_PER_SECOND = 30 #
+    UPDATE_WINDOW_MS = int(1 / BARTENDER_FRAMES_PER_SECOND) 
     load_process_only_once = True # Breaks infinite loop if process not found and exits this script.
     CONSOLE_PRINT_INFO = True
     WINDOW_PRINT_INFO = True
@@ -79,7 +79,7 @@ class Bartender(QtWidgets.QMainWindow):
                                     Bartender.LABEL_INFO_HEIGHT)
         self.label_info.setAlignment(QtCore.Qt.AlignCenter)
         self.label_info.lastmsg = ""
-        
+         
         self.button_balance = QtWidgets.QPushButton("Balance Lobby!", self)
         self.button_balance.setGeometry(Bartender.BUTTON_INFO_MARGIN_X,
                                         Bartender.BUTTON_INFO_MARGIN_Y,
@@ -211,7 +211,7 @@ class Bartender(QtWidgets.QMainWindow):
         
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' or True:
     # Start bartender window.
     app = QtWidgets.QApplication(sys.argv)
     resolution = app.desktop().screenGeometry()

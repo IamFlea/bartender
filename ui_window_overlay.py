@@ -8,6 +8,9 @@ from ui_research import ResearchBar
 from ui_icon_army import IconArmy
 from ui_icon_waypoint import IconWaypoint
 import time
+import win32con
+from win32gui import GetWindowText, GetForegroundWindow
+
 
 class BartenderOverlay(QtWidgets.QMainWindow):
     #UPDATE_WINDOW_MS = 16 # 60 FPS 
@@ -95,13 +98,16 @@ class BartenderOverlay(QtWidgets.QMainWindow):
 
 
     def load(self):
+        import datetime
+        dt = datetime.datetime.now()
         r = self.game.update()
         if not r:
             r = self.close()
         player = self.game.player
-        self.w_header.load(player)
+        dd = datetime.datetime.now()
+        self.fps = 1/((dd-dt).total_seconds())
 
-
+        self.w_header.load(player, self.fps)
         self.load_constructions(self.w_construction, player.constructions, showidle=False)
         self.load_buildings(self.w_docks, player.docks, showidle=False)
         self.load_buildings(self.w_barracks, player.barracks, showidle=False)
@@ -116,7 +122,9 @@ class BartenderOverlay(QtWidgets.QMainWindow):
         self.load_researches_done(self.w_research_done, player.research.done, player)
         self.load_army(self.w_army, player)
         self.load_selected(player.selected, self.w_leadpoint)
+        #return
         #    self.w_army.show()
+
     def load_selected(self, selected, widget):
         # if we want to clear icons . 
         for icon in widget.icons:

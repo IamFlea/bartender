@@ -73,6 +73,7 @@ class Player(object):
                             Fills all the lists
 
     """
+    SINGLE_PLAYER = True
     def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
@@ -158,7 +159,11 @@ class Player(object):
         self.resources.update()
         self.color.update()
         with self.objects:
-            self.objects.update()
+            if Player.SINGLE_PLAYER:
+                if self.pov:
+                    self.objects.update()    
+            else:
+                self.objects.update()
         self.__analyze_objects__()
         self.research.update()
         self.farm_reseeds = pm.int16(self.ptr + 0x2708)

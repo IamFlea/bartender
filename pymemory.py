@@ -36,8 +36,11 @@ class NullAddress(Exception):
 
 class PyMemory(object):
     """This class serves for memory management. """
-    PROCESS_ALL_ACCESS = 0x1F0FFF
-    BUFFER_SIZE = 0x10000 # 65 kb seems big enough
+    PROCESS_ALL_ACCESS = 0x1F0FFF # A constant 
+    BUFFER_SIZE = 0x10000   # 65 kb seems big enough
+    NO_MEMORY_LEAKS = False # Select True, if you dont want no memory leaks.
+                            # This makes the final program stable.
+                            # BUT it slows down the algorithm significantly!
 
     def __init__(self):
         """ Does nothing """
@@ -53,6 +56,10 @@ class PyMemory(object):
         self.fmt_size_lookup = None
         self.memory_regions = None
         self.buffer = create_string_buffer(PyMemory.BUFFER_SIZE)
+        if PyMemory.NO_MEMORY_LEAKS:
+            self.update = self.__update_no_leaks__
+            self.pointer = self.__pointer_no_leaks__
+            self.buff_pointer = self.__buff_pointer_no_leaks__
 
     def __get_pid__(process_name):
         """ Returns `PID` from the process name. """
@@ -143,12 +150,19 @@ class PyMemory(object):
         # Care, size is in BYTES
         windll.kernel32.ReadProcessMemory(self.process_handle, address, self.buffer, size, byref(c_size_t(0)))
 
-    def pointer(self, address):
+    def __pointer_no_leaks__(self, address):
         self.buffer_load(address, 4)
         address = unpack("I", self.buffer[:4])[0] 
         for start, end in self.memory_regions:
             if address < end and address > start:
                 return address
+        raise NullAddress(address)
+
+    def pointer(self, address):
+        self.buffer_load(address, 4)
+        address = unpack("I", self.buffer[:4])[0] 
+        if address >= self.base_address: # Care if you want to access to data in the stack!! 
+            return address
         raise NullAddress(address)
 
     def int8(self, address):
@@ -210,12 +224,18 @@ class PyMemory(object):
             result += unpack(fmt, self.buffer[:size])
         return result
 
+    def __buff_pointer_no_leaks__(self, offset):
+        address = unpack("I", self.buffer[offset:offset+4])[0] 
+        for start, end in self.memory_regions:
+            if address < end and address > start:
+                return address
+        raise NullAddress(address)
+
     def buff_pointer(self, offset):
         address = unpack("I", self.buffer[offset:offset+4])[0] 
-        if address:
+        if address >= self.base_address: # Care if you want to access to data in the stack!! 
             return address
-        else:
-            raise NullAddress(address)
+        raise NullAddress(address)
 
     def buff_int8(self, offset):
         return unpack("b", self.buffer[offset:offset + 1])[0] 
@@ -362,9 +382,31 @@ class PyMemory(object):
                 yield res
         # Get the boundaries
 
-    def update(self):
-        self.memory_regions = [(start, start+length) for start, length in self._iter_memory_region_()]
+    def __update_no_leaks__(self):
+        memory_regions = [(start, start+length) for start, length in self._iter_memory_region_()]
+        # approximate the regions
+        # dont call update() too often, it causes lags
+        approx = 0x100000
+        # Remove stack and stuff BEFORE the base address 
+        memory_regions = list(filter(lambda x: x[0] >= self.base_address, memory_regions))
+        #print(len(memory_regions))
+        # ? 
+        prev_start, prev_end = memory_regions[0]
+        result = []
+        for region in memory_regions[1:]:
+            start, end = region
+            if start <= prev_end + approx:
+                pass
+            else:
+                result += [[prev_start, end]]
+                prev_start = region[0]
+            prev_end = region[1]
+        #print(len(result))
+        self.memory_regions = result
 
+    def update(self):
+        # This function is rewritten if NO_MEMORY_LEAKS is set
+        pass
 
 
 

@@ -52,23 +52,36 @@ class Building(Unit):
             _check_idle_time_()          Calculates idle times of the unit if `self.idle` is set 
             _check_construction_()       Checks construction.
     """
+    MAX_IDLE_CONSTRUCTION_TIME = 500 
     def __init__(self, ptr, owner, udata):
         super(Building, self).__init__(ptr, owner, udata)
         self.research = None 
         self.training = None
         self.queue = None
-        self.construction = 0.0
+        self.construction = None
+        self.timer = 0.0
 
 
     def _check_construction_(self):
-        self._tmp_constr_ = self.construction
-        # Did not change in time
-        if self.hp == self.prev_hp and GTime.time_delta: 
+        # Sets the timer if the building HP has changed.
+        time_delta = GTime.time_delta
+        if self.hp != self.prev_hp and time_delta > 0:
+            self.timer = GTime.time
+        # Calculates the timer
+        if self.hp == self.prev_hp and time_delta > 0:
+            diff = GTime.time - self.timer
+            if diff < Building.MAX_IDLE_CONSTRUCTION_TIME:
+                time_delta = 0
+
+        if self.hp == self.prev_hp and time_delta: 
+            # Did not change in time => return infinity
             return float("inf")
-        elif GTime.time_delta: # Changed in time
+        elif time_delta: # Changed in time
+            # Returns new value
             return int(self.udata.train_time * (self.udata.max_hp - self.hp)/self.udata.max_hp)
-        elif self._tmp_constr_:
-            return self._tmp_constr_
+        elif self.construction:
+            # Returns previous value
+            return self.construction
 
     def _check_idle_(self):
         # Set variables

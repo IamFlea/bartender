@@ -2,7 +2,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from aoc_time import *
 from ui_consts import *
 #font.setBold(True)
-
+tmp = 2000
+    
 class HeaderLabel(QtWidgets.QLabel):
     """docstring for HeaderText"""
     def __init__(self, parent):
@@ -73,14 +74,14 @@ class HeaderSP(QtWidgets.QWidget):
         self.razings.setGeometry(70*i, 0, 70+66, 20)
         
 
-    def load(self, player):
+    def load(self, player, fps):
         self.wood.setText(HeaderSP.get_wood(player))
         self.food.setText(HeaderSP.get_food(player))
         self.gold.setText(HeaderSP.get_gold(player))
         self.stone.setText(HeaderSP.get_stone(player))
         self.fish.setText(HeaderSP.get_fish(player))
         self.trade.setText(HeaderSP.get_trade(player))
-        self.idle.setText(HeaderSP.get_idle(player))
+        self.idle.setText(HeaderSP.get_idle(player,fps))
         ##
         self.relics.setText(HeaderSP.get_relics(player))
         self.civilians.setText(HeaderSP.get_civilians(player))
@@ -107,11 +108,15 @@ class HeaderSP(QtWidgets.QWidget):
         #return str(int(player.resources.values[idx]))
         return str(player.farm_reseeds)
 
-    def get_idle(player):
+    def get_idle(player, fps):
         result = sum(map(lambda vill: vill.idle, player.civilians))
         time = sum(map(lambda x: x.idle_total_time, player.civilians))
         time = str_idle(time)
-        return f"{result} ({time})"
+        #return f"{result} ({time})"
+        global tmp
+        tmp = fps if fps < 10000 or fps >= 0 else tmp
+
+        return f"{int(tmp)}"
 
     def get_trade(player):
         amount = int(sum(map(lambda boat: boat.resource[0], player.trade))) 
