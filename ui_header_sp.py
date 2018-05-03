@@ -112,7 +112,9 @@ class HeaderSP(QtWidgets.QWidget):
         result = sum(map(lambda vill: vill.idle, player.civilians))
         time = sum(map(lambda x: x.idle_total_time, player.civilians))
         time = str_idle(time)
-        #return f"{result} ({time})"
+        return f"{result} ({time})"
+
+    def get_fps():
         global tmp
         tmp = fps if fps < 10000 or fps >= 0 else tmp
 
