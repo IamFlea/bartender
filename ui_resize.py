@@ -45,7 +45,6 @@ class QResizableWidget(QtWidgets.QWidget):
         elif not (pos.x() <= self.width() - QResizableWidget.GRIP_PX or pos.y() <= self.height() - QResizableWidget.GRIP_PX):
             self.__resizing = True
         if event.buttons() == QtCore.Qt.RightButton:
-            print("waat")
             self.expand_index =  (self.expand_index + 1) % len(QResizableWidget.EXPAND_LIST)
             self.expand.setText(QResizableWidget.EXPAND_LIST[self.expand_index])
 

@@ -68,7 +68,7 @@ class Bartender(QtWidgets.QMainWindow):
                                                (WINDOW_WIDTH-SPAN*(1+4))/4, 
                                                CHECKBOX_HEIGHT+8) 
 
-    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285
+    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285+26
     GEOMETRY_TAB_BAR_SETTINGS = Qt.QRect(SPAN,  # X
                                     GEOMETRY_CHECKBOX_RESEARCHED_TECHS.y() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.height() + SPAN, # Y
                                     WIDE,
@@ -159,7 +159,6 @@ class Bartender(QtWidgets.QMainWindow):
         # Tab
         self.w_tabs_settings = QtWidgets.QTabWidget(self)
         self.w_tabs_settings.setGeometry(Bartender.GEOMETRY_TAB_BAR_SETTINGS)
-        self.w_tabs_settings.setHidden(True)
 
         
 
@@ -174,7 +173,8 @@ class Bartender(QtWidgets.QMainWindow):
         self.w_textarea_balance.setGeometry(Bartender.GEOMETRY_TEXTAREA_BALANCE)
         self.balance_widgets.append(self.w_textarea_balance)
         
-        self.w_tabs_settings.addTab(InterfaceBar("New Bar", self), f"New Bar")
+        self.w_tabs_settings.addTab(InterfaceBar("Default Bar", self), f"Default Bar")
+        self.w_tabs_settings.addTab(InterfaceBar("Default Bar2", self), f"Default Bar2")
 
         self.statusbar = QtWidgets.QStatusBar()
         self.statusbar.lastmsg = ""
@@ -267,7 +267,6 @@ class Bartender(QtWidgets.QMainWindow):
             # Loading the game
             self.load_game()
             self.setHiddenList(self.balance_widgets, False)
-            self.w_tabs_settings.setHidden(True)
             if self.game is not None:
                 self.state = 2
                 self.lobby = None
@@ -281,7 +280,6 @@ class Bartender(QtWidgets.QMainWindow):
         # Starting overlay
         if self.state == 3:
             self.start_overlay()
-            self.w_tabs_settings.setHidden(False)
             self.setHiddenList(self.balance_widgets, True)
             self.load_bars()
             self.state = 4  
@@ -299,11 +297,9 @@ class Bartender(QtWidgets.QMainWindow):
         self.timer.start(Bartender.UPDATE_WINDOW_MS)
 
     def moveable(self):
-        if self.w_checkbox_editall.isChecked():
-            self.overlay.set_movable_widgets(True)
-        else:
-            self.overlay.set_movable_widgets(False)
-    
+        boolean = self.w_checkbox_editall.isChecked()
+        self.overlay.set_movable_widgets(boolean)
+        
     def add_new_header(self):
         self.w_tabs_settings.addTab(QtWidgets.QWidget(self), f"New Tab")
         

@@ -11,8 +11,9 @@ class IconList(QResizableWidget):
 
     def __init__(self, parent, game_objects):
         super(IconList, self).__init__(parent)
-        self.set_show_idle_time(False)
+        self.y_margin = 0 
         self.set_geomatry_by_grid(IconList.DEFAULT_COLS, IconList.DEFAULT_ROWS)
+        self.set_show_idle_time(False)
         self.game_obj = game_objects
         self.list = OrderedDict()
         for i, obj in enumerate(game_objects):
@@ -21,7 +22,7 @@ class IconList(QResizableWidget):
             self.list[obj].show()
 
             #print(obj.udata.name)
-    def set_show_idle_time(self, boolean)
+    def set_show_idle_time(self, boolean):
         self.show_idle_time = boolean
         self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
         self.set_geomatry_by_grid(self.cols, self.rows)
@@ -77,35 +78,37 @@ class IconList(QResizableWidget):
             x = index // self.rows
             y = self.rows - index % self.rows - 1
         return x, y
-        print("waat")
-        return 0, 0
+
+    def check_icons(self): # maybe better name of this function
+        # Set all icons to be removed from the bar
+        for obj in self.list:
+            self.list[obj].delete_me = True
+        # Iterate through the list of objects
+        for obj in self.game_obj:
+            if obj not in self.list: # Check if the object is new -> create it
+                self.list[obj] = Icon(self, 0, 0, obj, self.show_idle_time)
+            # Object is used -> do not delete it
+            self.list[obj].delete_me = False
+        # Iterate through the objects which do have `delete_me == True`.
+        for obj in list(filter(lambda x, d=self.list: d[x].delete_me, self.list)):
+            self.list[obj].deleteLater()
+            del self.list[obj]
 
 
     def update(self):
-        #print(len(self.game_obj))
-        for obj in self.list:
-            self.list[obj].delete_me = True
-        for obj in self.game_obj:
-            if obj not in self.list:
-                x, y = self.set_xy(len(self.list))
-                self.list[obj] = Icon(self, x, y, obj, self.show_idle_time)
-            self.list[obj].delete_me = False
+        self.check_icons()
+        # Update the position of all objects 
+        for i, obj in enumerate(self.list):
+            self.list[obj].set_position(* self.set_xy(i))
+            # Update texts and redraw it
+            self.list[obj].top_text = ""
+            self.list[obj].bottom_text = ""
+            self.list[obj].redraw()
             #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_carrying()
             #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_max_hp(), self.list[obj].get_hp()
             #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_construction(), self.list[obj].get_hp()
             #a = self.list[obj].get_armors()
             #b = self.list[obj].get_attack()
-            self.list[obj].bottom_text, self.list[obj].top_text = "", ""
-            self.list[obj].redraw()
-        removes = []
-        for obj in self.list:
-            if self.list[obj].delete_me:
-                removes += [obj]
-        for obj in removes:
-            self.list[obj].deleteLater()
-            del self.list[obj]
-
-                
 
         
 
