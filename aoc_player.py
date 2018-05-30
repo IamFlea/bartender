@@ -171,6 +171,8 @@ class Player(object):
         #self.selected = [item for item in objects.selected]  # if buggy
         #print(self.selected)
 
+    
+
         
 if __name__ == '__main__' and True:
     import bartender

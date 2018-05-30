@@ -88,18 +88,23 @@ class Objects(list):
             return None
         # Load new data
         try:
+            ptr = pm.uint32(ptr_object + 0xC)
             udata = UnitData(pm.pointer(ptr_object + 0xC), owner)
         except: 
-            print("BEEP - wrong address. Skipping.")
+            print(f"BEEP - Wrong address obj.udata = {hex(ptr)} (For object: {hex(ptr_object)})")
             return None
         if udata is None:
             return None
 
+
         if ptr_object in Objects._all[owner]:
-            Objects._all[owner][ptr_object][1] = True
+            Objects._all[owner][ptr_object][1] = False
             Objects._all[owner][ptr_object][0].udata = udata
-            return Objects._all[owner][ptr_object][0]
-        elif udata.superclass == SuperclassData.building:
+            # Sometimes it might create a new object with the same address!! 
+            if pm.int32(ptr_object + 0x8) == Objects._all[owner][ptr_object][0].id:
+                return Objects._all[owner][ptr_object][0]
+        
+        if udata.superclass == SuperclassData.building:
             return Building(ptr_object, owner, udata)
         elif udata.superclass == SuperclassData.combatant:
             return Unit(ptr_object, owner, udata)

@@ -37,7 +37,7 @@ class Primitive(object): # game object
             1: "Wood",
             2: "Stone",
             3: "Gold",
-            -1: None
+            -1: ""
         }) 
 
     def __init__(self, ptr, owner, udata): 

@@ -1,57 +1,106 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-0] Init stuff 
-1] Waits until the game starts
-2] Loads UI
+0] Init UI
+1] Waits until the game starts 
+2] Loads overlay settings
+3] Loads overlay
 """ 
 import sys
 import time
-import win32gui
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, Qt, QtGui
 
-from pymemory import NullAddress, pymemory as pm
+from pymemory import pymemory as pm
+
 from aoc_game import Game
 from aoc_lobby import Lobby, LobbyException
-from ui_window_overlay import BartenderOverlay
+from interface_bar import InterfaceBar
+from interface_header import InterfaceHeader
+from ui_overlay import Overlay
+
+from config import * 
 
 class Bartender(QtWidgets.QMainWindow):
-    AOK_PROCESS_NAME = "AoK HD.exe"
-    BARTENDER_FRAMES_PER_SECOND = 30 #
+    BARTENDER_FRAMES_PER_SECOND = 30 # FPS of main window 
     UPDATE_WINDOW_MS = int(1 / BARTENDER_FRAMES_PER_SECOND) 
-    load_process_only_once = True # Breaks infinite loop if process not found and exits this script.
+    
     CONSOLE_PRINT_INFO = True
     WINDOW_PRINT_INFO = True
     
     SPAN = 10
     WINDOW_TITLE = "Bartender"
-    WINDOW_WIDTH = 400
-    WINDOW_HEIGHT = 300
-    LABEL_INFO_MARGIN = SPAN
-    LABEL_INFO_HEIGHT = 20
-    LABEL_INFO_WIDTH = WINDOW_WIDTH
+    WINDOW_WIDTH = 500
+    WINDOW_HEIGHT = 500
+    WIDE = WINDOW_WIDTH - SPAN*2
 
-    # Sets textarea to bottom
-    TEXTAREA_BALANCE_WIDTH = 200
-    TEXTAREA_BALANCE_HEIGHT = 40
-    TEXTAREA_BALANCE_MARGIN_X = (WINDOW_WIDTH - TEXTAREA_BALANCE_WIDTH)//2  # Centers
-    TEXTAREA_BALANCE_MARGIN_Y = WINDOW_HEIGHT - TEXTAREA_BALANCE_HEIGHT - SPAN 
-    # Sets button above the textarea
-    BUTTON_INFO_WIDTH = 100
-    BUTTON_INFO_HEIGHT = 20
-    BUTTON_INFO_MARGIN_X = (WINDOW_WIDTH - BUTTON_INFO_WIDTH)//2  # Centers
-    BUTTON_INFO_MARGIN_Y = TEXTAREA_BALANCE_MARGIN_Y  - BUTTON_INFO_HEIGHT - SPAN
+    CHECKBOX_HEIGHT = 13
+
+    GEOMETRY_LABEL_INFO = Qt.QRect(SPAN, SPAN, WIDE, 20) # X, Y, WIDTH, HEIGHT
+    
+    GEOMETRY_CHECKBOX_EDITALL =  Qt.QRect(SPAN, GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN, (WINDOW_WIDTH-SPAN*(1+4))/4, CHECKBOX_HEIGHT) # X, Y, WIDTH, HEIGHT
+  
+    GEOMETRY_CHECKBOX_BARTENDER_ONTOP = Qt.QRect(GEOMETRY_CHECKBOX_EDITALL.x() + GEOMETRY_CHECKBOX_EDITALL.width() + SPAN, 
+                                                 GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN, 
+                                                 (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                                 CHECKBOX_HEIGHT) 
+
+    GEOMETRY_CHECKBOX_RESEARCHED_TECHS = Qt.QRect(SPAN, 
+                                                  GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
+                                                  (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                                  CHECKBOX_HEIGHT) 
+    GEOMETRY_CHECKBOX_RESEARCH_BARS = Qt.QRect(GEOMETRY_CHECKBOX_RESEARCHED_TECHS.x() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.width() + SPAN,  
+                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
+                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                               CHECKBOX_HEIGHT) 
+    GEOMETRY_CHECKBOX_WAYPOINT =  Qt.QRect(GEOMETRY_CHECKBOX_RESEARCH_BARS.x() + GEOMETRY_CHECKBOX_RESEARCH_BARS.width() + SPAN,  
+                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
+                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                               CHECKBOX_HEIGHT) 
+
+
+    GEOMETRY_BUTTON_NEW_HEADER = Qt.QRect(GEOMETRY_CHECKBOX_WAYPOINT.x() + GEOMETRY_CHECKBOX_WAYPOINT.width() + SPAN,  
+                                               GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN-4, 
+                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                               CHECKBOX_HEIGHT+8) 
+    GEOMETRY_BUTTON_NEW_BAR = Qt.QRect(GEOMETRY_CHECKBOX_WAYPOINT.x() + GEOMETRY_CHECKBOX_WAYPOINT.width() + SPAN,  
+                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN-4, 
+                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
+                                               CHECKBOX_HEIGHT+8) 
+
+    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285
+    GEOMETRY_TAB_BAR_SETTINGS = Qt.QRect(SPAN,  # X
+                                    GEOMETRY_CHECKBOX_RESEARCHED_TECHS.y() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.height() + SPAN, # Y
+                                    WIDE,
+                                    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT)
+
+
+    ## FROM BOTTOM TO TOP
+    # Sets textarea above the button
+    GEOMETRY_BUTTON_BALANCE_WIDTH = 100
+    GEOMETRY_BUTTON_BALANCE_HEIGHT = 20
+    GEOMETRY_BUTTON_BALANCE = Qt.QRect((WINDOW_WIDTH - GEOMETRY_BUTTON_BALANCE_WIDTH)//2,  # X
+                                    WINDOW_HEIGHT - GEOMETRY_BUTTON_BALANCE_HEIGHT - SPAN * 2, # Y
+                                    GEOMETRY_BUTTON_BALANCE_WIDTH,
+                                    GEOMETRY_BUTTON_BALANCE_HEIGHT)
+
+    # Sets textarea balence position
+    GEOMETRY_TEXTAREA_BALANCE_WIDTH = 200
+    GEOMETRY_TEXTAREA_BALANCE_HEIGHT = 40
+    GEOMETRY_TEXTAREA_BALANCE = Qt.QRect((WINDOW_WIDTH - GEOMETRY_TEXTAREA_BALANCE_WIDTH)//2,  # X
+                                         GEOMETRY_BUTTON_BALANCE.y() - GEOMETRY_TEXTAREA_BALANCE_HEIGHT - SPAN, # Y
+                                         GEOMETRY_TEXTAREA_BALANCE_WIDTH,
+                                         GEOMETRY_TEXTAREA_BALANCE_HEIGHT)
 
     # Function for printing stuff 
     def print_info(self, string):
-        if string == self.label_info.lastmsg: 
+        if string == self.statusbar.lastmsg: 
             return
         if Bartender.CONSOLE_PRINT_INFO:
             print(string)
         if Bartender.WINDOW_PRINT_INFO:
-            self.label_info.setText(string)
-        self.label_info.lastmsg = string
+            self.statusbar.showMessage("Status: " + string)
+        self.statusbar.lastmsg = string
 
     def __init__(self, screen_width, screen_height, app):
         """ Constuctor, inits a new window with informations about bartender
@@ -70,102 +119,139 @@ class Bartender(QtWidgets.QMainWindow):
                          Bartender.WINDOW_HEIGHT) # WIndow height
         
         ### WIDGETS SETINGS
-        self.bartender_overlay = None
+        # INFO LABEL
+        self.w_bartender_title = QtWidgets.QLabel(self)
+        self.w_bartender_title.setGeometry(Bartender.GEOMETRY_LABEL_INFO)
+        self.w_bartender_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.w_bartender_title.setText(Bartender.WINDOW_TITLE)
 
-        self.label_info = QtWidgets.QLabel(self)
-        self.label_info.setGeometry(Bartender.LABEL_INFO_MARGIN, # X
-                                    Bartender.LABEL_INFO_MARGIN, # Y
-                                    Bartender.LABEL_INFO_WIDTH - Bartender.LABEL_INFO_MARGIN*2, # Width of window - margins
-                                    Bartender.LABEL_INFO_HEIGHT)
-        self.label_info.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_info.lastmsg = ""
-         
-        self.button_balance = QtWidgets.QPushButton("Balance Lobby!", self)
-        self.button_balance.setGeometry(Bartender.BUTTON_INFO_MARGIN_X,
-                                        Bartender.BUTTON_INFO_MARGIN_Y,
-                                        Bartender.BUTTON_INFO_WIDTH, 
-                                        Bartender.BUTTON_INFO_HEIGHT)
-        self.button_balance.clicked.connect(self.balance_it)
+        font = QtGui.QFont(self.w_bartender_title.font().family(), 12)
+        font.setBold(True)
+        self.w_bartender_title.setFont(font)
+        
+        # Movable bars checkbox
+        self.w_checkbox_waypoints = QtWidgets.QCheckBox("Waypoint Icons", self)
+        self.w_checkbox_waypoints.setGeometry(Bartender.GEOMETRY_CHECKBOX_WAYPOINT)
+        #self.w_checkbox_waypoints.stateChanged.connect(self.moveable)
 
-        self.textarea_balance = QtWidgets.QTextEdit(self)
-        self.textarea_balance.setGeometry(Bartender.TEXTAREA_BALANCE_MARGIN_X, 
-                                          Bartender.TEXTAREA_BALANCE_MARGIN_Y, 
-                                          Bartender.TEXTAREA_BALANCE_WIDTH, 
-                                          Bartender.TEXTAREA_BALANCE_HEIGHT)
+        self.w_checkbox_editall = QtWidgets.QCheckBox("All Bars Movable", self)
+        self.w_checkbox_editall.setGeometry(Bartender.GEOMETRY_CHECKBOX_EDITALL)
+        self.w_checkbox_editall.stateChanged.connect(self.moveable)
+
+        self.w_checkbox_bartender_ontop = QtWidgets.QCheckBox("Bartender on Top", self)
+        self.w_checkbox_bartender_ontop.setGeometry(Bartender.GEOMETRY_CHECKBOX_BARTENDER_ONTOP)
+        #self.w_checkbox_bartender_ontop.stateChanged.connect(self.moveable)
+
+        self.w_checkbox_research_bars = QtWidgets.QCheckBox("Research Bars", self)
+        self.w_checkbox_research_bars.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCH_BARS)
+        
+        self.w_checkbox_researched_techs = QtWidgets.QCheckBox("Researched Techs", self)
+        self.w_checkbox_researched_techs.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCHED_TECHS)
+        
+        self.w_button_new_header = QtWidgets.QPushButton("New Header", self)
+        self.w_button_new_header.setGeometry(Bartender.GEOMETRY_BUTTON_NEW_HEADER)
+        self.w_button_new_header.clicked.connect(self.add_new_header)
+
+        self.w_button_new_bar = QtWidgets.QPushButton("New Bar", self)
+        self.w_button_new_bar.setGeometry(Bartender.GEOMETRY_BUTTON_NEW_BAR)
+        self.w_button_new_bar.clicked.connect(self.add_new_bar)
+
+        # Tab
+        self.w_tabs_settings = QtWidgets.QTabWidget(self)
+        self.w_tabs_settings.setGeometry(Bartender.GEOMETRY_TAB_BAR_SETTINGS)
+        self.w_tabs_settings.setHidden(True)
+
+        
+
+        # Balancing BUTTON
+        self.balance_widgets = []
+        self.w_button_balance = QtWidgets.QPushButton("Balance Lobby!", self)
+        self.w_button_balance.setGeometry(Bartender.GEOMETRY_BUTTON_BALANCE)
+        self.w_button_balance.clicked.connect(self.balance_it)
+        self.balance_widgets.append(self.w_button_balance)
+        # Balancing Textarea
+        self.w_textarea_balance = QtWidgets.QTextEdit(self)
+        self.w_textarea_balance.setGeometry(Bartender.GEOMETRY_TEXTAREA_BALANCE)
+        self.balance_widgets.append(self.w_textarea_balance)
+        
+        self.w_tabs_settings.addTab(InterfaceBar("New Bar", self), f"New Bar")
+
+        self.statusbar = QtWidgets.QStatusBar()
+        self.statusbar.lastmsg = ""
+        self.setStatusBar(self.statusbar)
+
 
         #### OTHER STUFF
         self.app = app
+        self.overlay = None
         self.game = None
         self.lobby = Lobby()
-        self.state = 0
+        self.state = -1
+        self.process_timer = None
+        self.timer = None
         self.show()
         
+    def setHiddenList(self, widgets, boolean):
+
+        for widget in widgets:
+            widget.setHidden(boolean)
     
     def __load_process_loop__(self):
-        self.print_info(f"Loading the process {Bartender.AOK_PROCESS_NAME}. Be sure it is running.")
+        self.print_info(f"Loading the process {AOK_PROCESS_NAME}. Be sure it is running.")
         try:
-            pm.load_process(Bartender.AOK_PROCESS_NAME)
-        except ProcessLookupError:
+            pm.load_process(AOK_PROCESS_NAME)
+        except ProcessLookupError: 
             return
+        self.state = 0
         self.process_timer.stop()
         self.app.exit()        
 
     def load_process(self):
-        """ Loading the process """
+        """ Loading the process timer """
         self.process_timer = QtCore.QTimer()
         self.process_timer.timeout.connect(self.__load_process_loop__)
         self.process_timer.start(Bartender.UPDATE_WINDOW_MS)
         self.app.exec_()
+        
 
     def balance_it(self):
         try:
             self.lobby.update()
         except:
-            self.textarea_balance.setText(f"Couldn't parse Lobby")
+            self.w_textarea_balance.setText(f"Couldn't parse Lobby")
             return
         try:
             diff1, string1, teams1 = self.lobby.balance_minmax()
             diff2, string2, teams2 = self.lobby.balance_diff()
-            self.textarea_balance.setText(f"Minmax: {string1}\nDiff: {string2}")
+            self.w_textarea_balance.setText(f"Minmax: {string1}\nDiff: {string2}")
         except LobbyException as e:
-            self.textarea_balance.setText(str(e)[1:-1])
+            self.w_textarea_balance.setText(str(e)[1:-1])
         except:
-            self.textarea_balance.setText(f"Couldn't parse Lobby")
+            self.w_textarea_balance.setText(f"Couldn't parse Lobby")
             return
-        #print(diff1, string1)
-        #print(diff2, string2)
-    
+        
     def load_game(self):
         # must be run in a block `with pm`
         try:
             self.game = Game()
         except:
             self.game = None
-            
+    
+                
     def start_overlay(self):
-        # Getting aoe window location and resolution
-        global x, y, width, height
-        x, y, width, height = None, None, None, None
-        def function(hwnd, extra):
-            global x, y, width, height
-            if "Age of Empires II: HD Edition" != win32gui.GetWindowText(hwnd):
-                return
-            #print(win32gui.GetWindowText(hwnd))
-            rect = win32gui.GetWindowRect(hwnd)
-            x = rect[0]
-            y = rect[1]
-            width = rect[2] - x
-            height = rect[3] - y
-        win32gui.EnumWindows(function, None) # Previous values are filled with this
-        self.bartender_overlay = BartenderOverlay(self.game, x, y, width, height)
-        self.bartender_overlay.show()
+        # Starting overlay UI
+        self.overlay = Overlay(self, self.game)
+        self.overlay.show()
 
     def closeEvent(self, event):
         # Closing the window.
         self.print_info("Ending the session")
-        self.print_info = lambda x: x
-        if self.bartender_overlay is not None:
-            self.bartender_overlay.close()
+        if self.process_timer is not None:
+            self.process_timer.stop()
+        if self.timer is not None:
+            self.timer.stop()
+        if self.overlay is not None:
+            self.overlay.close()
 
     def load_lobby(self):
         # Loads lobby data
@@ -176,31 +262,35 @@ class Bartender(QtWidgets.QMainWindow):
         
     def finite_state_machine(self):
         # State machine.
+        self.print_info("Waiting until the game is started.")
         if self.state == 0:
             # Loading the game
-            self.print_info("Waiting until the game is started.")
             self.load_game()
+            self.setHiddenList(self.balance_widgets, False)
+            self.w_tabs_settings.setHidden(True)
             if self.game is not None:
                 self.state = 2
                 self.lobby = None
-        #if self.state == 1:
+                self.print_info("Game loaded. Starting the first iteration.")
         # Getting first iteration
         if self.state == 2:
-            self.print_info("Game loaded. Starting the first iteration.")
             self.game.update()
             if self.game.running:
                 self.state = 3
+                self.print_info("Starting overlay.")
         # Starting overlay
         if self.state == 3:
-            self.print_info("Starting overlay.")
             self.start_overlay()
+            self.w_tabs_settings.setHidden(False)
+            self.setHiddenList(self.balance_widgets, True)
+            self.load_bars()
             self.state = 4  
+            self.print_info("Waiting until the game is quitted.")
         # Loop
         if self.state == 4:
-            self.print_info("Waiting until the game is quitted.")
             if not self.game.running:
-                self.bartender_overlay.deleteLater()
-                self.bartender_overlay = None
+                self.overlay.deleteLater()
+                self.overlay = None
                 self.state = 0
 
     def run(self):
@@ -208,7 +298,27 @@ class Bartender(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.finite_state_machine)
         self.timer.start(Bartender.UPDATE_WINDOW_MS)
 
+    def moveable(self):
+        if self.w_checkbox_editall.isChecked():
+            self.overlay.set_movable_widgets(True)
+        else:
+            self.overlay.set_movable_widgets(False)
+    
+    def add_new_header(self):
+        self.w_tabs_settings.addTab(QtWidgets.QWidget(self), f"New Tab")
         
+    def add_new_bar(self):
+        name = f"New Bar"
+        widget = InterfaceBar(name, self)
+        self.w_tabs_settings.addTab(widget, name)
+        self.load_bars()
+        #self.w_tabs_settings.
+
+    def load_bars(self):
+        if self.overlay is None:
+            return
+        for idx in range(self.w_tabs_settings.count()):
+            self.overlay.create_bar(self.w_tabs_settings.widget(idx))
 
 
 if __name__ == '__main__' or True:
@@ -217,6 +327,8 @@ if __name__ == '__main__' or True:
     resolution = app.desktop().screenGeometry()
     bartender = Bartender(resolution.width(), resolution.height(), app)
     bartender.load_process()
+    if bartender.state == -1:
+        sys.exit()
     with pm:
         bartender.run()
         result = app.exec_()

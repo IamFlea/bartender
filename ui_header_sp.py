@@ -1,8 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from aoc_time import *
 from ui_consts import *
-#font.setBold(True)
-tmp = 2000
     
 class HeaderLabel(QtWidgets.QLabel):
     """docstring for HeaderText"""
@@ -113,12 +111,6 @@ class HeaderSP(QtWidgets.QWidget):
         time = sum(map(lambda x: x.idle_total_time, player.civilians))
         time = str_idle(time)
         return f"{result} ({time})"
-
-    def get_fps():
-        global tmp
-        tmp = fps if fps < 10000 or fps >= 0 else tmp
-
-        return f"{int(tmp)}"
 
     def get_trade(player):
         amount = int(sum(map(lambda boat: boat.resource[0], player.trade))) 

@@ -60,31 +60,32 @@ class Building(Unit):
         self.queue = None
         self.construction = None
         self.timer = 0.0
-
+        self.constr_prev_time = 0.0
 
     def _check_construction_(self):
+        time = pm.float(self.ptr + 0x250)       
         # Sets the timer if the building HP has changed.
         time_delta = GTime.time_delta
-        if self.hp != self.prev_hp and time_delta > 0:
+        if time != self.constr_prev_time and time_delta > 0:
             self.timer = GTime.time
         # Calculates the timer
-        if self.hp == self.prev_hp and time_delta > 0:
+        if time == self.constr_prev_time and time_delta > 0:
             diff = GTime.time - self.timer
             if diff < Building.MAX_IDLE_CONSTRUCTION_TIME:
                 time_delta = 0
-
-        if self.hp == self.prev_hp and time_delta: 
+        if time == self.constr_prev_time and time_delta: 
             # Did not change in time => return infinity
             return float("inf")
         elif time_delta: # Changed in time
             # Returns new value
-            return int(self.udata.train_time * (self.udata.max_hp - self.hp)/self.udata.max_hp)
+            return self.udata.train_time - time
         elif self.construction:
             # Returns previous value
             return self.construction
-
+    
     def _check_idle_(self):
         # Set variables
+        # Check if the building is constructed
         if self.status == 0 and self.udata.max_hp:
             self.construction = self._check_construction_()
         # Check if the building is standing
