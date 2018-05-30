@@ -36,22 +36,19 @@ Bartender can be divided into five parts.
 Watch for crashes & consistency of displayed data
 
 **UI**
-1) Rework User Interface.
-2) This version requires 1920x1080 resolution; make it avaliable for larger/smaller resolutions.
-3) Make an UI for managing bartender - quitting, or settings.
-4) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
-5) Hide overlay when AoE2HD is not the foreground window.
+1) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
 
 **Mechanics**
+0) IMPORTANT: Find out when the game is in the score screen! 
 1) Detect if the game is a record game or SP/MP game - add training/researches info about other players.
-2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed)
+2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed) 
 
 **This file**
 1) Update screenshot.
+2) Add a UI explenation.
 
 # Known Limitations
 1) Needs update when the AoE2HD version changes.
-2) Requires 1920x1080-ish resolution for now.
 
 # License
 Bartender, Copyright (C) 2018 Flea, blk_panther
