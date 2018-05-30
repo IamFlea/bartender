@@ -42,6 +42,7 @@ Watch for crashes & consistency of displayed data
 0) IMPORTANT: Find out when the game is in the score screen! 
 1) Detect if the game is a record game or SP/MP game - add training/researches info about other players.
 2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed) 
+3) Fix warnings during hiding overlay when AoE2HD is not the foreground window. (Maybe not needed)
 
 **This file**
 1) Update screenshot.
