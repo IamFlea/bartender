@@ -9,6 +9,7 @@ IDLE_COUNTER_WIDTH = 41
 IDLE_COUNTER_HEIGHT = 14
 SPACE_BETWEEN_COUNTER_AND_ICON = 6
 
+IDLE_COUNTER_HEIGHT_WITH_SPACE = SPACE_BETWEEN_COUNTER_AND_ICON + IDLE_COUNTER_HEIGHT
 
 # PyQT stuff
 
@@ -31,7 +32,7 @@ invisible_pen.setWidth(0)
 alpha_brush = Qt.QBrush(Qt.QColor(0xff,0xff,0xff,0x80))
 alpha_brush.setStyle(QtCore.Qt.Dense3Pattern)
 
-idle_counter_text_font = QtGui.QFont("Georgia", 8)
+idle_counter_text_font = QtGui.QFont("Georgia", 7)
 idle_counter_text_brush = WHITE_BRUSH
 
 idle_counter_rect_pen = Qt.QPen()

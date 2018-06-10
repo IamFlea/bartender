@@ -4,7 +4,7 @@
 from pymemory import pymemory as pm
 from collections import defaultdict
 
-
+from aoc_time import GTime 
 class Primitive(object): # game object
     """
     Class variables
@@ -57,7 +57,13 @@ class Primitive(object): # game object
         self.idle_time = 0
         self.idle_total_time = 0
         self.garrison = []
-
+        self.research = None 
+        self.training = None
+        self.queue = None
+        self.construction = None
+        self.group = 0
+        self.created_time = GTime.time
+        
     def update(self):
         self.prev_hp = self.hp
         self.hp = pm.float(self.ptr + 0x34)

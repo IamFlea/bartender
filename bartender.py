@@ -30,8 +30,8 @@ class Bartender(QtWidgets.QMainWindow):
     
     SPAN = 10
     WINDOW_TITLE = "Bartender"
-    WINDOW_WIDTH = 500
-    WINDOW_HEIGHT = 500
+    WINDOW_WIDTH = 764
+    WINDOW_HEIGHT = 664
     WIDE = WINDOW_WIDTH - SPAN*2
 
     CHECKBOX_HEIGHT = 13
@@ -68,13 +68,13 @@ class Bartender(QtWidgets.QMainWindow):
                                                (WINDOW_WIDTH-SPAN*(1+4))/4, 
                                                CHECKBOX_HEIGHT+8) 
 
-    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285+26
+    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285+26+100+100
     GEOMETRY_TAB_BAR_SETTINGS = Qt.QRect(SPAN,  # X
                                     GEOMETRY_CHECKBOX_RESEARCHED_TECHS.y() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.height() + SPAN, # Y
                                     WIDE,
                                     GEOMETRY_TAB_BAR_SETTINGS_HEIGHT)
 
-
+    """
     ## FROM BOTTOM TO TOP
     # Sets textarea above the button
     GEOMETRY_BUTTON_BALANCE_WIDTH = 100
@@ -91,6 +91,7 @@ class Bartender(QtWidgets.QMainWindow):
                                          GEOMETRY_BUTTON_BALANCE.y() - GEOMETRY_TEXTAREA_BALANCE_HEIGHT - SPAN, # Y
                                          GEOMETRY_TEXTAREA_BALANCE_WIDTH,
                                          GEOMETRY_TEXTAREA_BALANCE_HEIGHT)
+    """
 
     # Function for printing stuff 
     def print_info(self, string):
@@ -163,6 +164,7 @@ class Bartender(QtWidgets.QMainWindow):
         
 
         # Balancing BUTTON
+        """
         self.balance_widgets = []
         self.w_button_balance = QtWidgets.QPushButton("Balance Lobby!", self)
         self.w_button_balance.setGeometry(Bartender.GEOMETRY_BUTTON_BALANCE)
@@ -172,7 +174,8 @@ class Bartender(QtWidgets.QMainWindow):
         self.w_textarea_balance = QtWidgets.QTextEdit(self)
         self.w_textarea_balance.setGeometry(Bartender.GEOMETRY_TEXTAREA_BALANCE)
         self.balance_widgets.append(self.w_textarea_balance)
-        
+        """
+    
         self.w_tabs_settings.addTab(InterfaceBar("Default Bar", self), f"Default Bar")
         self.w_tabs_settings.addTab(InterfaceBar("Default Bar2", self), f"Default Bar2")
 
@@ -192,7 +195,7 @@ class Bartender(QtWidgets.QMainWindow):
         self.show()
         
     def setHiddenList(self, widgets, boolean):
-
+        
         for widget in widgets:
             widget.setHidden(boolean)
     
@@ -266,7 +269,6 @@ class Bartender(QtWidgets.QMainWindow):
         if self.state == 0:
             # Loading the game
             self.load_game()
-            self.setHiddenList(self.balance_widgets, False)
             if self.game is not None:
                 self.state = 2
                 self.lobby = None
@@ -280,7 +282,6 @@ class Bartender(QtWidgets.QMainWindow):
         # Starting overlay
         if self.state == 3:
             self.start_overlay()
-            self.setHiddenList(self.balance_widgets, True)
             self.load_bars()
             self.state = 4  
             self.print_info("Waiting until the game is quitted.")

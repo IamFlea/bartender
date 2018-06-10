@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from config import ospath
 from ui_icon_consts import * 
+from aoc_time import *
 
 
 class IconGraphics(QtWidgets.QWidget):
@@ -18,7 +19,7 @@ class IconGraphics(QtWidgets.QWidget):
         """
         super(IconGraphics, self).__init__(parent)
         self.parent = parent
-        self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if idle_time else 0
+        self.y_margin = IDLE_COUNTER_HEIGHT_WITH_SPACE if idle_time else 0
         self.set_position(x, y)
         # Creates the scne
         self.scene = QtWidgets.QGraphicsScene()
@@ -35,7 +36,10 @@ class IconGraphics(QtWidgets.QWidget):
         self.show()
 
     
-        
+    def set_margin(self, boolean):
+        self.y_margin = IDLE_COUNTER_HEIGHT_WITH_SPACE if boolean else 0
+        self.set_position(self.x(), self.y())
+
     def set_position(self, x, y):
         self.setGeometry(x * ICON_SIZE_PX, y * (ICON_SIZE_PX + self.y_margin), ICON_SIZE_PX, ICON_SIZE_PX + self.y_margin)
     
@@ -102,7 +106,7 @@ class IconGraphics(QtWidgets.QWidget):
         self.set_icon(self.icon, self.frame_color)
         self.set_bottom_text(self.bottom_text)
         self.set_top_text(self.top_text)
-        self.set_idle_time_text(self.idle_time_text)
+        self.set_idle_time_text(self.timer_text)
 
 
 

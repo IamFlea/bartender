@@ -4,6 +4,8 @@ from ui_resize import QResizableWidget
 from ui_icon import Icon
 from ui_icon_consts import *
 
+from aoc_time import *
+
 class IconList(QResizableWidget):
     """docstring for IconList"""
     DEFAULT_COLS = 5
@@ -11,21 +13,30 @@ class IconList(QResizableWidget):
 
     def __init__(self, parent, game_objects):
         super(IconList, self).__init__(parent)
+        self.running = False
         self.y_margin = 0 
         self.set_geomatry_by_grid(IconList.DEFAULT_COLS, IconList.DEFAULT_ROWS)
         self.set_show_idle_time(False)
         self.game_obj = game_objects
+        self.game_obj_f = lambda: []
+        self.timer_f = lambda obj: ""
         self.list = OrderedDict()
         for i, obj in enumerate(game_objects):
             x,y = self.set_xy(i)
             self.list[obj] = Icon(self, x, y, obj, self.show_idle_time)
             self.list[obj].show()
+        self.running = True
 
             #print(obj.udata.name)
     def set_show_idle_time(self, boolean):
         self.show_idle_time = boolean
         self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
         self.set_geomatry_by_grid(self.cols, self.rows)
+        # FUCK THIS
+        if self.running:
+            self.game_obj = []
+            self.check_icons()
+            
             
     def set_geomatry_by_grid(self, cols, rows):
         new_width = cols * ICON_SIZE_PX
@@ -96,11 +107,17 @@ class IconList(QResizableWidget):
 
 
     def update(self):
+        self.game_obj = self.game_obj_f()
         self.check_icons()
         # Update the position of all objects 
         for i, obj in enumerate(self.list):
             self.list[obj].set_position(* self.set_xy(i))
             # Update texts and redraw it
+            time = self.timer_f(obj)
+            try:
+                self.list[obj].timer_text = str_time(time)
+            except TypeError:
+                self.list[obj].timer_text = ""
             self.list[obj].top_text = ""
             self.list[obj].bottom_text = ""
             self.list[obj].redraw()

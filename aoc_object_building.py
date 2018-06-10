@@ -55,10 +55,6 @@ class Building(Unit):
     MAX_IDLE_CONSTRUCTION_TIME = 500 
     def __init__(self, ptr, owner, udata):
         super(Building, self).__init__(ptr, owner, udata)
-        self.research = None 
-        self.training = None
-        self.queue = None
-        self.construction = None
         self.timer = 0.0
         self.constr_prev_time = 0.0
 

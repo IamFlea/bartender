@@ -7,8 +7,8 @@ from aoc_object_building_queue import UnitQueue
 from aoc_object_unit import Unit
 from aoc_object_primitive import Primitive
 from aoc_research import Research
-from aoc_time import *
 from aoc_object_clist import Attack, Armor
+
 
 def numtoss(number):
     if number == 0:
@@ -44,6 +44,7 @@ class Icon(IconGraphics):
 
         self.bottom_text = ""
         self.top_text = ""
+        self.idle_time_text = ""
 
     def queue_size(self):
         pass
@@ -97,10 +98,6 @@ class Icon(IconGraphics):
             return str(int(self.object.resource[0])), str(Primitive.ResourceTable[self.object.resource[1]][:1])
         else:
             return "", ""
-
-    @property
-    def idle_time_text(self):
-        return str_idle(self.object.idle_total_time)
 
     def get_cooldown(self):
         cooldown = self.object.construction # None if standing

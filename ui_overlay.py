@@ -46,7 +46,7 @@ class Overlay(QtWidgets.QMainWindow):
         self.game.update() # Get new data
         for idx in range(self.settings.w_tabs_settings.count()):
             self.settings.w_tabs_settings.widget(idx).icon_list.update()
-        
+    
     def create_bar(self, settings):
         if settings not in self.widgets:
             self.widgets[settings] = IconList(self, self.game.player.selected)

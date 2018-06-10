@@ -108,6 +108,8 @@ class Unit(Primitive): # game obje
         self.garrison.extend(self._check_garrison_())
         self._check_idle_()
         self._check_idle_time_()
+        self.group = pm.uint32(self.ptr + 0x158)
+
 
 if __name__ == '__main__':
     import bartender
