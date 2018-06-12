@@ -393,7 +393,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_mills.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_8_4)
         self.w_checkbox_show_mills.stateChanged.connect(self.policy)
 
-
         self.w_checkbox_show_barracks = QtWidgets.QCheckBox("Barracks", self)
         self.w_checkbox_show_barracks.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_9_0)
         self.w_checkbox_show_barracks.stateChanged.connect(self.policy)
@@ -410,7 +409,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_monastries.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_9_4)
         self.w_checkbox_show_monastries.stateChanged.connect(self.policy)
         
-
         self.w_checkbox_show_castles = QtWidgets.QCheckBox("Castles", self)
         self.w_checkbox_show_castles.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_10_0)
         self.w_checkbox_show_castles.stateChanged.connect(self.policy)
@@ -427,7 +425,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_markets.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_10_4)
         self.w_checkbox_show_markets.stateChanged.connect(self.policy)
 
-
         self.w_checkbox_show_towers = QtWidgets.QCheckBox("Towers", self)
         self.w_checkbox_show_towers.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_11_0)
         self.w_checkbox_show_towers.stateChanged.connect(self.policy)
@@ -443,9 +440,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_walls = QtWidgets.QCheckBox("Walls", self)
         self.w_checkbox_show_walls.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY_11_4)
         self.w_checkbox_show_walls.stateChanged.connect(self.policy)
-
-
-
 
         self.w_button_remove = QtWidgets.QPushButton("Remove", self)
         self.w_button_remove.setGeometry(InterfaceBar.GEOMETRY_REMOVE_BUTTON)
@@ -475,8 +469,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_text_hp_max.setSuffix(" %")
         self.w_text_hp_max.setValue(self.w_text_hp_max.maximum())
 
-
-
         self.w_label_filter_min_time = QtWidgets.QLabel("Minimum Idle Time", self)
         self.w_label_filter_min_time.setGeometry(InterfaceBar.GEMOETRY_GROUPBOX_FILTER_2_0)
         self.w_text_idle_min = QtWidgets.QSpinBox(self)
@@ -498,7 +490,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_filter_idle.setTristate(True)
         self.w_filter_idle.stateChanged.connect(self.policy)
         """
-
 
         self.w_filter_training = QtWidgets.QCheckBox("Training", self)
         self.w_filter_training.setGeometry(InterfaceBar.GEMOETRY_GROUPBOX_FILTER_5_0)
