@@ -63,13 +63,13 @@ class Primitive(object): # game object
         self.construction = None
         self.group = 0
         self.created_time = GTime.time
+        self.resource_amount = 0
+        self.resource_type = ""
         
     def update(self):
         self.prev_hp = self.hp
         self.hp = pm.float(self.ptr + 0x34)
         self.status = pm.int8(self.ptr + 0x4C)
-        self.resource = (pm.float(self.ptr + 0x48), pm.int8(self.ptr + 0x50)) # ??, type
+        self.resource_amount = pm.float(self.ptr + 0x48)
+        self.resource_type = Primitive.ResourceTable[pm.int8(self.ptr + 0x50)]
         self.position = pm.struct(self.ptr + 0x3c, "ff")
-
-if __name__ == '__main__':
-    import bartender
