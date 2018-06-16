@@ -243,7 +243,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_combo_bottom_number_aggr.setGeometry(InterfaceBar.GEOMETRY_TOP_3_4)
         self.w_combo_bottom_number_aggr.addItems(InterfaceBar.COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR)
         self.w_combo_bottom_number_aggr.setHidden(True)
-        self.w_combo_bottom_number.currentIndexChanged.connect(self.bottom_text_change)
+        self.w_combo_bottom_number_aggr.currentIndexChanged.connect(self.bottom_text_change)
 
         self.w_groupbox = QtWidgets.QGroupBox("Shown Icons", self)
         self.w_groupbox.setGeometry(InterfaceBar.GEOMETRY_GROUPBOX_POLICY)
@@ -854,8 +854,7 @@ class InterfaceBar(QtWidgets.QWidget):
         objects = filter(lambda obj: obj.idle_time/1000 <= int(self.w_text_idle_max.value()) and  obj.idle_time/1000 >= int(self.w_text_idle_min.value()), objects)
         return list(objects)
 
-    def game_objects(self):
-        return self.filter(self.create_set())
+
 
     def set_aggregate(self):
         boolean = self.w_checkbox_aggregate.isChecked()
@@ -878,29 +877,71 @@ class InterfaceBar(QtWidgets.QWidget):
                 self.lock_villagers(not self.w_checkbox_show_villagers.isChecked())
             self.lock_military(not self.w_checkbox_show_military.isChecked())
         self.lock_buildings(not self.w_checkbox_show_all_buildings.isChecked())
-        
+        print(type(self.icon_list))
+        return
         self.icon_list.game_obj_f = self.game_objects
+    def game_objects(self):
+        return self.filter(self.create_set())
 
     def timer(self):
         name = self.w_combo_timer_number.currentText()
-        if name == "None":
-            self.icon_list.timer_f = lambda obj: ""
-            self.icon_list.set_show_idle_time(False)
-        elif name == "Idle Time":
-            self.icon_list.timer_f = lambda obj: obj.idle_time
-            self.icon_list.set_show_idle_time(True)
-        elif name == "Total Idle Time":
-            self.icon_list.timer_f = lambda obj: obj.idle_total_time
-            self.icon_list.set_show_idle_time(True)
-        elif name == "Created Time":
-            self.icon_list.timer_f = lambda obj: obj.created_time
-            self.icon_list.set_show_idle_time(True)
+        self.icon_list.set_show_idle_time(name != "None")
+        print("hi")
+        self.icon_list.timer_f = {"None"            : lambda obj: "",
+                                  "Idle Time"       : lambda obj: obj.idle_time,
+                                  "Total Idle Time" : lambda obj: obj.idle_total_time,
+                                  "Created Time"    : lambda obj: obj.created_time}[name]
+
+
+
+    def check_stuff_normal(self, dropdown_widget):
+        name = dropdown_widget.currentText()
+        select_function = {"None"             : lambda obj: "",
+                           "Queue"            : lambda obj: obj.queue.length,
+                           "Cooldown"         : lambda obj: "N/A",
+                           "Carrying Res."    : lambda obj: "N/A",
+                           "Resource Type"    : lambda obj: "N/A",
+                           "Hit Points"       : lambda obj: "N/A",
+                           "Maximal HP"       : lambda obj: "N/A",
+                           "Attack Melee"     : lambda obj: "N/A",
+                           "Attack Range"     : lambda obj: "N/A",
+                           "Attack"           : lambda obj: "N/A",
+                           "Armor"            : lambda obj: "N/A",
+                           "Garrisoned Units" : lambda obj: "N/A"}
+
+        """
+    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None",
+                                        "Units Count",
+                                        "Sel. units cnt.",
+                                        "Sum of Attack",
+                                        "Sum of HP",
+                                        "Carrying Res.",
+                                        "Resource Type",
+                                        "Hit Points",
+                                        "Maximal HP",
+                                        "Attack Melee",
+                                        "Attack Range",
+                                        "Attack",
+                                        "Armor",
+                                        "Garrisoned Units"]
+        """
+        
 
     def bottom_text_change(self):
-        pass
+        if self.w_checkbox_aggregate.isChecked():
+            # aggregate
+            pass
+        else:
+            # normal
+            pass
 
     def top_text_change(self):
-        pass
+        if self.w_checkbox_aggregate.isChecked():
+            # Aggregate mode
+            pass
+        else:
+            # Normal mode
+            pass
 
         
 
