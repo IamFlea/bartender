@@ -27,7 +27,6 @@ class IconList(QResizableWidget):
             self.list[obj].show()
         self.running = True
 
-            #print(obj.udata.name)
     def set_show_idle_time(self, boolean):
         self.show_idle_time = boolean
         self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
