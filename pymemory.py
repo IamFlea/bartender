@@ -32,7 +32,7 @@ class NullAddress(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return repr(self.value)
+        return hex(self.value)
 
 class PyMemory(object):
     """This class serves for memory management. """
@@ -161,7 +161,7 @@ class PyMemory(object):
     def pointer(self, address):
         self.buffer_load(address, 4)
         address = unpack("I", self.buffer[:4])[0] 
-        if address >= self.base_address: # Care if you want to access to data in the stack!! 
+        if address != 0x00000000: # Not null
             return address
         raise NullAddress(address)
 
