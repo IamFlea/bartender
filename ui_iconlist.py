@@ -4,7 +4,6 @@ from ui_resize import QResizableWidget
 from ui_icon import Icon
 from ui_icon_consts import *
 
-from aoc_time import *
 
 class IconList(QResizableWidget):
     """docstring for IconList"""
@@ -13,28 +12,29 @@ class IconList(QResizableWidget):
 
     def __init__(self, parent, game_objects):
         super(IconList, self).__init__(parent)
-        self.running = False
         self.y_margin = 0 
         self.set_geomatry_by_grid(IconList.DEFAULT_COLS, IconList.DEFAULT_ROWS)
-        self.set_show_idle_time(False)
-        self.game_obj = game_objects
+        self.show_idle_time = False
+        self.aggr = True
         self.game_obj_f = lambda: []
         self.timer_f = lambda obj: ""
+        self.top_text_f = lambda obj: ""
+        self.bottom_text_f = lambda obj: ""
         self.list = OrderedDict()
         for i, obj in enumerate(game_objects):
             x,y = self.set_xy(i)
-            self.list[obj] = Icon(self, x, y, obj, self.show_idle_time)
+            self.list[obj] = Icon(self, x, y, obj, self.show_idle_time, self.aggr)
             self.list[obj].show()
-        self.running = True
-
+        
+    """
     def set_show_idle_time(self, boolean):
         self.show_idle_time = boolean
         self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
         self.set_geomatry_by_grid(self.cols, self.rows)
         # FUCK THIS
         if self.running:
-            self.game_obj = []
-            self.check_icons()
+            self.check_icons([])
+    """
             
             
     def set_geomatry_by_grid(self, cols, rows):
@@ -89,14 +89,14 @@ class IconList(QResizableWidget):
             y = self.rows - index % self.rows - 1
         return x, y
 
-    def check_icons(self): # maybe better name of this function
+    def check_icons(self, game_objects, aggr=True): # maybe better name of this function
         # Set all icons to be removed from the bar
         for obj in self.list:
             self.list[obj].delete_me = True
         # Iterate through the list of objects
-        for obj in self.game_obj:
+        for obj in game_objects:
             if obj not in self.list: # Check if the object is new -> create it
-                self.list[obj] = Icon(self, 0, 0, obj, self.show_idle_time)
+                self.list[obj] = Icon(self, 0, 0, obj, self.show_idle_time, aggr)
             # Object is used -> do not delete it
             self.list[obj].delete_me = False
         # Iterate through the objects which do have `delete_me == True`.
@@ -104,27 +104,34 @@ class IconList(QResizableWidget):
             self.list[obj].deleteLater()
             del self.list[obj]
 
+    def get_aggregate_dictionary(self, dictionary):
+        for key in dictionary:
+            if dictionary[key]:
+                first_obj = dictionary[key][0]
+                first_obj.list = dictionary[key]
+                yield dictionary[key][0] # returns first item in aggregate list
 
     def update(self):
-        self.game_obj = self.game_obj_f()
-        self.check_icons()
+        game_objects = self.game_obj_f()
+        if game_objects and type(game_objects[0]) is list:
+            game_objects = self.get_aggregate_dictionary(game_objects)
+            if not self.aggr:
+                self.check_icons([], True)
+                self.aggr = True
+            self.check_icons(game_objects, True)
+        else:
+            if self.aggr:
+                self.check_icons([], True)
+                self.aggr = False
+            self.check_icons(game_objects, False)
         # Update the position of all objects 
         for i, obj in enumerate(self.list):
             self.list[obj].set_position(* self.set_xy(i))
             # Update texts and redraw it
-            time = self.timer_f(obj)
-            try:
-                self.list[obj].timer_text = str_time(time)
-            except TypeError:
-                self.list[obj].timer_text = ""
-            self.list[obj].top_text = ""
-            self.list[obj].bottom_text = ""
+            self.list[obj].timer_text = self.timer_f(obj)
+            self.list[obj].top_text = self.top_text_f(obj)
+            self.list[obj].bottom_text = self.bottom_text_f(obj)
             self.list[obj].redraw()
-            #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_carrying()
-            #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_max_hp(), self.list[obj].get_hp()
-            #self.list[obj].bottom_text, self.list[obj].top_text = self.list[obj].get_construction(), self.list[obj].get_hp()
-            #a = self.list[obj].get_armors()
-            #b = self.list[obj].get_attack()
 
         
 

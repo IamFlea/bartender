@@ -1,5 +1,10 @@
+from collections import defaultdict
+
 from PyQt5 import QtWidgets, QtCore, Qt, QtGui
 
+from aoc_time import *
+from aoc_object_consts_unit import UNITS
+from interface_bar_utils import *
 
 class InterfaceBar(QtWidgets.QWidget):
     """docstring for InterfaceBar"""
@@ -123,9 +128,9 @@ class InterfaceBar(QtWidgets.QWidget):
     GEOMETRY_GROUPBOX_POLICY_11_4 = Qt.QRect(SPAN+(SPAN + WIDTH_POLICY_CHECKBOX)*4, GEOMETRY_GROUPBOX_POLICY_11_0.y(), WIDTH_POLICY_CHECKBOX, HEIGHT_LABEL)    
 
     GEOMETRY_REMOVE_BUTTON = Qt.QRect(WIDTH/2 - WIDTH_POLICY_CHECKBOX/2, GEOMETRY_GROUPBOX_POLICY.bottom()+1+SPAN - 3, WIDTH_POLICY_CHECKBOX, HEIGHT_LABEL+6)
-    COMBO_TOP_BOTTOM_NUMBER_ITEMS = ["None", "Queue", "Cooldown", "Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack Melee", "Attack Range", "Attack", "Armor", "Garrisoned Units"]
-    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None", "Units Count", "Sel. units cnt.", "Sum of Attack", "Sum of HP", "Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack Melee", "Attack Range", "Attack", "Armor", "Garrisoned Units"]
 
+    COMBO_TOP_BOTTOM_NUMBER_ITEMS = ["None", "Queue", "Cooldown", "Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack", "Armor", "Garrisoned Units", "Max. Garrison"]
+    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None", "Units Count", "Sel. units cnt.","Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack", "Armor", "Pierce Armor", "Garrisoned Units", "Max. Garrison", "Total Idle"]
     COMBO_TIMER_ITEMS = ["None", "Idle Time", "Total Idle Time", "Created Time"]
 
 
@@ -862,6 +867,9 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_combo_bottom_number_aggr.setHidden(not boolean)
         self.w_combo_top_number.setHidden(boolean)
         self.w_combo_bottom_number.setHidden(boolean)
+        self.policy()
+        self.bottom_text_change()
+        self.top_text_change()
 
     def policy(self):
         if self.w_checkbox_show_all_units.isChecked():
@@ -877,73 +885,86 @@ class InterfaceBar(QtWidgets.QWidget):
                 self.lock_villagers(not self.w_checkbox_show_villagers.isChecked())
             self.lock_military(not self.w_checkbox_show_military.isChecked())
         self.lock_buildings(not self.w_checkbox_show_all_buildings.isChecked())
-        print(type(self.icon_list))
-        return
         self.icon_list.game_obj_f = self.game_objects
+
+    def aggregate(self, set_):
+        if self.w_checkbox_aggregate.isChecked():
+            result = defaultdict(list)
+            for obj in set_:
+                name = obj.udata.name if obj.udata.name != "Trebuchet (Packed)" else "Trebuchet"
+                result[name].append(obj)
+            return result
+        else:
+            return set_
+
+
     def game_objects(self):
-        return self.filter(self.create_set())
+        return self.aggregate(self.filter(self.create_set()))
 
     def timer(self):
         name = self.w_combo_timer_number.currentText()
         self.icon_list.set_show_idle_time(name != "None")
-        print("hi")
         self.icon_list.timer_f = {"None"            : lambda obj: "",
-                                  "Idle Time"       : lambda obj: obj.idle_time,
-                                  "Total Idle Time" : lambda obj: obj.idle_total_time,
-                                  "Created Time"    : lambda obj: obj.created_time}[name]
+                                  "Idle Time"       : lambda obj: str_time(obj.idle_time),
+                                  "Total Idle Time" : lambda obj: str_time(obj.idle_total_time),
+                                  "Created Time"    : lambda obj: str_time(obj.created_time)}[name]
 
 
 
     def check_stuff_normal(self, dropdown_widget):
         name = dropdown_widget.currentText()
-        select_function = {"None"             : lambda obj: "",
-                           "Queue"            : lambda obj: obj.queue.length,
-                           "Cooldown"         : lambda obj: "N/A",
-                           "Carrying Res."    : lambda obj: "N/A",
-                           "Resource Type"    : lambda obj: "N/A",
-                           "Hit Points"       : lambda obj: "N/A",
-                           "Maximal HP"       : lambda obj: "N/A",
-                           "Attack Melee"     : lambda obj: "N/A",
-                           "Attack Range"     : lambda obj: "N/A",
-                           "Attack"           : lambda obj: "N/A",
-                           "Armor"            : lambda obj: "N/A",
-                           "Garrisoned Units" : lambda obj: "N/A"}
+        function = {"None"             : lambda obj: "",
+                    "Queue"            : lambda obj: int_to_str(obj.queue.length) if obj.queue else "",
+                    "Cooldown"         : lambda obj: str(obj.research.cooldown) if obj.research else (str(obj.training.cooldown) if obj.training else ""),
+                    "Carrying Res."    : lambda obj: int_to_str(obj.resource_amount) if obj.resource_amount else "",
+                    "Resource Type"    : lambda obj: str(obj.resource_type)[0] if len(obj.resource_type) else "",
+                    "Hit Points"       : lambda obj: int_to_str(obj.hp) if obj.hp else "",
+                    "Maximal HP"       : lambda obj: int_to_str(obj.udata.max_hp) if obj.udata.max_hp else "",
+                    "Attack"           : lambda obj: int_to_str(get_attack(obj)) if obj.udata.attack else "",
+                    "Armor"            : lambda obj: get_armors(obj) if obj.udata.armor else "",
+                    "Garrisoned Units" : lambda obj: int_to_str(len(obj.garrison)) if obj.garrison else "",
+                    "Max. Garrison"    : lambda obj: int_to_str(obj.udata.max_garrison) if obj.udata.max_garrison else ""}[name]
+        return function
 
-        """
-    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None",
-                                        "Units Count",
-                                        "Sel. units cnt.",
-                                        "Sum of Attack",
-                                        "Sum of HP",
-                                        "Carrying Res.",
-                                        "Resource Type",
-                                        "Hit Points",
-                                        "Maximal HP",
-                                        "Attack Melee",
-                                        "Attack Range",
-                                        "Attack",
-                                        "Armor",
-                                        "Garrisoned Units"]
-        """
-        
+
+    def check_stuff_aggr(self, dropdown_widget):
+        name = dropdown_widget.currentText()
+        function = {"None"             : lambda obj: "",
+                    "Units Count"      : lambda obj: int_to_str(len(obj.list)),
+                    "Sel. units cnt."  : lambda obj: int_to_str(len(list(filter(lambda r: r in r.owner.selected, obj.list))), allow_zero=True),
+                    "Carrying Res."    : lambda obj: int_to_str(sum(map(lambda o: o.resource_amount, obj.list)), allow_zero=True),
+                    "Resource Type"    : lambda obj: get_res_type_from_list(obj.list),
+                    "Hit Points"       : lambda obj: int_to_str(sum(map(lambda o: o.hp, obj.list))),
+                    "Maximal HP"       : lambda obj: int_to_str(obj.udata.max_hp * len(obj.list), allow_zero=True),
+                    "Attack"           : lambda obj: int_to_str(get_attack(obj) * len(obj.list), allow_zero=True),
+                    "Armor"            : lambda obj: int_to_str(get_armor(obj) * len(obj.list), allow_zero=True),
+                    "Pierce Armor"     : lambda obj: int_to_str(get_pierce_armor(obj) * len(obj.list), allow_zero=True),
+                    "Garrisoned Units" : lambda obj: int_to_str(sum(map(lambda o: len(o.garrison), obj.list))),
+                    "Max. Garrison"    : lambda obj: int_to_str(obj.udata.max_garrison * len(obj.list)),
+                    "Total Idle"       : lambda obj: int_to_str(len(list(filter(lambda o: o.idle, obj.list))))}[name]
+        return function
 
     def bottom_text_change(self):
-        if self.w_checkbox_aggregate.isChecked():
-            # aggregate
+        if self.icon_list is None:
             pass
+        elif self.w_checkbox_aggregate.isChecked():
+            self.icon_list.bottom_text_f = self.check_stuff_aggr(self.w_combo_bottom_number_aggr)
         else:
             # normal
-            pass
+            self.icon_list.bottom_text_f = self.check_stuff_normal(self.w_combo_bottom_number)
 
     def top_text_change(self):
-        if self.w_checkbox_aggregate.isChecked():
-            # Aggregate mode
+        if self.icon_list is None:
             pass
+        elif self.w_checkbox_aggregate.isChecked():
+            self.icon_list.top_text_f = self.check_stuff_aggr(self.w_combo_top_number_aggr)
         else:
             # Normal mode
-            pass
+            self.icon_list.top_text_f = self.check_stuff_normal(self.w_combo_top_number)
 
         
+
+
 
 if __name__ == '__main__':
     import bartender

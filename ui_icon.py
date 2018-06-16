@@ -7,40 +7,20 @@ from aoc_object_building_queue import UnitQueue
 from aoc_object_unit import Unit
 from aoc_object_primitive import Primitive
 from aoc_research import Research
-from aoc_object_clist import Attack, Armor
-
-
-def numtoss(number):
-    if number == 0:
-        return ""
-    tostr = lambda x: str(int(x))
-    if number < 1:
-        # Get tenths 
-        tenths = tostr(number*10)
-        return "." + tenths 
-    if number >= 10000:
-        number /= 1000
-        return tostr(number) + "k"
-    elif number >= 1000:
-        number2 = (number%1000)/100
-        number /= 1000
-        return tostr(number) + "." + tostr(number2)+ "k"
-    return tostr(number)
-
-
 
 class Icon(IconGraphics):
     """Adapter? between the Icon and GameObjects """
-    def __init__(self, parent, x, y, game_object=None, idle_time = True):
+    def __init__(self, parent, x, y, game_object=None, idle_time = True, dont_change_icon = False):
         """
         @param parent  - parent widget
         @param x, y    - position in the grid i.e [0,0] [0,1] .. [1,2].. 
         """
         super(Icon, self).__init__(parent, x, y, idle_time)
         self.object = game_object if game_object is not list else game_object[0]
-        self.show_training = True
-        self.show_research = True
-        self.highlight_selected = True
+
+        self.show_training = not dont_change_icon  # Huh? Refactor later.
+        self.show_research = not dont_change_icon  
+        self.highlight_selected = not dont_change_icon  
 
         self.bottom_text = ""
         self.top_text = ""
@@ -86,76 +66,6 @@ class Icon(IconGraphics):
         else:
             return self.color
 
-    def get_queue(self):
-        if self.object.queue:
-            return str(self.object.queue.length)
-        else:
-            return ""
-
-    def get_carrying(self):
-        # returns amount and type
-        if type(self.object) is Unit:
-            return str(int(self.object.resource[0])), str(Primitive.ResourceTable[self.object.resource[1]][:1])
-        else:
-            return "", ""
-
-    def get_cooldown(self):
-        cooldown = self.object.construction # None if standing
-        if self.object.training:
-            cooldown = self.object.training.cooldown
-        elif self.object.research:
-            cooldown = self.object.research.cooldown
-        return numtoss(cooldown) if cooldown is not None else ""
-
-    def get_max_hp(self):
-        return numtoss(self.object.udata.max_hp)
-
-    def get_hp(self):
-        return numtoss(self.object.hp)
-
-    def get_construction(self):
-        try:
-            return numtoss(self.object.construction)
-        except:
-            return ""
-
-
-    def get_attack(self, type="4 - Base Melee", display_blacksmith=False):
-        attack_type = Attack.BONUS_CLASS.index(type)
-        for type, amount in self.object.udata.attack:
-            if attack_type == type:
-                if display_blacksmith:
-                    d = self.object.udata.attack.displayed
-                    return str(d) + "+" + str(amount-d)                    
-                else:
-                    return str(amount)
-        return ""
-
-
-    def get_armor(self, type="4 - Base Melee", display_blacksmith=False):
-        armor_type = Armor.BONUS_CLASS.index(type)
-        for type, amount in self.object.udata.armor:
-            if armor_type == type:
-                if display_blacksmith:
-                    d = self.object.udata.armor.displayed
-                    return str(d) + "+" + str(amount-d)
-                else:
-                    return str(amount)
-        return ""
-
-    def get_pierce_armor(self, type="3 - Base Pierce", display_blacksmith=False):
-        armor_type = Armor.BONUS_CLASS.index(type)
-        for type, amount in self.object.udata.armor:
-            if armor_type == type:
-                if display_blacksmith:
-                    d = self.object.udata.armor.displayed_pierce
-                    return str(d) + "+" + str(amount-d)
-                else:
-                    return str(amount)
-        return ""
-                
-    def get_armors(self):
-        return self.get_armor() + "/" + self.get_pierce_armor()
     """
     def update(self):
         self.bottom_text = self.get_queue()
