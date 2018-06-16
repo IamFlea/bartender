@@ -69,7 +69,8 @@ class Unit(Primitive): # game obje
                 garrison.append(Unit(ptr, self.owner, udata)) # trebuchet shouldnt bug this 
         except NullAddress:
             return garrison
-        return garrison
+        self.garrison.clear()
+        self.garrison.extend(garrison)
 
     def _check_idle_(self):
         ## Checking if unit is idle need to write better way 
@@ -104,8 +105,7 @@ class Unit(Primitive): # game obje
 
     def update(self):
         super(Unit, self).update()
-        self.garrison.clear()
-        self.garrison.extend(self._check_garrison_())
+        self._check_garrison_()
         self._check_idle_()
         self._check_idle_time_()
         self.group = pm.uint32(self.ptr + 0x158)
