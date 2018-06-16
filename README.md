@@ -15,6 +15,7 @@ Bartender can be divided into five parts.
 # Dependencies
 - [Python 3.6](https://www.python.org/downloads/ "Download Python | Python.org")
 - [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5/) (pip3 install PyQt5)
+- [pywin32](https://pypi.org/project/pywin32/) (pip3 install pywin32)
 
 
 # FAQ
