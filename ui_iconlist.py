@@ -25,17 +25,7 @@ class IconList(QResizableWidget):
             x,y = self.set_xy(i)
             self.list[obj] = Icon(self, x, y, obj, self.show_idle_time, self.aggr)
             self.list[obj].show()
-        
-    """
-    def set_show_idle_time(self, boolean):
-        self.show_idle_time = boolean
-        self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
-        self.set_geomatry_by_grid(self.cols, self.rows)
-        # FUCK THIS
-        if self.running:
-            self.check_icons([])
-    """
-            
+           
             
     def set_geomatry_by_grid(self, cols, rows):
         new_width = cols * ICON_SIZE_PX
