@@ -41,3 +41,5 @@ idle_counter_rect_pen.setWidth(0)
 idle_counter_rect_brush = Qt.QBrush(Qt.QColor(0x33,0x33,0x33,0x77))
 idle_counter_rect_brush.setStyle(QtCore.Qt.SolidPattern)
 
+idle_counter_blink  =  Qt.QBrush(Qt.QColor(0xff,0xff,0xff,0x80))
+idle_counter_blink.setStyle(QtCore.Qt.Dense3Pattern)

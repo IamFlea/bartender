@@ -32,6 +32,12 @@ class IconGraphics(QtWidgets.QWidget):
         self.view.setGeometry(0, 0, self.width(), self.height())      # Sets the geometry
         # For not shadowing it two times
         self.b_shadowed = False
+        self.blink = False
+        self.opacity = 255
+        self.max_opacity = 256
+        self.effect = QtWidgets.QGraphicsOpacityEffect(self);
+        self.effect.setOpacity(self.opacity/self.max_opacity)
+        self.setGraphicsEffect(self.effect)
         # Shows it
         self.show()
 
@@ -43,14 +49,34 @@ class IconGraphics(QtWidgets.QWidget):
     def set_position(self, x, y):
         self.setGeometry(x * ICON_SIZE_PX, y * (ICON_SIZE_PX + self.y_margin), ICON_SIZE_PX, ICON_SIZE_PX + self.y_margin)
     
+    def create_alpha_pixmap(self, pixmap, alpha):
+        transparent = QtGui.QPixmap(pixmap.size())
+        # Do transparency
+        transparent.fill(QtCore.Qt.transparent)
+        p = QtGui.QPainter(transparent)
+        p.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
+        p.drawPixmap(0, 0, pixmap)
+        p.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationIn)
+        # Set transparency level to `alpha` (possible values are 0-255) The alpha channel of a color specifies the transparency effect, 
+        # 0 represents a fully transparent color, while 255 represents a fully opaque color.
+        p.fillRect(transparent.rect(), Qt.QColor(0, 0, 0, alpha))
+        p.end()
+        return transparent
 
-    def set_icon(self, filename, frame_color = ""):
+    def show_icon(self, filename, frame_color = ""):
         # Adds the icon into the scene and sets its position to 3 x 3 or 3 x 3+adj
-        self.scene.addPixmap(QtGui.QPixmap(ospath + filename)).setPos(ICON_IMG_POS_X, ICON_IMG_POS_Y)
+        pixmap = QtGui.QPixmap(ospath + filename)
+        #if self.opacity != 255:
+        #    pixmap = self.create_alpha_pixmap(pixmap, self.opacity)
+        self.scene.addPixmap(pixmap).setPos(ICON_IMG_POS_X, ICON_IMG_POS_Y)
+        # Adds frame
         frame = f"/ui/frame{frame_color}.png"
-        self.scene.addPixmap(QtGui.QPixmap(ospath + frame)).setPos(0, 0)
+        pixmap = QtGui.QPixmap(ospath + frame)
+        #if self.opacity != 255:
+        #    pixmap = self.create_alpha_pixmap(pixmap, self.opacity)
+        self.scene.addPixmap(pixmap).setPos(0, 0)
 
-    def set_top_text(self, string):
+    def show_top_text(self, string):
         if string is None or string == "":
             return
         # Sets the text painter
@@ -64,7 +90,7 @@ class IconGraphics(QtWidgets.QWidget):
         self.set_shadow()
         self.scene.addItem(text)
 
-    def set_bottom_text(self, string):
+    def show_bottom_text(self, string):
         if string is None or string == "":
             return
         # Sets the text painter
@@ -84,7 +110,7 @@ class IconGraphics(QtWidgets.QWidget):
             self.b_shadowed = True
 
 
-    def set_idle_time_text(self, string):
+    def show_idle_time_text(self, string):
         if not self.y_margin:
             return
         # sets the painter
@@ -100,15 +126,22 @@ class IconGraphics(QtWidgets.QWidget):
         # Adds the text
         self.scene.addItem(text)
 
+    def blink_effect(self):
+        if self.blink:
+            self.scene.addRect(3,self.y_margin+3,35,35, idle_counter_rect_pen, idle_counter_blink)
+
     def redraw(self):
         self.b_shadowed = False
         self.scene.clear()
-        self.set_icon(self.icon, self.frame_color)
-        self.set_bottom_text(self.bottom_text)
-        self.set_top_text(self.top_text)
-        self.set_idle_time_text(self.timer_text)
-
-
+        self.show_icon(self.icon, self.frame_color)
+        self.show_bottom_text(self.bottom_text)
+        self.show_top_text(self.top_text)
+        self.show_idle_time_text(self.timer_text)
+        self.blink_effect()
+        #self.view.setForegroundBrush(Qt.QColor(0, 0, 0, self.opacity));
+        #print(self.parent.parent())
+        self.effect.setOpacity(self.opacity/self.max_opacity)
+        
 
 if __name__ == '__main__':
     import bartender

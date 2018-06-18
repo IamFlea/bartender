@@ -130,7 +130,7 @@ class InterfaceBar(QtWidgets.QWidget):
     GEOMETRY_REMOVE_BUTTON = Qt.QRect(WIDTH/2 - WIDTH_POLICY_CHECKBOX/2, GEOMETRY_GROUPBOX_POLICY.bottom()+1+SPAN - 3, WIDTH_POLICY_CHECKBOX, HEIGHT_LABEL+6)
 
     COMBO_TOP_BOTTOM_NUMBER_ITEMS = ["None", "Queue", "Cooldown", "Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack", "Armor", "Garrisoned Units", "Max. Garrison"]
-    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None", "Units Count", "Sel. units cnt.","Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack", "Armor", "Pierce Armor", "Garrisoned Units", "Max. Garrison", "Total Idle"]
+    COMBO_TOP_BOTTOM_NUMBER_ITEMS_AGGR = ["None", "Units Count", "Sel. units cnt.","Carrying Res.", "Resource Type", "Hit Points", "Maximal HP", "Attack", "Armor", "Pierce Armor", "Garrisoned Units", "Max. Garrison", "Idle Units"]
     COMBO_TIMER_ITEMS = ["None", "Idle Time", "Total Idle Time", "Created Time"]
 
 
@@ -211,6 +211,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_text_idle_time_for_pulsing.setGeometry(InterfaceBar.GEOMETRY_TOP_2_2)
         self.w_text_idle_time_for_pulsing.setMaximum(99999)
         self.w_text_idle_time_for_pulsing.setSuffix(" seconds")
+        self.w_text_idle_time_for_pulsing.valueChanged.connect(self.pulse)
 
         self.w_label_idle = QtWidgets.QLabel("Blinking if Idle for", self)
         self.w_label_idle.setGeometry(InterfaceBar.GEOMETRY_TOP_3_1)
@@ -218,6 +219,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_text_idle_time_for_blinkin.setGeometry(InterfaceBar.GEOMETRY_TOP_3_2)
         self.w_text_idle_time_for_blinkin.setMaximum(99999)
         self.w_text_idle_time_for_blinkin.setSuffix(" seconds")
+        self.w_text_idle_time_for_blinkin.valueChanged.connect(self.blink)
      
 
         self.w_label__timer_number = QtWidgets.QLabel("Timer:", self)
@@ -867,6 +869,9 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_combo_bottom_number_aggr.setHidden(not boolean)
         self.w_combo_top_number.setHidden(boolean)
         self.w_combo_bottom_number.setHidden(boolean)
+        if boolean:
+            self.w_combo_timer_number.setCurrentIndex(0)
+        self.w_combo_timer_number.setEnabled(not boolean)
         self.policy()
         self.bottom_text_change()
         self.top_text_change()
@@ -903,7 +908,7 @@ class InterfaceBar(QtWidgets.QWidget):
 
     def timer(self):
         name = self.w_combo_timer_number.currentText()
-        self.icon_list.set_show_idle_time(name != "None")
+        self.icon_list.set_y_margin(name != "None")
         self.icon_list.timer_f = {"None"            : lambda obj: "",
                                   "Idle Time"       : lambda obj: str_time(obj.idle_time),
                                   "Total Idle Time" : lambda obj: str_time(obj.idle_total_time),
@@ -941,7 +946,7 @@ class InterfaceBar(QtWidgets.QWidget):
                     "Pierce Armor"     : lambda obj: int_to_str(get_pierce_armor(obj) * len(obj.list), allow_zero=True),
                     "Garrisoned Units" : lambda obj: int_to_str(sum(map(lambda o: len(o.garrison), obj.list))),
                     "Max. Garrison"    : lambda obj: int_to_str(obj.udata.max_garrison * len(obj.list)),
-                    "Total Idle"       : lambda obj: int_to_str(len(list(filter(lambda o: o.idle, obj.list))))}[name]
+                    "Idle Units"       : lambda obj: int_to_str(len(list(filter(lambda o: o.idle, obj.list))))}[name]
         return function
 
     def bottom_text_change(self):
@@ -962,7 +967,11 @@ class InterfaceBar(QtWidgets.QWidget):
             # Normal mode
             self.icon_list.top_text_f = self.check_stuff_normal(self.w_combo_top_number)
 
-        
+    def blink(self):
+        self.icon_list.max_blink = self.w_text_idle_time_for_blinkin.value()
+
+    def pulse(self):
+        self.icon_list.max_pulse = self.w_text_idle_time_for_pulsing.value()
 
 
 

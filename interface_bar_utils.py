@@ -17,21 +17,21 @@ def int_to_str(number, allow_zero=True):
         return tostr(number) + "." + tostr(number2)+ "k"
     return tostr(number)
 
-def get_attack(obj, type=["4 - Base Melee"]):
+def get_attack(obj, type="4 - Base Melee"):
     attack_type = Attack.BONUS_CLASS.index(type)
     for type, amount in obj.udata.attack:
-        if attack_type in type:
+        if attack_type == type:
             return amount
     return 0
 
-def get_armor(obj, type=["4 - Base Melee"]):
+def get_armor(obj, type="4 - Base Melee"):
     armor_type = Armor.BONUS_CLASS.index(type)
     for type, amount in obj.udata.armor:
         if armor_type == type:
             return amount
     return 0
     
-def get_pierce_armor(obj, type=["3 - Base Pierce"]):
+def get_pierce_armor(obj, type="3 - Base Pierce"):
     armor_type = Armor.BONUS_CLASS.index(type)
     for type, amount in obj.udata.armor:
         if armor_type == type:

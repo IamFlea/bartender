@@ -1,4 +1,6 @@
 from collections import OrderedDict
+from time import time
+from math import sin
 
 from ui_resize import QResizableWidget
 from ui_icon import Icon
@@ -21,12 +23,22 @@ class IconList(QResizableWidget):
         self.top_text_f = lambda obj: ""
         self.bottom_text_f = lambda obj: ""
         self.list = OrderedDict()
+        self.max_pulse = 0
+        self.max_blink = 0
         for i, obj in enumerate(game_objects):
             x,y = self.set_xy(i)
             self.list[obj] = Icon(self, x, y, obj, self.show_idle_time, self.aggr)
             self.list[obj].show()
            
-            
+    def set_y_margin(self, boolean):
+        if self.aggr:
+            return
+        self.show_idle_time = boolean
+        self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
+        self.set_geomatry_by_grid(self.cols, self.rows)
+        if self.parent().game.running:
+            self.check_icons([])            
+
     def set_geomatry_by_grid(self, cols, rows):
         new_width = cols * ICON_SIZE_PX
         new_height = rows * (ICON_SIZE_PX + self.y_margin)
@@ -101,6 +113,15 @@ class IconList(QResizableWidget):
                 first_obj.list = dictionary[key]
                 yield dictionary[key][0] # returns first item in aggregate list
 
+    def blinking(self, obj):
+        return obj.idle and int(time())%2 and obj.idle_time < self.max_blink*1000
+
+    def pulsing(self, obj):
+        if not self.aggr and obj.idle and obj.idle_time < self.max_pulse*1000:
+            return 155 +  50 * sin(time()*4)
+        else:
+            return 255
+            
     def update(self):
         game_objects = self.game_obj_f()
         if game_objects and type(game_objects[0]) is list:
@@ -121,6 +142,8 @@ class IconList(QResizableWidget):
             self.list[obj].timer_text = self.timer_f(obj)
             self.list[obj].top_text = self.top_text_f(obj)
             self.list[obj].bottom_text = self.bottom_text_f(obj)
+            self.list[obj].blink = self.blinking(obj)
+            self.list[obj].opacity = self.pulsing(obj)
             self.list[obj].redraw()
 
         

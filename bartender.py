@@ -254,6 +254,7 @@ class Bartender(QtWidgets.QMainWindow):
         if self.timer is not None:
             self.timer.stop()
         if self.overlay is not None:
+            self.overlay.setHidden(False)
             self.overlay.close()
 
     def load_lobby(self):

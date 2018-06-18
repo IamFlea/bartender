@@ -57,9 +57,9 @@ class Overlay(QtWidgets.QMainWindow):
         #return
         self.setGeometry(OverlayGeometry())
         if GetWindowText(GetForegroundWindow()) in [AOE_WINDOW_TITLE, Overlay.WINDOW_TITLE, "Bartender"]:
-            self.setGeometry(OverlayGeometry())
+            self.setHidden(False)
         else:
-            self.setGeometry(0,0,0,0)
+            self.setHidden(True)
     
     def set_movable_widgets(self, boolean):
         for key in self.widgets:

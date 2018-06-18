@@ -26,9 +26,6 @@ class Icon(IconGraphics):
         self.top_text = ""
         self.idle_time_text = ""
 
-    def queue_size(self):
-        pass
-
     @property
     def icon(self):
         # Save self.object into temporary variable
@@ -37,10 +34,10 @@ class Icon(IconGraphics):
         if type(obj) is Building:
             directory = "/icons/buildings/"
             filename = str(obj.udata.icon).zfill(3) + ".bmp"
-            if obj.queue and self.show_training: 
-                obj = obj.queue
-            elif obj.research and self.show_research:
+            if obj.research and self.show_research:
                 obj = obj.research
+            elif obj.queue and self.show_training: 
+                obj = obj.queue
         if type(obj) in [Unit, Primitive]:
             directory = f"/icons/units/color_{self.color}/"
             filename = str(obj.udata.icon).zfill(3) + ".bmp"
@@ -65,13 +62,6 @@ class Icon(IconGraphics):
             return ""
         else:
             return self.color
-
-    """
-    def update(self):
-        self.bottom_text = self.get_queue()
-        self.top_text = self.get_cooldown()
-        self.redraw()
-    """
 
 
 
