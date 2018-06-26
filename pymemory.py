@@ -88,7 +88,10 @@ class PyMemory(object):
             if hProcess:
                 psapi.EnumProcessModules(hProcess, byref(hModule), sizeof(hModule), byref(count))
                 psapi.GetModuleBaseNameA(hProcess, hModule.value, modname, sizeof(modname))
-                name = modname.raw.split(b"\x00")[0].decode("utf-8")
+                try:
+                    name = modname.raw.split(b"\x00")[0].decode("utf-8")
+                except UnicodeDecodeError:
+                    continue
                 modname = c_buffer(64)
                 if name == process_name:
                     return pid

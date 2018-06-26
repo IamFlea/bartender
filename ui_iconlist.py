@@ -6,13 +6,12 @@ from ui_resize import QResizableWidget
 from ui_icon import Icon
 from ui_icon_consts import *
 
-
 class IconList(QResizableWidget):
     """docstring for IconList"""
     DEFAULT_COLS = 5
     DEFAULT_ROWS = 2
 
-    def __init__(self, parent, game_objects):
+    def __init__(self, parent):
         super(IconList, self).__init__(parent)
         self.y_margin = 0 
         self.set_geomatry_by_grid(IconList.DEFAULT_COLS, IconList.DEFAULT_ROWS)
@@ -25,10 +24,7 @@ class IconList(QResizableWidget):
         self.list = OrderedDict()
         self.max_pulse = 0
         self.max_blink = 0
-        for i, obj in enumerate(game_objects):
-            x,y = self.set_xy(i)
-            self.list[obj] = Icon(self, x, y, obj, self.show_idle_time, self.aggr)
-            self.list[obj].show()
+        
            
     def set_y_margin(self, boolean):
         if self.aggr:

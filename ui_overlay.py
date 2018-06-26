@@ -5,6 +5,9 @@ from keydefaultdict import keydefaultdict
 from config import *
 from ui_overlay_geometry import OverlayGeometry
 from ui_iconlist import IconList
+from ui_info_panel import InfoPanel
+from interface_bar import InterfaceBar
+from interface_info_panel import InterfaceInfoPanel
 
 class Overlay(QtWidgets.QMainWindow):
     WINDOW_TITLE = "Bartender Overlay"
@@ -16,8 +19,6 @@ class Overlay(QtWidgets.QMainWindow):
 
     def __init__(self, settings, game):
         super(Overlay, self).__init__()
-        from ui_icon_old import  IconCooldownCount
-        IconCooldownCount.game = game
         self.game = game
         self.settings = settings
         self.widgets = {}
@@ -45,12 +46,15 @@ class Overlay(QtWidgets.QMainWindow):
     def update(self):
         self.game.update() # Get new data
         for idx in range(self.settings.w_tabs_settings.count()):
-            self.settings.w_tabs_settings.widget(idx).icon_list.update()
+            widget = self.settings.w_tabs_settings.widget(idx)
+            if type(widget) == InterfaceBar:
+                widget.icon_list.update()
     
-    def create_bar(self, settings):
+
+    def create_overlay_widget(self, widget_type, settings):
         if settings not in self.widgets:
-            self.widgets[settings] = IconList(self, self.game.player.selected)
-            settings.icon_list = self.widgets[settings]
+            self.widgets[settings] = widget_type(self)
+            settings.bind_widget(self.widgets[settings])
             self.widgets[settings].show()
 
     def update_geometry(self):

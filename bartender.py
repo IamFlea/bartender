@@ -16,7 +16,7 @@ from pymemory import pymemory as pm
 from aoc_game import Game
 from aoc_lobby import Lobby, LobbyException
 from interface_bar import InterfaceBar
-from interface_header import InterfaceHeader
+from interface_info_panel import InterfaceInfoPanel
 from ui_overlay import Overlay
 
 from config import * 
@@ -176,8 +176,8 @@ class Bartender(QtWidgets.QMainWindow):
         self.balance_widgets.append(self.w_textarea_balance)
         """
     
-        self.w_tabs_settings.addTab(InterfaceBar("Default Bar", self), f"Default Bar")
-        self.w_tabs_settings.addTab(InterfaceBar("Default Bar2", self), f"Default Bar2")
+        self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header", self), f"Default Header")
+        self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header2", self), f"Default Header2")
 
         self.statusbar = QtWidgets.QStatusBar()
         self.statusbar.lastmsg = ""
@@ -303,20 +303,24 @@ class Bartender(QtWidgets.QMainWindow):
         self.overlay.set_movable_widgets(boolean)
         
     def add_new_header(self):
-        self.w_tabs_settings.addTab(QtWidgets.QWidget(self), f"New Tab")
+        name = f"New Panel"
+        widget = InterfaceInfoPanel(name, self)
+        self.w_tabs_settings.addTab(widget, name)
+        self.load_bars()
         
     def add_new_bar(self):
         name = f"New Bar"
         widget = InterfaceBar(name, self)
         self.w_tabs_settings.addTab(widget, name)
         self.load_bars()
-        #self.w_tabs_settings.
-
+        
     def load_bars(self):
         if self.overlay is None:
             return
         for idx in range(self.w_tabs_settings.count()):
-            self.overlay.create_bar(self.w_tabs_settings.widget(idx))
+            widget = self.w_tabs_settings.widget(idx)
+            self.overlay.create_overlay_widget(widget.BIND_TYPE, widget)
+            
 
 
 if __name__ == '__main__' or True:
