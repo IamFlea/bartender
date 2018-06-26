@@ -3,6 +3,7 @@ from collections import defaultdict
 from PyQt5 import QtWidgets, QtCore, Qt, QtGui
 
 from aoc_time import *
+from aoc_object_consts import ClassData
 from aoc_object_consts_unit import UNITS
 from interface_bar_utils import *
 from interface_consts import *
@@ -46,7 +47,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_hidden.setGeometry(GEOMETRY_TOP_0_4)
         self.w_checkbox_hidden.stateChanged.connect(self.set_hidden)
 
-        self.w_label_idle = QtWidgets.QLabel("Pulsing if Idle for", self)
+        self.w_label_idle = QtWidgets.QLabel("If Idle Pulse for", self)
         self.w_label_idle.setGeometry(GEOMETRY_TOP_2_1)
         self.w_text_idle_time_for_pulsing = QtWidgets.QSpinBox(self)
         self.w_text_idle_time_for_pulsing.setGeometry(GEOMETRY_TOP_2_2)
@@ -54,7 +55,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_text_idle_time_for_pulsing.setSuffix(" seconds")
         self.w_text_idle_time_for_pulsing.valueChanged.connect(self.pulse)
 
-        self.w_label_idle = QtWidgets.QLabel("Blinking if Idle for", self)
+        self.w_label_idle = QtWidgets.QLabel("If Idle Blink for", self)
         self.w_label_idle.setGeometry(GEOMETRY_TOP_3_1)
         self.w_text_idle_time_for_blinkin = QtWidgets.QSpinBox(self)
         self.w_text_idle_time_for_blinkin.setGeometry(GEOMETRY_TOP_3_2)
@@ -742,6 +743,8 @@ class InterfaceBar(QtWidgets.QWidget):
             result = defaultdict(list)
             for obj in set_:
                 name = obj.udata.name if obj.udata.name != "Trebuchet (Packed)" else "Trebuchet"
+                if obj.udata.class_ in ClassData.villagers:
+                    name = obj.resource_type + " Villager"
                 result[name].append(obj)
             return result
         else:
