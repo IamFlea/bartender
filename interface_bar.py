@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtCore, Qt, QtGui
 from aoc_time import *
 from aoc_object_consts import ClassData
 from aoc_object_consts_unit import UNITS
-from interface_bar_utils import *
+from interface_utils import *
 from interface_consts import *
 
 from ui_iconlist import IconList
@@ -831,6 +831,8 @@ class InterfaceBar(QtWidgets.QWidget):
         self.pulse()
         self.timer()
         
+    def update_overlay_widget(self):
+        self.icon_list.update()
 
 
 
