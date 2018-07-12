@@ -123,7 +123,7 @@ class Player(object):
         self.military = list(filter(lambda obj: obj.udata.class_ in ClassData.military, self.units))
         #self.military = set(self.units) - set(self.civilians)  # counts sheep as military units too hahahha
         #self.pikes = list(filter(lambda obj: obj.udata.class_ == , self.military))
-        # Villagers
+        # Villagers (with idles!)
         self.vill_wood = list(filter(lambda obj: obj.udata.id in IdData.vill_wood, self.villagers))
         self.vill_food = list(filter(lambda obj: obj.udata.id in IdData.vill_food, self.villagers))
         self.vill_gold = list(filter(lambda obj: obj.udata.id in IdData.vill_gold, self.villagers))
