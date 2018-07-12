@@ -2,11 +2,11 @@ from collections import OrderedDict
 from time import time
 from math import sin
 
-from ui_resize import QResizableWidget
+from ui_widget import QOverlayWidget
 from ui_icon import Icon
 from ui_icon_consts import *
 
-class IconList(QResizableWidget):
+class IconList(QOverlayWidget):
     """docstring for IconList"""
     DEFAULT_COLS = 5
     DEFAULT_ROWS = 2
@@ -120,14 +120,19 @@ class IconList(QResizableWidget):
             
     def update(self):
         game_objects = self.game_obj_f()
+        # Check if we aggregate or not
         if game_objects and type(game_objects[0]) is list:
+            # Aggregate
             game_objects = self.get_aggregate_dictionary(game_objects)
             if not self.aggr:
+                # Init
                 self.check_icons([], True)
                 self.aggr = True
             self.check_icons(game_objects, True)
         else:
+            # DO NOT Aggregate
             if self.aggr:
+                # Init 
                 self.check_icons([], True)
                 self.aggr = False
             self.check_icons(game_objects, False)

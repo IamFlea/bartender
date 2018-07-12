@@ -237,8 +237,9 @@ class Bartender(QtWidgets.QMainWindow):
         # must be run in a block `with pm`
         try:
             self.game = Game()
+            return True
         except:
-            self.game = None
+            return False
     
                 
     def start_overlay(self):
@@ -267,27 +268,26 @@ class Bartender(QtWidgets.QMainWindow):
     def finite_state_machine(self):
         # State machine.
         self.print_info("Waiting until the game is started.")
+        # Loading the game
         if self.state == 0:
-            # Loading the game
-            self.load_game()
-            if self.game is not None:
+            if self.load_game():
                 self.state = 2
                 self.lobby = None
                 self.print_info("Game loaded. Starting the first iteration.")
         # Getting first iteration
-        if self.state == 2:
+        elif self.state == 2:
             self.game.update()
             if self.game.running:
                 self.state = 3
                 self.print_info("Starting overlay.")
         # Starting overlay
-        if self.state == 3:
+        elif self.state == 3:
             self.start_overlay()
             self.load_bars()
             self.state = 4  
             self.print_info("Waiting until the game is quitted.")
         # Loop
-        if self.state == 4:
+        elif self.state == 4:
             if not self.game.running:
                 self.overlay.deleteLater()
                 self.overlay = None

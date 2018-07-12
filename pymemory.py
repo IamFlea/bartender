@@ -61,6 +61,7 @@ class PyMemory(object):
             self.pointer = self.__pointer_no_leaks__
             self.buff_pointer = self.__buff_pointer_no_leaks__
 
+        self.mbi_table = []
     def __get_pid__(process_name):
         """ Returns `PID` from the process name. """
         #PSAPI.DLL
@@ -325,6 +326,7 @@ class PyMemory(object):
         if not VirtualQueryEx(self.process_handle, ptr, byref(mbi), sizeof(mbi)):
             print(f"Error VirtualQueryEx: {ptr}")
             raise
+
         return mbi
 
     def _iter_memory_region_(self):
@@ -372,18 +374,27 @@ class PyMemory(object):
                 return b""
         return result
 
-    def re(self, regex): 
-        """ Bruteforce search in memory 
-        regex must be binary string 
+    def re(self, regex, progress=False):
+        """ Bruteforce search in memory
+        regex must be binary string
         """
         if type(regex) != type(re.compile("")):
             regex = re.compile(regex, re.IGNORECASE)
-
-        for offset, chunk in self._iter_memory_region_():
-            stuff = self._get_chunk_(offset, chunk)
-            for res in regex.finditer(stuff):
-                yield res
-        # Get the boundaries
+        if progress:
+            memory_regions = list(self._iter_memoryregion())
+            total_chunk_size = sum(map(lambda x: x[1], memory_regions))
+            processed_chunks = 0
+            for offset, chunk in memory_regions:
+                stuff = self._getchunk(offset, chunk)
+                for res in regex.finditer(stuff):
+                    yield res, processed_chunks, total_chunk_size
+                processed_chunks += chunk
+                yield None, processed_chunks, total_chunk_size
+        else:
+            for offset, chunk in self._iter_memoryregion():
+                stuff = self._getchunk(offset, chunk)
+                for res in regex.finditer(stuff):
+                    yield res
 
     def __update_no_leaks__(self):
         memory_regions = [(start, start+length) for start, length in self._iter_memory_region_()]

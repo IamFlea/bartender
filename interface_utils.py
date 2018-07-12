@@ -1,4 +1,5 @@
 from aoc_object_clist import *
+# functions used in interface_bar.py
 
 def int_to_str(number, allow_zero=True):
     if number == 0:

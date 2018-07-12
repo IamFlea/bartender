@@ -46,9 +46,8 @@ class Overlay(QtWidgets.QMainWindow):
     def update(self):
         self.game.update() # Get new data
         for idx in range(self.settings.w_tabs_settings.count()):
-            widget = self.settings.w_tabs_settings.widget(idx)
-            if type(widget) == InterfaceBar:
-                widget.icon_list.update()
+            interface_widget = self.settings.w_tabs_settings.widget(idx)
+            interface_widget.update_overlay_widget()
     
 
     def create_overlay_widget(self, widget_type, settings):
