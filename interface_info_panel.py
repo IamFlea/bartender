@@ -103,6 +103,9 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         if self.overlay_panel is not None: 
             self.overlay_panel.deleteLater()
         self.deleteLater()
+        if self.parent.overlay is not None:
+            if self in self.parent.overlay.widgets:
+                del self.parent.overlay.widgets[self]
 
     def set_movable(self):
         if self.overlay_panel is not None:

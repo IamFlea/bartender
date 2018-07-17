@@ -428,6 +428,9 @@ class InterfaceBar(QtWidgets.QWidget):
         if self.icon_list is not None:
             self.icon_list.deleteLater()
         self.deleteLater()
+        if self.parent.overlay is not None:
+            if self in self.parent.overlay.widgets:
+                del self.parent.overlay.widgets[self]
 
     def set_movable(self):
         if self.icon_list is not None:
