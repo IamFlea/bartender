@@ -110,7 +110,7 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
             self.overlay_panel.raise_()
 
     def set_hidden(self):
-        if self.overlay_panel is None: 
+        if self.overlay_panel is not None: 
             if self.w_checkbox_hidden.isChecked():
                 self.overlay_panel.setVisible(False)
             else:
@@ -189,7 +189,7 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         if type(self.overlay_panel) is InfoPanel:
             self.overlay_panel.panel_info_f = self.settings
             # Printing the shown icons
-            print(self.overlay_panel.panel_info_f())
+            #print(self.overlay_panel.panel_info_f())
   
 if __name__ == '__main__':
     import bartender

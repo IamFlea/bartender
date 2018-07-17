@@ -51,11 +51,14 @@ class Primitive(object): # game object
         # Load data
         self.id = pm.int32(ptr + 0x8) # Game ID keeps unchanged, no need for update
         self.hp = pm.float(ptr + 0x34)
+        self.selected = pm.int8(ptr +0x3a)
         self.status = pm.int8(ptr + 0x4C)
         # Load consts
         self.idle = False
         self.idle_time = 0
         self.idle_total_time = 0
+        self.busy_time = 0
+        self.busy_total_time = 0
         self.garrison = []
         self.research = None 
         self.training = None
@@ -73,3 +76,4 @@ class Primitive(object): # game object
         self.resource_amount = pm.float(self.ptr + 0x48)
         self.resource_type = Primitive.ResourceTable[pm.int8(self.ptr + 0x50)]
         self.position = pm.struct(self.ptr + 0x3c, "ff")
+        self.selected = pm.int8(self.ptr + 0x3a)

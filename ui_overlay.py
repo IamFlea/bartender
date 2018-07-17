@@ -23,7 +23,7 @@ class Overlay(QtWidgets.QMainWindow):
         self.settings = settings
         self.widgets = {}
         #IconCooldownCount.game = game
-        print("Initing Overlay")
+        #print("Initing Overlay")
         # Sets windows stuff
         self.setWindowTitle(Overlay.WINDOW_TITLE)
         self.setGeometry(OverlayGeometry())

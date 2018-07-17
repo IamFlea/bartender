@@ -10,7 +10,7 @@ from aoc_research import Research
 
 class Icon(IconGraphics):
     """Adapter? between the Icon and GameObjects """
-    def __init__(self, parent, x, y, game_object=None, idle_time = True, dont_change_icon = False):
+    def __init__(self, parent, x, y, game_object=None, idle_time = True, dont_change_icon = False, highlight_selected=False):
         """
         @param parent  - parent widget
         @param x, y    - position in the grid i.e [0,0] [0,1] .. [1,2].. 
@@ -20,11 +20,13 @@ class Icon(IconGraphics):
 
         self.show_training = not dont_change_icon  # Huh? Refactor later.
         self.show_research = not dont_change_icon  
-        self.highlight_selected = not dont_change_icon  
+        self.highlight_selected = not dont_change_icon or highlight_selected
 
         self.bottom_text = ""
         self.top_text = ""
-        self.idle_time_text = ""
+        self.timer_text = ""
+
+
 
     @property
     def icon(self):
@@ -50,6 +52,7 @@ class Icon(IconGraphics):
         if type(obj) is BuildingResearch:
             directory = "/icons/researches/"
             filename = str(obj.icon).zfill(3) + ".bmp"
+        #print(obj.name)
         return directory + filename 
 
     @property
@@ -58,7 +61,7 @@ class Icon(IconGraphics):
 
     @property
     def frame_color(self):
-        if self.highlight_selected and self.object in self.object.owner.selected:
+        if self.highlight_selected and self.object.selected:
             return ""
         else:
             return self.color

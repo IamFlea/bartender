@@ -17,6 +17,7 @@ from aoc_game import Game
 from aoc_lobby import Lobby, LobbyException
 from interface_bar import InterfaceBar
 from interface_info_panel import InterfaceInfoPanel
+from interface_offscreen_units import InterfaceOffscreenUnits
 from ui_overlay import Overlay
 
 from config import * 
@@ -93,14 +94,14 @@ class Bartender(QtWidgets.QMainWindow):
                                          GEOMETRY_TEXTAREA_BALANCE_HEIGHT)
     """
 
-    # Function for printing stuff 
+    # Function for printing FSM position
     def print_info(self, string):
         if string == self.statusbar.lastmsg: 
             return
         if Bartender.CONSOLE_PRINT_INFO:
-            print(string)
+            print(f"<FSM> {string}")
         if Bartender.WINDOW_PRINT_INFO:
-            self.statusbar.showMessage("Status: " + string)
+            self.statusbar.showMessage(f"Status: {string}")
         self.statusbar.lastmsg = string
 
     def __init__(self, screen_width, screen_height, app):
@@ -131,23 +132,24 @@ class Bartender(QtWidgets.QMainWindow):
         self.w_bartender_title.setFont(font)
         
         # Movable bars checkbox
+        """
         self.w_checkbox_waypoints = QtWidgets.QCheckBox("Waypoint Icons", self)
         self.w_checkbox_waypoints.setGeometry(Bartender.GEOMETRY_CHECKBOX_WAYPOINT)
-        #self.w_checkbox_waypoints.stateChanged.connect(self.moveable)
-
+        self.w_checkbox_waypoints.stateChanged.connect(self.waypoints_enable)
+        """
         self.w_checkbox_editall = QtWidgets.QCheckBox("All Bars Movable", self)
         self.w_checkbox_editall.setGeometry(Bartender.GEOMETRY_CHECKBOX_EDITALL)
         self.w_checkbox_editall.stateChanged.connect(self.moveable)
 
-        self.w_checkbox_bartender_ontop = QtWidgets.QCheckBox("Bartender on Top", self)
-        self.w_checkbox_bartender_ontop.setGeometry(Bartender.GEOMETRY_CHECKBOX_BARTENDER_ONTOP)
+        #self.w_checkbox_bartender_ontop = QtWidgets.QCheckBox("Bartender on Top", self)
+        #self.w_checkbox_bartender_ontop.setGeometry(Bartender.GEOMETRY_CHECKBOX_BARTENDER_ONTOP)
         #self.w_checkbox_bartender_ontop.stateChanged.connect(self.moveable)
 
-        self.w_checkbox_research_bars = QtWidgets.QCheckBox("Research Bars", self)
-        self.w_checkbox_research_bars.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCH_BARS)
+        #self.w_checkbox_research_bars = QtWidgets.QCheckBox("Research Bars", self)
+        #self.w_checkbox_research_bars.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCH_BARS)
         
-        self.w_checkbox_researched_techs = QtWidgets.QCheckBox("Researched Techs", self)
-        self.w_checkbox_researched_techs.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCHED_TECHS)
+        #self.w_checkbox_researched_techs = QtWidgets.QCheckBox("Researched Techs", self)
+        #self.w_checkbox_researched_techs.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCHED_TECHS)
         
         self.w_button_new_header = QtWidgets.QPushButton("New Header", self)
         self.w_button_new_header.setGeometry(Bartender.GEOMETRY_BUTTON_NEW_HEADER)
@@ -175,9 +177,9 @@ class Bartender(QtWidgets.QMainWindow):
         self.w_textarea_balance.setGeometry(Bartender.GEOMETRY_TEXTAREA_BALANCE)
         self.balance_widgets.append(self.w_textarea_balance)
         """
-    
-        self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header", self), f"Default Header")
-        self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header2", self), f"Default Header2")
+        self.w_tabs_settings.addTab(InterfaceOffscreenUnits("Offscreen Units", self), f"Offscreen Units")
+        #self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header", self), f"Default Header")
+        #self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header2", self), f"Default Header2")
 
         self.statusbar = QtWidgets.QStatusBar()
         self.statusbar.lastmsg = ""
@@ -188,14 +190,16 @@ class Bartender(QtWidgets.QMainWindow):
         self.app = app
         self.overlay = None
         self.game = None
-        self.lobby = Lobby()
+        #self.lobby = Lobby()
         self.state = -1
         self.process_timer = None
         self.timer = None
         self.show()
-        
+    
+    def waypoints_enable(self):
+        self.offscreen_units = InterfaceOffscreenUnits("Offscreen Units", self)
+
     def setHiddenList(self, widgets, boolean):
-        
         for widget in widgets:
             widget.setHidden(boolean)
     
@@ -215,23 +219,6 @@ class Bartender(QtWidgets.QMainWindow):
         self.process_timer.timeout.connect(self.__load_process_loop__)
         self.process_timer.start(Bartender.UPDATE_WINDOW_MS)
         self.app.exec_()
-        
-
-    def balance_it(self):
-        try:
-            self.lobby.update()
-        except:
-            self.w_textarea_balance.setText(f"Couldn't parse Lobby")
-            return
-        try:
-            diff1, string1, teams1 = self.lobby.balance_minmax()
-            diff2, string2, teams2 = self.lobby.balance_diff()
-            self.w_textarea_balance.setText(f"Minmax: {string1}\nDiff: {string2}")
-        except LobbyException as e:
-            self.w_textarea_balance.setText(str(e)[1:-1])
-        except:
-            self.w_textarea_balance.setText(f"Couldn't parse Lobby")
-            return
         
     def load_game(self):
         # must be run in a block `with pm`
@@ -267,10 +254,11 @@ class Bartender(QtWidgets.QMainWindow):
         
     def finite_state_machine(self):
         # State machine.
-        self.print_info("Waiting until the game is started.")
+        if self.state == -1:
+            self.print_info("Waiting until the game is started.")
         # Loading the game
-        if self.state == 0:
-            if self.load_game():
+        elif self.state == 0:
+            if self.load_game() and self.game is not None:
                 self.state = 2
                 self.lobby = None
                 self.print_info("Game loaded. Starting the first iteration.")
@@ -283,7 +271,7 @@ class Bartender(QtWidgets.QMainWindow):
         # Starting overlay
         elif self.state == 3:
             self.start_overlay()
-            self.load_bars()
+            self.update_overlay_widgets()
             self.state = 4  
             self.print_info("Waiting until the game is quitted.")
         # Loop
@@ -291,7 +279,8 @@ class Bartender(QtWidgets.QMainWindow):
             if not self.game.running:
                 self.overlay.deleteLater()
                 self.overlay = None
-                self.state = 0
+                self.state = -1
+                
 
     def run(self):
         self.timer = QtCore.QTimer()
@@ -306,21 +295,21 @@ class Bartender(QtWidgets.QMainWindow):
         name = f"New Panel"
         widget = InterfaceInfoPanel(name, self)
         self.w_tabs_settings.addTab(widget, name)
-        self.load_bars()
+        self.update_overlay_widgets()
         
     def add_new_bar(self):
         name = f"New Bar"
         widget = InterfaceBar(name, self)
         self.w_tabs_settings.addTab(widget, name)
-        self.load_bars()
+        self.update_overlay_widgets()
         
-    def load_bars(self):
+    def update_overlay_widgets(self):
         if self.overlay is None:
             return
         for idx in range(self.w_tabs_settings.count()):
             widget = self.w_tabs_settings.widget(idx)
             self.overlay.create_overlay_widget(widget.BIND_TYPE, widget)
-            
+
 
 
 if __name__ == '__main__' or True:

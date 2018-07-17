@@ -4,6 +4,8 @@
 
 from aoc_object_consts_unit import UNITS
 
+GROUPS = {0x400: "0", 0x200: "9", 0x100: "8", 0x080: "7", 0x040: "6", 0x020: "5", 0x010: "4", 0x008: "3", 0x004: "2", 0x002: "1",}
+
 class SuperclassData():
     eye_candy = 10 # gaia objects 
     tree_aok = 15
@@ -35,6 +37,11 @@ class ClassData():
     villagers = list(map(lambda x, y=all_str : y.index(x), villagers_str))
     livestock_str = ["Livestock"]
     livestock = list(map(lambda x, y=all_str : y.index(x), livestock_str))
+
+    monk_with_relic_str = ["Monk with Relic"]
+    monk_with_relic_idx = list(map(lambda x, y=all_str : y.index(x), monk_with_relic_str))[0]
+
+
 
 
 class IdData():
