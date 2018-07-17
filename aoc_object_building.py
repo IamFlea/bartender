@@ -100,6 +100,7 @@ class Building(Unit):
         self._check_garrison_()
         self._check_idle_()
         self._check_idle_time_()    
+        self.group = pm.uint32(self.ptr + 0x158)
 
 if __name__ == '__main__':
     import bartender

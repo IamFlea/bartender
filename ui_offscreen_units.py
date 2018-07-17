@@ -51,12 +51,11 @@ class OverlayOffscreenUnits(QtWidgets.QWidget):
                 if game_obj not in self.icons:
                     self.icons[game_obj] = IconOffscreenUnit(self, game_obj)
                     self.icons[game_obj].bottom_text = group
-                    #print(group)
                     self.icons[game_obj].redraw()
                 elif group != self.icons[game_obj].bottom_text:
                     self.icons[game_obj].bottom_text = group
                     self.icons[game_obj].redraw()
-
+                
 
 
                 #print("NOT ON SCREEN")
