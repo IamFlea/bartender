@@ -6,9 +6,10 @@ from config import *
 from ui_overlay_geometry import OverlayGeometry
 from ui_iconlist import IconList
 from ui_info_panel import InfoPanel
+from ui_research_bars import ResearchBars 
+from ui_research_list import ResearchList
 from interface_bar import InterfaceBar
 from interface_info_panel import InterfaceInfoPanel
-
 class Overlay(QtWidgets.QMainWindow):
     WINDOW_TITLE = "Bartender Overlay"
     
@@ -22,6 +23,8 @@ class Overlay(QtWidgets.QMainWindow):
         self.game = game
         self.settings = settings
         self.widgets = {}
+        self.research_bars = ResearchBars(self)
+        self.research_list = ResearchList(self)
         #IconCooldownCount.game = game
         #print("Initing Overlay")
         # Sets windows stuff
@@ -48,7 +51,9 @@ class Overlay(QtWidgets.QMainWindow):
         for idx in range(self.settings.w_tabs_settings.count()):
             interface_widget = self.settings.w_tabs_settings.widget(idx)
             interface_widget.update_overlay_widget()
-    
+        self.research_bars.update()
+        self.research_list.update()
+        
 
     def create_overlay_widget(self, widget_type, settings):
         if settings not in self.widgets:
@@ -67,6 +72,16 @@ class Overlay(QtWidgets.QMainWindow):
     def set_movable_widgets(self, boolean):
         for key in self.widgets:
             self.widgets[key].set_movable(boolean)
+        self.set_movable_research_bars(boolean)
+        #self.set_movable_research_list(boolean)
+        self.show()
+
+    def set_movable_research_bars(self, boolean):
+        self.research_bars.set_movable(boolean)
+        self.show()
+
+    def set_movable_research_list(self, boolean):
+        self.research_list.set_movable(boolean)
         self.show()
 
 if __name__ == '__main__':

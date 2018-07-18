@@ -11,6 +11,13 @@ SPACE_BETWEEN_COUNTER_AND_ICON = 6
 
 IDLE_COUNTER_HEIGHT_WITH_SPACE = SPACE_BETWEEN_COUNTER_AND_ICON + IDLE_COUNTER_HEIGHT
 
+SPACE_BETWEEN_ICON_AND_BAR = 6
+RESEARCH_BAR_WIDTH = 36*2
+RESEARCH_BAR_HEIGHT = 20 # shouldnt be greater than ICON_SIZE_PX! 
+RESEARCH_BAR_X = ICON_SIZE_PX + SPACE_BETWEEN_ICON_AND_BAR
+RESEARCH_BAR_Y = (ICON_SIZE_PX - RESEARCH_BAR_HEIGHT)//2 # Centered
+
+
 # PyQT stuff
 
 WHITE_BRUSH = Qt.QBrush(Qt.QColor(0xff,0xff,0xff))
@@ -31,6 +38,8 @@ invisible_pen.setWidth(0)
 
 alpha_brush = Qt.QBrush(Qt.QColor(0xff,0xff,0xff,0x80))
 alpha_brush.setStyle(QtCore.Qt.Dense3Pattern)
+
+bar_font = QtGui.QFont("Georgia", 8)
 
 idle_counter_text_font = QtGui.QFont("Georgia", 7)
 idle_counter_text_brush = WHITE_BRUSH

@@ -6,6 +6,7 @@ class QOverlayWidget(QtWidgets.QWidget):
     EXPAND_LIST = ["→↓", "→↑", "←↓", "←↑", "↓←", "↑←", "↓→", "↑→", ]
     def __init__(self, parent, resizable=True):
         super(QOverlayWidget, self).__init__(parent)
+        self.parent = parent
         # Adds background widget
 
         # Creates a movable stuff
@@ -29,6 +30,7 @@ class QOverlayWidget(QtWidgets.QWidget):
         self.__offset = QtCore.QPoint()
         self.expand_index = 0 
         self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
+
 
     def setGeometry(self, *arg):
         super(QOverlayWidget, self).setGeometry(*arg)
@@ -63,7 +65,7 @@ class QOverlayWidget(QtWidgets.QWidget):
         # Grab the new stuff
         x, y = self.x(), self.y()
         width, height = self.width(), self.height()
-        max_width, max_height = self.parent().width(), self.parent().height()
+        max_width, max_height = self.parent.width(), self.parent.height()
         # Checking X value
         if x < 0:
             x = 0
@@ -101,10 +103,11 @@ class QOverlayWidget(QtWidgets.QWidget):
         self.__resizing = False
 
     def set_movable(self, boolean):
+        self.raise_()
         self.movable = boolean
         self.drag_widget.setVisible(boolean)
         self.drag_widget.raise_()
-        
+
         
 
 

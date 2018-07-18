@@ -20,6 +20,7 @@ class IconGraphics(QtWidgets.QWidget):
         super(IconGraphics, self).__init__(parent)
         self.parent = parent
         self.y_margin = IDLE_COUNTER_HEIGHT_WITH_SPACE if idle_time else 0
+        self.r_margin = 0
         self.set_position(x, y)
         # Creates the scne
         self.scene = QtWidgets.QGraphicsScene()
@@ -46,8 +47,12 @@ class IconGraphics(QtWidgets.QWidget):
         self.y_margin = IDLE_COUNTER_HEIGHT_WITH_SPACE if boolean else 0
         self.set_position(self.x(), self.y())
 
+    def set_right_margin(self, boolean):
+        self.r_margin =  RESEARCH_BAR_WIDTH + SPACE_BETWEEN_ICON_AND_BAR if boolean else 0
+        self.set_position(self.x(), self.y())
+
     def set_position(self, x, y):
-        self.setGeometry(x * ICON_SIZE_PX, y * (ICON_SIZE_PX + self.y_margin), ICON_SIZE_PX, ICON_SIZE_PX + self.y_margin)
+        self.setGeometry(x * (ICON_SIZE_PX + self.r_margin), y * (ICON_SIZE_PX + self.y_margin), ICON_SIZE_PX + self.r_margin, ICON_SIZE_PX + self.y_margin)
     
     def create_alpha_pixmap(self, pixmap, alpha):
         transparent = QtGui.QPixmap(pixmap.size())

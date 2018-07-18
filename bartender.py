@@ -32,67 +32,34 @@ class Bartender(QtWidgets.QMainWindow):
     SPAN = 10
     WINDOW_TITLE = "Bartender"
     WINDOW_WIDTH = 764
-    WINDOW_HEIGHT = 664
+    WINDOW_HEIGHT = 600
     WIDE = WINDOW_WIDTH - SPAN*2
-
-    CHECKBOX_HEIGHT = 13
+    WIDE_FOURTH = (WINDOW_WIDTH - SPAN*(1+4))/4
+    
+    CELL_HEIGHT = 13
 
     GEOMETRY_LABEL_INFO = Qt.QRect(SPAN, SPAN, WIDE, 20) # X, Y, WIDTH, HEIGHT
     
-    GEOMETRY_CHECKBOX_EDITALL =  Qt.QRect(SPAN, GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN, (WINDOW_WIDTH-SPAN*(1+4))/4, CHECKBOX_HEIGHT) # X, Y, WIDTH, HEIGHT
-  
-    GEOMETRY_CHECKBOX_BARTENDER_ONTOP = Qt.QRect(GEOMETRY_CHECKBOX_EDITALL.x() + GEOMETRY_CHECKBOX_EDITALL.width() + SPAN, 
-                                                 GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN, 
-                                                 (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                                 CHECKBOX_HEIGHT) 
-
-    GEOMETRY_CHECKBOX_RESEARCHED_TECHS = Qt.QRect(SPAN, 
-                                                  GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
-                                                  (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                                  CHECKBOX_HEIGHT) 
-    GEOMETRY_CHECKBOX_RESEARCH_BARS = Qt.QRect(GEOMETRY_CHECKBOX_RESEARCHED_TECHS.x() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.width() + SPAN,  
-                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
-                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                               CHECKBOX_HEIGHT) 
-    GEOMETRY_CHECKBOX_WAYPOINT =  Qt.QRect(GEOMETRY_CHECKBOX_RESEARCH_BARS.x() + GEOMETRY_CHECKBOX_RESEARCH_BARS.width() + SPAN,  
-                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN, 
-                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                               CHECKBOX_HEIGHT) 
 
 
-    GEOMETRY_BUTTON_NEW_HEADER = Qt.QRect(GEOMETRY_CHECKBOX_WAYPOINT.x() + GEOMETRY_CHECKBOX_WAYPOINT.width() + SPAN,  
-                                               GEOMETRY_LABEL_INFO.y() + GEOMETRY_LABEL_INFO.height() + SPAN-4, 
-                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                               CHECKBOX_HEIGHT+8) 
-    GEOMETRY_BUTTON_NEW_BAR = Qt.QRect(GEOMETRY_CHECKBOX_WAYPOINT.x() + GEOMETRY_CHECKBOX_WAYPOINT.width() + SPAN,  
-                                               GEOMETRY_CHECKBOX_EDITALL.y() + GEOMETRY_CHECKBOX_EDITALL.height() + SPAN-4, 
-                                               (WINDOW_WIDTH-SPAN*(1+4))/4, 
-                                               CHECKBOX_HEIGHT+8) 
+    GEOMETRY_0_0 = Qt.QRect(SPAN, GEOMETRY_LABEL_INFO.bottom() + 1 + SPAN, WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_0_1 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*1, GEOMETRY_0_0.y(), WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_0_2 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*2, GEOMETRY_0_0.y(), WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_0_3 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*3, GEOMETRY_0_0.y()-4, WIDE_FOURTH, CELL_HEIGHT+8) 
+    GEOMETRY_00_3 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*3, GEOMETRY_0_0.y()-SPAN-CELL_HEIGHT, WIDE_FOURTH, CELL_HEIGHT) 
+    
+    GEOMETRY_1_0 = Qt.QRect(SPAN, GEOMETRY_0_0.bottom() + 1 + SPAN, WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_1_1 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*1, GEOMETRY_1_0.y(), WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_1_2 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*2, GEOMETRY_1_0.y(), WIDE_FOURTH, CELL_HEIGHT) 
+    GEOMETRY_1_3 = Qt.QRect(SPAN+(SPAN + WIDE_FOURTH)*3, GEOMETRY_1_0.y()-4, WIDE_FOURTH, CELL_HEIGHT+8) 
+    
 
-    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285+26+100+100
+    GEOMETRY_TAB_BAR_SETTINGS_HEIGHT = 285+26+100+50
     GEOMETRY_TAB_BAR_SETTINGS = Qt.QRect(SPAN,  # X
-                                    GEOMETRY_CHECKBOX_RESEARCHED_TECHS.y() + GEOMETRY_CHECKBOX_RESEARCHED_TECHS.height() + SPAN, # Y
+                                    GEOMETRY_1_0.bottom() + 1 + SPAN, # Y
                                     WIDE,
                                     GEOMETRY_TAB_BAR_SETTINGS_HEIGHT)
 
-    """
-    ## FROM BOTTOM TO TOP
-    # Sets textarea above the button
-    GEOMETRY_BUTTON_BALANCE_WIDTH = 100
-    GEOMETRY_BUTTON_BALANCE_HEIGHT = 20
-    GEOMETRY_BUTTON_BALANCE = Qt.QRect((WINDOW_WIDTH - GEOMETRY_BUTTON_BALANCE_WIDTH)//2,  # X
-                                    WINDOW_HEIGHT - GEOMETRY_BUTTON_BALANCE_HEIGHT - SPAN * 2, # Y
-                                    GEOMETRY_BUTTON_BALANCE_WIDTH,
-                                    GEOMETRY_BUTTON_BALANCE_HEIGHT)
-
-    # Sets textarea balence position
-    GEOMETRY_TEXTAREA_BALANCE_WIDTH = 200
-    GEOMETRY_TEXTAREA_BALANCE_HEIGHT = 40
-    GEOMETRY_TEXTAREA_BALANCE = Qt.QRect((WINDOW_WIDTH - GEOMETRY_TEXTAREA_BALANCE_WIDTH)//2,  # X
-                                         GEOMETRY_BUTTON_BALANCE.y() - GEOMETRY_TEXTAREA_BALANCE_HEIGHT - SPAN, # Y
-                                         GEOMETRY_TEXTAREA_BALANCE_WIDTH,
-                                         GEOMETRY_TEXTAREA_BALANCE_HEIGHT)
-    """
 
     # Function for printing FSM position
     def print_info(self, string):
@@ -131,62 +98,58 @@ class Bartender(QtWidgets.QMainWindow):
         font.setBold(True)
         self.w_bartender_title.setFont(font)
         
-        # Movable bars checkbox
-        """
-        self.w_checkbox_waypoints = QtWidgets.QCheckBox("Waypoint Icons", self)
-        self.w_checkbox_waypoints.setGeometry(Bartender.GEOMETRY_CHECKBOX_WAYPOINT)
-        self.w_checkbox_waypoints.stateChanged.connect(self.waypoints_enable)
-        """
+        # Checkboxes
+        self.w_checkbox_completed_researches = QtWidgets.QCheckBox("Completed Researches", self)
+        self.w_checkbox_completed_researches.setGeometry(Bartender.GEOMETRY_1_0)
+        self.w_checkbox_completed_researches.stateChanged.connect(self.researches_policy)
+
+        self.w_checkbox_completed_researches_movable = QtWidgets.QCheckBox("Movable", self)
+        self.w_checkbox_completed_researches_movable.setGeometry(Bartender.GEOMETRY_1_1)
+        self.w_checkbox_completed_researches_movable.stateChanged.connect(self.researches_policy)
+
+        self.w_checkbox_completed_researches_times = QtWidgets.QCheckBox("Show Research Times", self)
+        self.w_checkbox_completed_researches_times.setGeometry(Bartender.GEOMETRY_1_2)
+        self.w_checkbox_completed_researches_times.stateChanged.connect(self.researches_policy)
+
+        self.w_checkbox_researches = QtWidgets.QCheckBox("Researching Technologies", self)
+        self.w_checkbox_researches.setGeometry(Bartender.GEOMETRY_0_0)
+        self.w_checkbox_researches.stateChanged.connect(self.researches_policy)
+
+        self.w_checkbox_researches_movable = QtWidgets.QCheckBox("Movable", self)
+        self.w_checkbox_researches_movable.setGeometry(Bartender.GEOMETRY_0_1)
+        self.w_checkbox_researches_movable.stateChanged.connect(self.researches_policy)
+
+        self.w_checkbox_researches_show_bars = QtWidgets.QCheckBox("Show Bars", self)
+        self.w_checkbox_researches_show_bars.setGeometry(Bartender.GEOMETRY_0_2)
+        self.w_checkbox_researches_show_bars.stateChanged.connect(self.researches_policy)
+
+
         self.w_checkbox_editall = QtWidgets.QCheckBox("All Bars Movable", self)
-        self.w_checkbox_editall.setGeometry(Bartender.GEOMETRY_CHECKBOX_EDITALL)
+        self.w_checkbox_editall.setGeometry(Bartender.GEOMETRY_00_3)
         self.w_checkbox_editall.stateChanged.connect(self.moveable)
 
-        #self.w_checkbox_bartender_ontop = QtWidgets.QCheckBox("Bartender on Top", self)
-        #self.w_checkbox_bartender_ontop.setGeometry(Bartender.GEOMETRY_CHECKBOX_BARTENDER_ONTOP)
-        #self.w_checkbox_bartender_ontop.stateChanged.connect(self.moveable)
-
-        #self.w_checkbox_research_bars = QtWidgets.QCheckBox("Research Bars", self)
-        #self.w_checkbox_research_bars.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCH_BARS)
-        
-        #self.w_checkbox_researched_techs = QtWidgets.QCheckBox("Researched Techs", self)
-        #self.w_checkbox_researched_techs.setGeometry(Bartender.GEOMETRY_CHECKBOX_RESEARCHED_TECHS)
-        
-        self.w_button_new_header = QtWidgets.QPushButton("New Header", self)
-        self.w_button_new_header.setGeometry(Bartender.GEOMETRY_BUTTON_NEW_HEADER)
+        # Buttons
+        self.w_button_new_header = QtWidgets.QPushButton("New Info Panel", self)
+        self.w_button_new_header.setGeometry(Bartender.GEOMETRY_0_3)
         self.w_button_new_header.clicked.connect(self.add_new_header)
 
         self.w_button_new_bar = QtWidgets.QPushButton("New Bar", self)
-        self.w_button_new_bar.setGeometry(Bartender.GEOMETRY_BUTTON_NEW_BAR)
+        self.w_button_new_bar.setGeometry(Bartender.GEOMETRY_1_3)
         self.w_button_new_bar.clicked.connect(self.add_new_bar)
 
-        # Tab
+        # Tab widget
         self.w_tabs_settings = QtWidgets.QTabWidget(self)
         self.w_tabs_settings.setGeometry(Bartender.GEOMETRY_TAB_BAR_SETTINGS)
-
-        
-
-        # Balancing BUTTON
-        """
-        self.balance_widgets = []
-        self.w_button_balance = QtWidgets.QPushButton("Balance Lobby!", self)
-        self.w_button_balance.setGeometry(Bartender.GEOMETRY_BUTTON_BALANCE)
-        self.w_button_balance.clicked.connect(self.balance_it)
-        self.balance_widgets.append(self.w_button_balance)
-        # Balancing Textarea
-        self.w_textarea_balance = QtWidgets.QTextEdit(self)
-        self.w_textarea_balance.setGeometry(Bartender.GEOMETRY_TEXTAREA_BALANCE)
-        self.balance_widgets.append(self.w_textarea_balance)
-        """
         self.w_tabs_settings.addTab(InterfaceOffscreenUnits("Offscreen Units", self), f"Offscreen Units")
-        #self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header", self), f"Default Header")
-        #self.w_tabs_settings.addTab(InterfaceInfoPanel("Default Header2", self), f"Default Header2")
-
+        
+        # Status bar
         self.statusbar = QtWidgets.QStatusBar()
         self.statusbar.lastmsg = ""
         self.setStatusBar(self.statusbar)
 
 
         #### OTHER STUFF
+        # Consts
         self.app = app
         self.overlay = None
         self.game = None
@@ -194,10 +157,25 @@ class Bartender(QtWidgets.QMainWindow):
         self.state = -1
         self.process_timer = None
         self.timer = None
+        
+        # Set checkbox logic
+        self.researches_policy()
         self.show()
     
-    def waypoints_enable(self):
-        self.offscreen_units = InterfaceOffscreenUnits("Offscreen Units", self)
+    def researches_policy(self):
+        self.w_checkbox_completed_researches_movable.setEnabled(self.w_checkbox_completed_researches.isChecked())
+        self.w_checkbox_completed_researches_times.setEnabled(self.w_checkbox_completed_researches.isChecked())
+        self.w_checkbox_researches_movable.setEnabled(self.w_checkbox_researches.isChecked())
+        self.w_checkbox_researches_show_bars.setEnabled(self.w_checkbox_researches.isChecked())
+        if self.overlay is not None:
+            self.overlay.research_bars.setHidden(not self.w_checkbox_researches.isChecked())
+            self.overlay.research_bars.set_movable(self.w_checkbox_researches_movable.isChecked())
+            self.overlay.research_bars.set_magical_bar(self.w_checkbox_researches_show_bars.isChecked())
+
+            self.overlay.research_list.setHidden(not self.w_checkbox_completed_researches.isChecked())
+            self.overlay.research_list.set_movable(self.w_checkbox_completed_researches_movable.isChecked())
+            self.overlay.research_list.set_magical_timer(self.w_checkbox_completed_researches_times.isChecked())
+
 
     def setHiddenList(self, widgets, boolean):
         for widget in widgets:
@@ -232,6 +210,7 @@ class Bartender(QtWidgets.QMainWindow):
     def start_overlay(self):
         # Starting overlay UI
         self.overlay = Overlay(self, self.game)
+        self.researches_policy()
         self.overlay.show()
 
     def closeEvent(self, event):
@@ -289,19 +268,22 @@ class Bartender(QtWidgets.QMainWindow):
 
     def moveable(self):
         boolean = self.w_checkbox_editall.isChecked()
-        self.overlay.set_movable_widgets(boolean)
+        if self.overlay is not None:
+            self.overlay.set_movable_widgets(boolean)
         
     def add_new_header(self):
         name = f"New Panel"
         widget = InterfaceInfoPanel(name, self)
         self.w_tabs_settings.addTab(widget, name)
         self.update_overlay_widgets()
+        self.w_tabs_settings.setCurrentIndex(self.w_tabs_settings.count() - 1)
         
     def add_new_bar(self):
         name = f"New Bar"
         widget = InterfaceBar(name, self)
         self.w_tabs_settings.addTab(widget, name)
         self.update_overlay_widgets()
+        self.w_tabs_settings.setCurrentIndex(self.w_tabs_settings.count() - 1)
         
     def update_overlay_widgets(self):
         if self.overlay is None:

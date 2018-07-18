@@ -6,7 +6,7 @@ from aoc_object_building_research import BuildingResearch
 from aoc_object_building_queue import UnitQueue
 from aoc_object_unit import Unit
 from aoc_object_primitive import Primitive
-from aoc_research import Research
+from aoc_research import Technology
 
 class Icon(IconGraphics):
     """Adapter? between the Icon and GameObjects """
@@ -25,6 +25,9 @@ class Icon(IconGraphics):
         self.bottom_text = ""
         self.top_text = ""
         self.timer_text = ""
+
+        print("Created")
+
 
 
 
@@ -46,10 +49,7 @@ class Icon(IconGraphics):
         if type(obj) is UnitQueue:
             directory = f"/icons/units/color_{self.color}/"
             filename = str(obj[0][1]).zfill(3) + ".bmp"
-        if type(obj) is list:
-            directory = "/icons/researches/"
-            filename = str(obj[1]).zfill(3) + ".bmp"
-        if type(obj) is BuildingResearch:
+        if type(obj) in [BuildingResearch, Technology]:
             directory = "/icons/researches/"
             filename = str(obj.icon).zfill(3) + ".bmp"
         #print(obj.name)
@@ -60,12 +60,14 @@ class Icon(IconGraphics):
         try:
             return str(self.object.owner.color.color)
         except:
-            return str(self.parent.parent().game.pov.color.color)
+            pass
+        print(f">>>>> Tell me if no error happens. Might be buggy :(")
+        return str(self.parent.parent().game.pov.color.color)
 
     @property
     def frame_color(self):
         try:
-            if self.highlight_selected and self.object.selected:
+            if type(self.object) is not Technology and self.highlight_selected and self.object.selected:
                 return ""
         except TypeError:
             pass
