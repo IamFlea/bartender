@@ -71,7 +71,6 @@ class Overlay(QtWidgets.QMainWindow):
                 widget.setGeometry(widget.x(), widget.y() + shift_height, widget.width(), widget.height())
  
     def update_geometry(self):
-        #return
         self.setGeometry(OverlayGeometry())
 
         # Check the widgets on overlay
