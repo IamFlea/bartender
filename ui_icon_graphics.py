@@ -73,13 +73,13 @@ class IconGraphics(QtWidgets.QWidget):
         pixmap = QtGui.QPixmap(ospath + filename)
         #if self.opacity != 255:
         #    pixmap = self.create_alpha_pixmap(pixmap, self.opacity)
-        self.scene.addPixmap(pixmap).setPos(ICON_IMG_POS_X, ICON_IMG_POS_Y)
+        self.scene.addPixmap(pixmap).setPos(ICON_IMG_POS_X, ICON_IMG_POS_Y+ self.y_margin)
         # Adds frame
         frame = f"/ui/frame{frame_color}.png"
         pixmap = QtGui.QPixmap(ospath + frame)
         #if self.opacity != 255:
         #    pixmap = self.create_alpha_pixmap(pixmap, self.opacity)
-        self.scene.addPixmap(pixmap).setPos(0, 0)
+        self.scene.addPixmap(pixmap).setPos(0, 0+ self.y_margin)
 
     def show_top_text(self, string):
         if string is None or string == "":
@@ -124,10 +124,10 @@ class IconGraphics(QtWidgets.QWidget):
         text.setBrush(idle_counter_text_brush)
         # Sets position to the center
         br = text.sceneBoundingRect()
-        x, y = (IDLE_COUNTER_WIDTH - br.width())//2, (IDLE_COUNTER_HEIGHT - br.height())//2 -self.y_margin  # 21 21 the center
+        x, y = (IDLE_COUNTER_WIDTH - br.width())//2, (IDLE_COUNTER_HEIGHT - br.height())//2   # 21 21 the center
         text.setPos(x, y)
         # Creates the rectangle
-        self.scene.addRect(0, -self.y_margin, IDLE_COUNTER_WIDTH, IDLE_COUNTER_HEIGHT, idle_counter_rect_pen, idle_counter_rect_brush)
+        self.scene.addRect(0, 0, IDLE_COUNTER_WIDTH, IDLE_COUNTER_HEIGHT, idle_counter_rect_pen, idle_counter_rect_brush)
         # Adds the text
         self.scene.addItem(text)
 
