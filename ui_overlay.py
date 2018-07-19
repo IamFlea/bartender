@@ -32,9 +32,8 @@ class Overlay(QtWidgets.QMainWindow):
         self.setGeometry(OverlayGeometry())
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground) 
-        
-        #self.widgets[None] = IconList(self, self.game.player.buildings)
-        #print(self.width(), self.height())
+        self.prev_window_size = self.width(), self.height()
+
         # Updating stuff
         self.update_timer = QtCore.QTimer()
         self.update_timer.timeout.connect(self.update)
@@ -60,10 +59,31 @@ class Overlay(QtWidgets.QMainWindow):
             self.widgets[settings] = widget_type(self)
             settings.bind_widget(self.widgets[settings])
             self.widgets[settings].show()
-
+    
+    def update_geometry_of_widgets(self, shift_width, shift_height):
+        for idx in range(1, self.settings.w_tabs_settings.count()):
+            widget = self.widgets[self.settings.w_tabs_settings.widget(idx)]
+            right = widget.x() + widget.width()
+            bottom = widget.y() + widget.height()
+            if right > self.width():
+                widget.setGeometry(widget.x() + shift_width, widget.y(), widget.width(), widget.height())
+            if bottom > self.height():
+                widget.setGeometry(widget.x(), widget.y() + shift_height, widget.width(), widget.height())
+ 
     def update_geometry(self):
         #return
         self.setGeometry(OverlayGeometry())
+
+        # Check the widgets on overlay
+        if self.prev_window_size[0] != self.width() or self.prev_window_size[1] != self.height():
+            shift_width = self.width() - self.prev_window_size[0]
+            shift_height = self.height() - self.prev_window_size[1]
+            if shift_height < 0 or shift_width < 0:
+                # Need to move the widgets on overlay, so they can be on the screen
+                self.update_geometry_of_widgets(shift_width, shift_height)
+
+            self.prev_window_size = self.width(), self.height()
+
         if GetWindowText(GetForegroundWindow()) in [AOE_WINDOW_TITLE, Overlay.WINDOW_TITLE, "Bartender"]:
             self.setHidden(False)
         else:
