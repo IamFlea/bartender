@@ -1,15 +1,16 @@
 # Bartender
 A window addon to game called Age of Empires II (HD). The addon displays additional information of the game, such as buildings, currently researched technologies, or training units.
 
-Bartender can be divided into five parts.
-1) It displays information about your villagers, ships and trade on the top of your screen. Also, you can find there K/D ratios of units and buildings.
-2) Researched technologies are shown right below the top bar. Currently researching technologies are next to it.
-3) Buildings waiting for the construction or buildings that are currently constructed are displayed below the chat window.
-4) Military Buildings (including TC, docks and monastries) are shown on bottom left. Each icon represents a building. The icon changes to currently trained unit or researched technology. Moreover, it shows the time in seconds when it will complete the training or the research. The bottom number is a queue. Furthermore, the selected building is highlighted.
-5) You can see your army composition on the bottom and how much units are selected.
-6) If the selected object is out of the screen, bartender shows its icon on the side of screen displaying the object location.
-
 ![Screenshot](https://i.imgur.com/JWsTbWB.jpg)
+
+Bartender is customizable overlay and it can be divided into four parts. 
+
+1) **Bartender's Research Panels** displays current researches and researched technologies.
+2) **Bartender's Offscreen Unit Icons** shows you unit which are out of the screen. Its icon is shown on the side of screen displaying the object location.
+3) **Bartender's Info Panels** gives you statistics about *your* villagers, ships and trade on the top of your screen. It can display the sum of carrying resources and amount of villagers (or other units) gathering the resource. It shows you idle units. Furthermore, it provides K/D ratios of units and buildings, amount of civilians and military, number of owning relics, and reseed farms.
+4) **Bartender's Bars** provides you information about your civilization. Each bar can show you different things. One bar may provide you data about your buildings, other one about your army composition. Some buildings may change the to currently trained unit or researched technology. Moreover, it shows the time in seconds when it will complete the training or the research, or it can show you the length of training queue, or the number of garissoned units, current HP, attack etc. Furthermore, you can filter these icons. See the next image.
+
+
 
 
 # Dependencies
@@ -25,12 +26,14 @@ Bartender can be divided into five parts.
 *How does it work?*
 > Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)
 
-*Why did you create this addon?*
-> I just wanted to simplify my gameplay.
-
 *Voobly version?*
-> That is not possible. Contact some administrators of Voobly and tell them about Bartender. Maybe they will agree to use it in multiplayer or record games.
+> I don't play on Voobly. Also, I think this won't be possible to use it in MP there.
 
+*Why did you create this addon?*
+> Age of Empires: II uses engine from the previous century. I just wanted to simplify UI to me and to other players.
+
+*This is cheating!*
+> It is not. Bartender does not provide you information about your enemy. 
 
 # TODO
 
@@ -46,7 +49,7 @@ Watch for crashes & consistency of displayed data
 4) Fix warnings during hiding overlay when AoE2HD is not the foreground window. (Maybe not needed)
 
 **This file**
-1) Update screenshot.
+1) Update screenshots.
 2) Add a UI explenation.
 
 # Known Limitations
