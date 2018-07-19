@@ -57,6 +57,10 @@ class QOverlayWidget(QtWidgets.QWidget):
             self.expand_index =  (self.expand_index + 1) % len(QOverlayWidget.EXPAND_LIST)
             self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
 
+    def set_expand_index(self, index):
+        self.expand_index = index
+        self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
+
     
 
     def drag(self, position):

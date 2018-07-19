@@ -21,6 +21,7 @@ from interface_offscreen_units import InterfaceOffscreenUnits
 from ui_overlay import Overlay
 
 from config import * 
+from bartender_save_load import *
 
 class Bartender(QtWidgets.QMainWindow):
     BARTENDER_FRAMES_PER_SECOND = 30 # FPS of main window 
@@ -159,6 +160,7 @@ class Bartender(QtWidgets.QMainWindow):
         self.timer = None
         
         # Set checkbox logic
+        load(self)
         self.researches_policy()
         self.show()
     
@@ -215,6 +217,7 @@ class Bartender(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         # Closing the window.
         self.print_info("Ending the session")
+        save(self)
         if self.process_timer is not None:
             self.process_timer.stop()
         if self.timer is not None:
@@ -250,6 +253,7 @@ class Bartender(QtWidgets.QMainWindow):
         elif self.state == 3:
             self.start_overlay()
             self.update_overlay_widgets()
+            load_geometry(self)
             self.state = 4  
             self.print_info("Waiting until the game is quitted.")
         # Loop

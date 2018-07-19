@@ -97,6 +97,9 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.w_checkbox_kd_buildings.setGeometry(GEOMETRY_TOP_6_4)
         self.w_checkbox_kd_buildings.stateChanged.connect(self.update_info_panel)
 
+        self.w_checkbox_game_time = QtWidgets.QCheckBox("Game Time", self)
+        self.w_checkbox_game_time.setGeometry(GEOMETRY_TOP_6_5)
+        self.w_checkbox_game_time.stateChanged.connect(self.update_info_panel)
 
 
     def remove(self):
@@ -186,6 +189,8 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
             result += [(KD_RATIO, lambda: int_to_str(int(player.resources.values[player.resources.keys.index("Units Killed")])) + "/" + int_to_str(int(player.resources.values[player.resources.keys.index("Units Lost")])))]
         if self.w_checkbox_kd_buildings.isChecked():
             result += [(KD_RAZINGS_RATIO, lambda: int_to_str(int(player.resources.values[player.resources.keys.index("Razings")])) + "/"+ int_to_str(int(player.resources.values[player.resources.keys.index("Buildings Lost")])) )]
+        if self.w_checkbox_game_time.isChecked():
+            result += [(EMPTY_BACKGROUND, lambda: str_time(GTime.time) + f" ({self.parent.game.speed})")]
         return result
     def update_info_panel(self):
         # Just update if over_panel is set
