@@ -20,20 +20,20 @@ Bartender is customizable overlay and it can be divided into four parts.
 
 
 # FAQ
-*Can I use it in singleplayer/records/multiplayer?*
-> Yes, yes, maybe.
+> Can I use it in singleplayer/records/multiplayer?
+*Yes, yes, maybe.*
 
-*How does it work?*
-> Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)
+> How does it work?
+*Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)*
 
-*Voobly version?*
-> I don't play on Voobly. Also, I think this won't be possible to use it in MP there.
+> Voobly version?
+*I don't play on Voobly. Also, I think this won't be possible to use it in MP there.*
 
-*Why did you create this addon?*
-> Age of Empires: II uses engine from the previous century. I just wanted to simplify UI to me and to other players.
+> Why did you create this addon?
+*Age of Empires: II uses engine from the previous century. I just wanted to simplify UI to me and to other players.*
 
-*This is cheating!*
-> It is not. Bartender does not provide you information about your enemy. 
+> This is cheating!
+*It is not. Bartender does not provide you information about your enemy.*
 
 # TODO
 
