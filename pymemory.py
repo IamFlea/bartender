@@ -6,9 +6,8 @@ Usage:
 
 import pymemory.pymemory as pm 
 pm.load_process("notepad.exe")
-with pm:
-    integer = pm.uint32(pm.base_address)
-    print(hex(integer))
+integer = pm.uint32(pm.base_address)
+print(hex(integer))
 
 TODO
     1) get information if the process is 64 bit or 32bit (AoK HD.exe should be always 32bit anyway)
@@ -139,16 +138,14 @@ class PyMemory(object):
         self.access = access if access else PyMemory.PROCESS_ALL_ACCESS
         self.process_name = process_name
         self.module_name = module_name
-
-    def __enter__(self):
+        """ Closes process handler if there is any """ 
+        if self.process_handle is not None:
+            windll.kernel32.CloseHandle(self.process_handle)
         """ Open process handler """ 
         self.process_handle = windll.kernel32.OpenProcess(self.access, False, self.pid)
         self.update()
-        return self
+        
 
-    def __exit__(self, type, value, traceback):
-        """ Closes process handler """ 
-        windll.kernel32.CloseHandle(self.process_handle)
 
     def buffer_load(self, address, size):
         # Care, size is in BYTES
@@ -381,7 +378,7 @@ class PyMemory(object):
         if type(regex) != type(re.compile("")):
             regex = re.compile(regex, re.IGNORECASE)
         if progress:
-            memory_regions = list(self._iter_memoryregion())
+            memory_regions = list(self._iter_memory_region_())
             total_chunk_size = sum(map(lambda x: x[1], memory_regions))
             processed_chunks = 0
             for offset, chunk in memory_regions:
@@ -391,7 +388,7 @@ class PyMemory(object):
                 processed_chunks += chunk
                 yield None, processed_chunks, total_chunk_size
         else:
-            for offset, chunk in self._iter_memoryregion():
+            for offset, chunk in self._iter_memory_region_():
                 stuff = self._getchunk(offset, chunk)
                 for res in regex.finditer(stuff):
                     yield res
@@ -430,11 +427,11 @@ pymemory = PyMemory()
 if __name__ == '__main__':
     proc_name = "AoK HD.exe"
     print(f"Loading: {proc_name}")
-    pymemory.load_process(proc_name)
-    with pymemory as pm:
-        print(f"PID: {pm.pid}")
-        print(f"Base address: {hex(pm.base_address)}")
-        result = pm.int32(pm.base_address)
-        result = pm.struct(pm.base_address, "II")
+    pm = pymemory
+    pm.load_process(proc_name)
+    print(f"PID: {pm.pid}")
+    print(f"Base address: {hex(pm.base_address)}")
+    result = pm.int32(pm.base_address)
+    result = pm.struct(pm.base_address, "II")
         #result = pm.re(b"\[\d{1,4}\] Kova")
 # EOF

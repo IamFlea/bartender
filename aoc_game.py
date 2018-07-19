@@ -130,7 +130,6 @@ if __name__ == '__main__':
     import time
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        game = Game()
-        if game is not None:
-            game.update()
+    game = Game()
+    if game is not None:
+        game.update()

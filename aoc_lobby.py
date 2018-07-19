@@ -195,21 +195,20 @@ if __name__ == '__main__':
     import time
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        lobby = Lobby()
-        lobby.update()
-        for player in lobby.players:
-            if player.name is None:
-                continue
-            try:
-                name = player.name.decode("utf-8").ljust(32)
-            except:
-                name = f"Player #{player.number}".ljust(32)
-            print(f"{name} {player.rating}")
-        
-        diff, string, teams = lobby.balance_minmax()
-        print(f"{diff}:: {string}:: {teams}")
+    lobby = Lobby()
+    lobby.update()
+    for player in lobby.players:
+        if player.name is None:
+            continue
+        try:
+            name = player.name.decode("utf-8").ljust(32)
+        except:
+            name = f"Player #{player.number}".ljust(32)
+        print(f"{name} {player.rating}")
+    
+    diff, string, teams = lobby.balance_minmax()
+    print(f"{diff}:: {string}:: {teams}")
 
-        diff, string, teams = lobby.balance_diff()
-        print(f"{diff}:: {string}:: {teams}")
+    diff, string, teams = lobby.balance_diff()
+    print(f"{diff}:: {string}:: {teams}")
         

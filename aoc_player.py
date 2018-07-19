@@ -217,8 +217,8 @@ if __name__ == '__main__' and False:
     from aoc_game import Game 
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        game = Game()
-        game.update()
+    
+    game = Game()
+    game.update()
 
 

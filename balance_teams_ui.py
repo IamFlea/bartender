@@ -181,27 +181,26 @@ class BalanceTeamsUi:
             print(err)
             print("Autoparsing was disabled. Try restarting when AoE2HD is running.")
         else:
-            with pm:
-                try:
-                    lobby.update()
-                except NullAddress:
-                    print("nulladdy")
-                else:
-                    for i, player in enumerate(lobby.players):
-                        if player.name is None:
-                            if player_var[i-1].get():
-                                player_var[i-1].set("")
-                            if rating_var[i-1].get():
-                                rating_var[i-1].set("")
-                            if team_var[i-1].get():
-                                team_var[i-1].set("")
-                            continue
-                        name = player.name.decode(encoding="utf-8", errors="replace")
-                        # try:
-                            # name = player.name.decode("utf-8")
-                        # except UnicodeDecodeError:
-                            # name = f"Player {player.number}"
-                        player_var[player.number-1].set(name)
+            try:
+                lobby.update()
+            except NullAddress:
+                print("nulladdy")
+            else:
+                for i, player in enumerate(lobby.players):
+                    if player.name is None:
+                        if player_var[i-1].get():
+                            player_var[i-1].set("")
+                        if rating_var[i-1].get():
+                            rating_var[i-1].set("")
+                        if team_var[i-1].get():
+                            team_var[i-1].set("")
+                        continue
+                    name = player.name.decode(encoding="utf-8", errors="replace")
+                    # try:
+                        # name = player.name.decode("utf-8")
+                    # except UnicodeDecodeError:
+                        # name = f"Player {player.number}"
+                    player_var[player.number-1].set(name)
             self.root.after(1000, BalanceTeamsUi.parse_lobby, self, player_var, rating_var, team_var, lobby)
 
     def resize_win(self, center=None):

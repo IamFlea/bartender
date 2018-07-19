@@ -199,7 +199,6 @@ class Bartender(QtWidgets.QMainWindow):
         self.app.exec_()
         
     def load_game(self):
-        # must be run in a block `with pm`
         try:
             self.game = Game()
             return True
@@ -302,8 +301,7 @@ if __name__ == '__main__' or True:
     bartender.load_process()
     if bartender.state == -1:
         sys.exit()
-    with pm:
-        bartender.run()
-        result = app.exec_()
+    bartender.run()
+    result = app.exec_()
     sys.exit(result)
 # EOF: bartender.py
