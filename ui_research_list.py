@@ -6,8 +6,10 @@ class ResearchList(IconList):
     def __init__(self, parent):
         super(ResearchList, self).__init__(parent)
         self.parent = parent
-        self.techs = parent.game.pov.research.done
-        self.game_obj_f = lambda: parent.game.pov.research.done
+
+    def load_game(self):
+        self.techs = self.parent.game.pov.research.done
+        self.game_obj_f = lambda: self.parent.game.pov.research.done
 
     def set_magical_timer(self, boolean):
         self.set_y_margin(boolean)

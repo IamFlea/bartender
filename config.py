@@ -6,6 +6,7 @@ AOK_PROCESS_NAME = "AoK HD.exe"
 # Path to this directory; This is used for getting pictures of icons.
 ospath = os.path.dirname(os.path.abspath(__file__))
 
+SAVE_IF_QUITING_THE_GAME = True
 SAVE_FILENAME = "./settings.txt"
 
 # Info panel icons directory

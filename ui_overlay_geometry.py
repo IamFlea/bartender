@@ -1,7 +1,7 @@
 from PyQt5 import Qt
 from win32gui import GetWindowRect, EnumWindows, GetWindowText
 from config import *
-
+import time
 class OverlayGeometry(object):
     WINDOW_FRAME_MARGIN = [8, 30, 16, 38] # LEFT, TOP, RIGHT, BOT
         
@@ -16,6 +16,9 @@ class OverlayGeometry(object):
             rect = GetWindowRect(hwnd)
             geometry = Qt.QRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
         EnumWindows(function, None) # Previous values are filled with this
+        if geometry is None:
+           time.sleep(1)               # Waiting 1 second
+           EnumWindows(function, None) # Previous values are filled with this
         return geometry
     
     def __new__(cls):
@@ -27,4 +30,7 @@ class OverlayGeometry(object):
                             geometry.height() - OverlayGeometry.WINDOW_FRAME_MARGIN[3])
         else:
             return geometry
+
+if __name__ == '__main__':
+    import bartender
     

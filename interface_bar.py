@@ -665,6 +665,7 @@ class InterfaceBar(QtWidgets.QWidget):
             objects = filter(lambda obj: obj in self.parent.game.pov.selected, objects)
         elif self.w_filter_selected.checkState() == 0:
             objects = filter(lambda obj: obj not in self.parent.game.pov.selected, objects)
+            
         if self.w_filter_group0.checkState() == 2:
             objects = filter(lambda obj: obj.group & 0x400, objects)
         elif self.w_filter_group0.checkState() == 0:

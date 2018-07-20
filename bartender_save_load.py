@@ -217,18 +217,27 @@ def save(bartender):
 
 
 global stuff
+def check_widget_geometry(widget, MAX_WIDTH, MAX_HEIGHT):
+    if widget.x() + widget.width() > MAX_WIDTH:
+        widget.setGeometry(MAX_WIDTH - widget.width(), widget.y(), widget.width(), widget.height())
+    if widget.y() + widget.height() > MAX_WIDTH:
+        widget.setGeometry(widget.x(), MAX_HEIGHT - widget.height(), widget.width(), widget.height())
 
 def load_geometry(bartender):        
     global stuff
+    MAX_WIDTH = bartender.overlay.width()
+    MAX_HEIGHT = bartender.overlay.height()
     cols, rows, x, y, expand_index = stuff[0]
     bartender.overlay.research_list.set_geomatry_by_grid(cols, rows)
     bartender.overlay.research_list.setGeometry(x, y, bartender.overlay.research_list.width(), bartender.overlay.research_list.height())
     bartender.overlay.research_list.set_expand_index(expand_index)
+    check_widget_geometry(bartender.overlay.research_list, MAX_WIDTH, MAX_HEIGHT)
 
     cols, rows, x, y, expand_index = stuff[1]
     bartender.overlay.research_bars.set_geomatry_by_grid(cols, rows)
     bartender.overlay.research_bars.setGeometry(x, y, bartender.overlay.research_bars.width(), bartender.overlay.research_bars.height())
     bartender.overlay.research_bars.set_expand_index(expand_index)
+    check_widget_geometry(bartender.overlay.research_bars, MAX_WIDTH, MAX_HEIGHT)
 
     for idx in range(1, bartender.w_tabs_settings.count()):
         widget = bartender.w_tabs_settings.widget(idx)
@@ -237,10 +246,12 @@ def load_geometry(bartender):
             widget.icon_list.set_geomatry_by_grid(cols, rows)
             widget.icon_list.setGeometry(x, y, widget.icon_list.width(), widget.icon_list.height())
             widget.icon_list.set_expand_index(expand_index)
+            check_widget_geometry(widget.icon_list, MAX_WIDTH, MAX_HEIGHT)
         elif type(widget) == InterfaceInfoPanel:
             widget.overlay_panel.setGeometry(cols, rows, x, y) # retarded i know
             widget.overlay_panel.set_expand_index(expand_index)
             widget.update_info_panel()
+            check_widget_geometry(widget.overlay_panel, MAX_WIDTH, MAX_HEIGHT)
 
 
 def load(bartender):

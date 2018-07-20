@@ -18,9 +18,10 @@ class Overlay(QtWidgets.QMainWindow):
     WINDOW_GEOMETRY_FPS = 10
     WINDOW_GEOMETRY_UPDATE_MS = lambda: int(1000 / Overlay.WINDOW_GEOMETRY_FPS) 
 
-    def __init__(self, settings, game):
+    def __init__(self, settings):
         super(Overlay, self).__init__()
-        self.game = game
+        self.game = None
+        self.game_running = False
         self.settings = settings
         self.widgets = {}
         self.research_bars = ResearchBars(self)
@@ -33,19 +34,30 @@ class Overlay(QtWidgets.QMainWindow):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground) 
         self.prev_window_size = self.width(), self.height()
-
-        # Updating stuff
-        self.update_timer = QtCore.QTimer()
-        self.update_timer.timeout.connect(self.update)
-        self.update_timer.start(Overlay.WINDOW_UPDATE_MS())
-
+    
         # Updating window position
         self.geometry_timer = QtCore.QTimer()
         self.geometry_timer.timeout.connect(self.update_geometry)
         self.geometry_timer.start(Overlay.WINDOW_GEOMETRY_UPDATE_MS())
         self.show()
+
+    def set_game(self, game):
+        self.game = game
+        self.research_list.load_game()
+        self.game_running = game is not None
+        if self.game_running:
+            # Updating stuff
+            self.update_timer = QtCore.QTimer()
+            self.update_timer.timeout.connect(self.update)
+            self.update_timer.start(Overlay.WINDOW_UPDATE_MS())
+            self.show()
+        
+        else:
+            self.update_timer.stop()
+            
         
     def update(self):
+
         self.game.update() # Get new data
         for idx in range(self.settings.w_tabs_settings.count()):
             interface_widget = self.settings.w_tabs_settings.widget(idx)
@@ -92,7 +104,7 @@ class Overlay(QtWidgets.QMainWindow):
         for key in self.widgets:
             self.widgets[key].set_movable(boolean)
         self.set_movable_research_bars(boolean)
-        #self.set_movable_research_list(boolean)
+        self.set_movable_research_list(boolean)
         self.show()
 
     def set_movable_research_bars(self, boolean):

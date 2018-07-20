@@ -37,7 +37,7 @@ class IconList(QOverlayWidget):
         self.show_idle_time = boolean
         self.y_margin = IDLE_COUNTER_HEIGHT + SPACE_BETWEEN_COUNTER_AND_ICON if self.show_idle_time else 0
         self.set_geomatry_by_grid(self.cols, self.rows)
-        if self.parent.game.running:
+        if self.parent.game_running:
             self.check_icons([])            
 
     def set_right_margin(self, boolean):
@@ -46,7 +46,7 @@ class IconList(QOverlayWidget):
         self.add_width = boolean
         self.right_margin = SPACE_BETWEEN_ICON_AND_BAR + RESEARCH_BAR_WIDTH if boolean else 0
         self.set_geomatry_by_grid(self.cols, self.rows)
-        if self.parent.game.running:
+        if self.parent.game_running:
             self.check_icons([])      
 
     def set_geomatry_by_grid(self, cols, rows):
