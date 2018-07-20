@@ -28,6 +28,8 @@ class Color(object):
         self.unique = pm.int32(pm.pointer(owner.ptr + 0x100) + 0x8)
         self.color_address = pm.pointer(owner.ptr + 0xFC)
         self.in_game = pm.int32(self.color_address + 0x8)
+        self.color = self.in_game
+
         
     def __repr__(self):
         return Color.table[self.in_game]

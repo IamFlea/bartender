@@ -3,6 +3,22 @@
 """ aoc_research.py: researches """ 
 from pymemory import pymemory as pm
 from aoc_time import GTime
+from collections import defaultdict
+
+class Technology(object):
+    """docstring for Technology"""
+    def __init__(self, owner, id, icon, time, total_time=None, cooldown=None):
+        super(Technology, self).__init__()
+        self.update(owner, id, icon, time, total_time, cooldown)
+
+    def update(self, owner, id, icon, time, total_time=None, cooldown=None):
+        self.owner = owner
+        self.id = id
+        self.icon = icon
+        self.time = time
+        self.total_time = total_time
+        self.cooldown = cooldown   
+        
 
 class Research(object):
     """
@@ -13,7 +29,8 @@ class Research(object):
             length          Length of research struct (should be constant to all players)
             ptr_researches  Pointer to researches # common to all players
             id_list         Currently researched techs - id list
-            progression     Currently researched techs
+            dictionary      Currently researched techs - dict
+            progression     Currently researched techs - list
             done            Technologies done
         method
             __init__        Construcotr, requires owner (`Player` struct) as argument
@@ -21,6 +38,8 @@ class Research(object):
             update          Updates times
 
     """
+
+
     def __init__(self, owner):
         super(Research, self).__init__()
         self.owner = owner
@@ -29,6 +48,7 @@ class Research(object):
         self.length = pm.int32(ptr + 0x4)
         self.ptr_researches  = pm.pointer(pm.pointer(ptr + 0x8))   # struct size: 0x54 
         self.id_list = []
+        self.dictionary = {}
         self.progression = []
         self.done = []
         # self.ptr_researches should be the same address for each plaeyr
@@ -39,7 +59,8 @@ class Research(object):
             
 
     def update(self):
-        self.progression.clear()
+        for key in self.dictionary:
+            self.dictionary[key].delete = True
         delete = []
         for id in self.id_list:
             time = pm.float(self.ptr_times + 0x10 * id)
@@ -49,23 +70,23 @@ class Research(object):
             if time == 0.0:
                 delete.append(id)
             elif total_time > time:
-                self.progression.append([id, icon, time, total_time, cooldown])
+                if id not in self.dictionary:
+                    self.dictionary[id] = Technology(self.owner, id, icon, time, total_time, cooldown)
+                else:
+                    self.dictionary[id].update(self.owner, id, icon, time, total_time, cooldown)
+                self.dictionary[id].delete = False
             else:
-                self.done.append([id, icon, GTime.time])
+                self.done.append(Technology(self.owner, id, icon, GTime.time))
                 delete.append(id)
         for id in delete: 
             self.id_list.remove(id)
+        delete = []
+        for key in self.dictionary:
+            if self.dictionary[key].delete:
+                delete += [key]
+        for key in delete:
+            del self.dictionary[key]
+        self.progression = list(self.dictionary.values())
 
 if __name__ == '__main__':
     import bartender
-    exit(1)
-    from aoc_game import Game 
-    proc_name = "AoK HD.exe"
-    pm.load_process(proc_name)
-    with pm:
-        game = Game()
-        game.update()
-
-
-
-        

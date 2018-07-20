@@ -6,9 +6,8 @@ Usage:
 
 import pymemory.pymemory as pm 
 pm.load_process("notepad.exe")
-with pm:
-    integer = pm.uint32(pm.base_address)
-    print(hex(integer))
+integer = pm.uint32(pm.base_address)
+print(hex(integer))
 
 TODO
     1) get information if the process is 64 bit or 32bit (AoK HD.exe should be always 32bit anyway)
@@ -61,6 +60,7 @@ class PyMemory(object):
             self.pointer = self.__pointer_no_leaks__
             self.buff_pointer = self.__buff_pointer_no_leaks__
 
+        self.mbi_table = []
     def __get_pid__(process_name):
         """ Returns `PID` from the process name. """
         #PSAPI.DLL
@@ -88,7 +88,10 @@ class PyMemory(object):
             if hProcess:
                 psapi.EnumProcessModules(hProcess, byref(hModule), sizeof(hModule), byref(count))
                 psapi.GetModuleBaseNameA(hProcess, hModule.value, modname, sizeof(modname))
-                name = modname.raw.split(b"\x00")[0].decode("utf-8")
+                try:
+                    name = modname.raw.split(b"\x00")[0].decode("utf-8")
+                except UnicodeDecodeError:
+                    continue
                 modname = c_buffer(64)
                 if name == process_name:
                     return pid
@@ -123,7 +126,7 @@ class PyMemory(object):
                 return result
             ret = windll.kernel32.Module32Next(hModuleSnap, pointer(me32))
         windll.kernel32.CloseHandle(hModuleSnap)
-        raise ProcessLookupError(f"Process `{process_name}` not found.")
+        raise ProcessLookupError(f"Process base address not found.")
         
     def load_process(self, process_name, module_name=None, access=None):
         """ Loads PID and base address and set access"""
@@ -135,16 +138,14 @@ class PyMemory(object):
         self.access = access if access else PyMemory.PROCESS_ALL_ACCESS
         self.process_name = process_name
         self.module_name = module_name
-
-    def __enter__(self):
+        """ Closes process handler if there is any """ 
+        if self.process_handle is not None:
+            windll.kernel32.CloseHandle(self.process_handle)
         """ Open process handler """ 
         self.process_handle = windll.kernel32.OpenProcess(self.access, False, self.pid)
         self.update()
-        return self
+        
 
-    def __exit__(self, type, value, traceback):
-        """ Closes process handler """ 
-        windll.kernel32.CloseHandle(self.process_handle)
 
     def buffer_load(self, address, size):
         # Care, size is in BYTES
@@ -322,6 +323,7 @@ class PyMemory(object):
         if not VirtualQueryEx(self.process_handle, ptr, byref(mbi), sizeof(mbi)):
             print(f"Error VirtualQueryEx: {ptr}")
             raise
+
         return mbi
 
     def _iter_memory_region_(self):
@@ -369,18 +371,27 @@ class PyMemory(object):
                 return b""
         return result
 
-    def re(self, regex): 
-        """ Bruteforce search in memory 
-        regex must be binary string 
+    def re(self, regex, progress=False):
+        """ Bruteforce search in memory
+        regex must be binary string
         """
         if type(regex) != type(re.compile("")):
             regex = re.compile(regex, re.IGNORECASE)
-
-        for offset, chunk in self._iter_memory_region_():
-            stuff = self._get_chunk_(offset, chunk)
-            for res in regex.finditer(stuff):
-                yield res
-        # Get the boundaries
+        if progress:
+            memory_regions = list(self._iter_memory_region_())
+            total_chunk_size = sum(map(lambda x: x[1], memory_regions))
+            processed_chunks = 0
+            for offset, chunk in memory_regions:
+                stuff = self._getchunk(offset, chunk)
+                for res in regex.finditer(stuff):
+                    yield res, processed_chunks, total_chunk_size
+                processed_chunks += chunk
+                yield None, processed_chunks, total_chunk_size
+        else:
+            for offset, chunk in self._iter_memory_region_():
+                stuff = self._getchunk(offset, chunk)
+                for res in regex.finditer(stuff):
+                    yield res
 
     def __update_no_leaks__(self):
         memory_regions = [(start, start+length) for start, length in self._iter_memory_region_()]
@@ -416,11 +427,10 @@ pymemory = PyMemory()
 if __name__ == '__main__':
     proc_name = "AoK HD.exe"
     print(f"Loading: {proc_name}")
-    pymemory.load_process(proc_name)
-    with pymemory as pm:
-        print(f"PID: {pm.pid}")
-        print(f"Base address: {hex(pm.base_address)}")
-        result = pm.int32(pm.base_address)
-        result = pm.struct(pm.base_address, "II")
-        #result = pm.re(b"\[\d{1,4}\] Kova")
+    pm = pymemory
+    pm.load_process(proc_name)
+    print(f"PID: {pm.pid}")
+    print(f"Base address: {hex(pm.base_address)}")
+    result = pm.int32(pm.base_address)
+    result = pm.struct(pm.base_address, "II")
 # EOF

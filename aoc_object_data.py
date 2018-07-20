@@ -6,7 +6,8 @@ from pymemory import pymemory as pm
 from aoc_object_consts import * 
 from aoc_resources import *
 from aoc_object_clist import *
-    
+from config import ospath
+
 class UnitData(object):
     """ Returns none if the class is annexed building  (Gate is composed of three buldings )
     Metadata of object
@@ -25,7 +26,7 @@ class UnitData(object):
             armor   `Armor` structure - list of tuples [armor, class]
             attack  `Attack` structure - list of tuples [attack, class]
             speed   Speed of the unit
-            train_time      Train time 
+            train_time      Train time  (Also construction time if this is a building)
         private
             __name  Saved name. 
     Properties 
@@ -68,39 +69,22 @@ class UnitData(object):
         # But superclass is different for trebuchet in this script for reasons... 
         if self.class_ in ClassData.trebuchets:
             self.superclass = SuperclassData.combatant
-        #self.armor = Armor(self)
-        #self.attack = Attack(self)
-        #self.costs = Costs(self)
+        self.armor = Armor(self)
+        self.attack = Attack(self)
+        self.costs = Costs(self)
         self.speed = 0.0 
         self.train_time = 0
         if self.superclass in [SuperclassData.building, SuperclassData.combatant]:
             self.speed = pm.float(ptr + 0xe8)
             self.train_time = pm.int16(ptr + 0x19e)
         
-    
     @property
     def name(self):
-        if self.__name:
-            return self.__name
-        # Get all names, just once
-        if UnitData.all_names is None:
-            length = 0x42F06B8-0x41f0000
-            p = pm.pointer(pm.base_address + 0x009CB8E0)
-            p = pm.pointer(p + 0xa0)
-            p = pm.pointer(p)
-            bufflen = PyMemory.BUFFER_SIZE
-            UnitData.all_names = b""
-            for i in range(length//bufflen + (length%bufflen > 0)):
-                pm.buffer_load(p + i*bufflen, bufflen)
-                UnitData.all_names += pm.buffer
-            
-
-        # Get the real name from the big structure
-        string = str.encode(str(self.name_id))
-        x = UnitData.all_names.index(string) + len(string) + 2
-        y = UnitData.all_names.index(b"\x00", x)
-        self.__name = UnitData.all_names[x:y].decode("utf-8")
-        return self.__name
+        name_id = str(self.name_id) + " "
+        with open(ospath + "/game_strings.txt", encoding="utf8") as file:
+            for line in file:
+                if line[:len(name_id)] == name_id:
+                    return line[len(name_id) +1:-2]
 
 
 if __name__ == '__main__':
