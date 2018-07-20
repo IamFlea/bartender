@@ -773,7 +773,7 @@ class InterfaceBar(QtWidgets.QWidget):
         name = dropdown_widget.currentText()
         function = {"None"             : lambda obj: "",
                     "Queue"            : lambda obj: int_to_str(obj.queue.length) if obj.queue else "",
-                    "Cooldown"         : lambda obj: str(obj.research.cooldown) if obj.research else (str(obj.training.cooldown) if obj.training else ""),
+                    "Cooldown"         : lambda obj: str(obj.research.cooldown) if obj.research else (str(obj.training.cooldown) if obj.training else (int_to_str(obj.construction) if obj.construction else "")),
                     "Carrying Res."    : lambda obj: int_to_str(obj.resource_amount) if obj.resource_amount else "",
                     "Resource Type"    : lambda obj: str(obj.resource_type)[0] if len(obj.resource_type) else "",
                     "Hit Points"       : lambda obj: int_to_str(obj.hp) if obj.hp else "",
