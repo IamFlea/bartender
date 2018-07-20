@@ -195,7 +195,7 @@ class Bartender(QtWidgets.QMainWindow):
         self.w_button_new_bar.setHidden(False)
         # Tab widget
         self.w_tabs_settings.setHidden(False)
-    
+        
         # Load Overlay and UI from settings.txt
         load(self)
         self.start_overlay()
@@ -301,9 +301,16 @@ class Bartender(QtWidgets.QMainWindow):
         # Loop
         elif self.state == 4:
             if not self.game.running:
+                #self.overlay.set_game(None)
                 self.overlay.deleteLater()
-                self.overlay = None
-                self.state = -1
+                del self.overlay
+
+                self.start_overlay()
+                self.update_overlay_widgets()
+                self.researches_policy()
+                load_geometry(self)
+                self.show()
+                self.state = 0
                 
 
     def run(self):

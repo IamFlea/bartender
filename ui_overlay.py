@@ -41,11 +41,12 @@ class Overlay(QtWidgets.QMainWindow):
         self.geometry_timer.start(Overlay.WINDOW_GEOMETRY_UPDATE_MS())
         self.show()
 
+    
     def set_game(self, game):
         self.game = game
-        self.research_list.load_game()
         self.game_running = game is not None
         if self.game_running:
+            self.research_list.load_game()
             # Updating stuff
             self.update_timer = QtCore.QTimer()
             self.update_timer.timeout.connect(self.update)
