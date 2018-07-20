@@ -3,6 +3,10 @@ from interface_bar import InterfaceBar
 from interface_info_panel import InterfaceInfoPanel
 
 def save(bartender):
+    if bartender.overlay is None:
+        print("<Save> The game was not runing! I am not saving the settings!")
+        return
+
     with open(SAVE_FILENAME, 'w') as f: 
         w = lambda x: f.write(str(x) +"\n")
         # Saving data - completed researches
