@@ -11,8 +11,8 @@ class InfoPanel(QOverlayWidget):
     
     HEIGHT = 20
 
-    def __init__(self, parent):
-        super(InfoPanel, self).__init__(parent, resizable=False)
+    def __init__(self, name, parent):
+        super(InfoPanel, self).__init__(name, parent, resizable=False)
         self.panel_info_f = lambda : []
         self.list = OrderedDict()
         self.list_size_prev = 0

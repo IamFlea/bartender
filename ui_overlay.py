@@ -24,8 +24,8 @@ class Overlay(QtWidgets.QMainWindow):
         self.game_running = False
         self.settings = settings
         self.widgets = {}
-        self.research_bars = ResearchBars(self)
-        self.research_list = ResearchList(self)
+        self.research_bars = ResearchBars("Researches", self)
+        self.research_list = ResearchList("Technologies", self)
         #IconCooldownCount.game = game
         #print("Initing Overlay")
         # Sets windows stuff
@@ -68,7 +68,7 @@ class Overlay(QtWidgets.QMainWindow):
 
     def create_overlay_widget(self, widget_type, settings):
         if settings not in self.widgets:
-            self.widgets[settings] = widget_type(self)
+            self.widgets[settings] = widget_type(settings.w_text_name.text(), self)
             settings.bind_widget(self.widgets[settings])
             self.widgets[settings].show()
     

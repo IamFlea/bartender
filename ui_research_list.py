@@ -3,8 +3,8 @@ from ui_iconlist import IconList
 from aoc_time import str_time
 class ResearchList(IconList):
     """docstring for ResearchList"""
-    def __init__(self, parent):
-        super(ResearchList, self).__init__(parent)
+    def __init__(self, name, parent):
+        super(ResearchList, self).__init__(name, parent)
         self.parent = parent
 
     def load_game(self):

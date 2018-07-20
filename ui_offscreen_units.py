@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtCore, Qt, QtGui
 from aoc_object_consts import GROUPS
 from ui_icon_offscreen_unit import IconOffscreenUnit
 class OverlayOffscreenUnits(QtWidgets.QWidget):
-    def __init__(self, parent):
+    def __init__(self, name, parent):
         super(OverlayOffscreenUnits, self).__init__(parent)
         self.parent = parent
         self.get_icons = lambda : {}

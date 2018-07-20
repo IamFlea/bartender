@@ -15,8 +15,9 @@ class IconList(QOverlayWidget):
     DEFAULT_COLS = 5
     DEFAULT_ROWS = 2
 
-    def __init__(self, parent):
-        super(IconList, self).__init__(parent)
+    def __init__(self, name, parent):
+        super(IconList, self).__init__(name, parent)
+        self.name = name
         self.y_margin = 0 
         self.right_margin = 0
         self.set_geomatry_by_grid(IconList.DEFAULT_COLS, IconList.DEFAULT_ROWS)

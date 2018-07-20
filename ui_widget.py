@@ -4,15 +4,17 @@ class QOverlayWidget(QtWidgets.QWidget):
     """docstring for QOverlayWidget"""
     GRIP_PX = 10 # Size of grip for resizing these widgets (in pixels)
     EXPAND_LIST = ["→↓", "→↑", "←↓", "←↑", "↓←", "↑←", "↓→", "↑→", ]
-    def __init__(self, parent, resizable=True):
+    def __init__(self, name, parent, resizable=True):
         super(QOverlayWidget, self).__init__(parent)
         self.parent = parent
+        self.name = name
         # Adds background widget
 
         # Creates a movable stuff
         self.drag_widget = QtWidgets.QWidget(self)
         self.drag_widget.setStyleSheet("background-color: rgba(255,180,0,164);")
         self.drag_widget.setVisible(False)
+        self.label = QtWidgets.QLabel(self.name, self.drag_widget)
         # Sets grip (white area)
         if resizable: 
             self.grip = QtWidgets.QWidget(self.drag_widget)

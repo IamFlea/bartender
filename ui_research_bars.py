@@ -6,8 +6,8 @@ class ResearchBars(IconList):
     DEFAULT_COLS = 1
     DEFAULT_ROWS = 5
 
-    def __init__(self, parent):
-        super(ResearchBars, self).__init__(parent)
+    def __init__(self, name, parent):
+        super(ResearchBars, self).__init__(name, parent)
         self.aggr = False
         self.parent = parent 
         self.game_obj_f = lambda: parent.game.pov.research.progression
