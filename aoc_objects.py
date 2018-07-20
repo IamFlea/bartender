@@ -83,15 +83,15 @@ class Objects(list):
 
     def _create_(ptr_object, owner):
         """Creates an element of the list. """
-        # Checks if the pointer is correct
-        if ptr_object == 0:
+        # Checks if the pointer is correct OR the object is deleted
+        if ptr_object == 0 or pm.int16(ptr_object+10) == -1:
             return None
         # Load new data
         try:
             ptr = pm.uint32(ptr_object + 0xC)
             udata = UnitData(pm.pointer(ptr_object + 0xC), owner)
         except: 
-            print(f"BEEP - Wrong address obj.udata = {hex(ptr)} (For object: {hex(ptr_object)})")
+            print(f"BEEP - Wrong address obj.udata = {hex(ptr)} (For object: {hex(ptr_object)} Object ID: {(pm.int16(ptr_object+10))})")
             return None
         if udata is None:
             return None
