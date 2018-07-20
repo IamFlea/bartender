@@ -19,7 +19,10 @@ def str_time(time):
     time, ms = time//1000, time%1000
     time, s = time//60, time%60
     h, m = time//60, time%60
-    return str(h).zfill(2) + ":" + str(m).zfill(2) +":"+ str(s).zfill(2) +"."+ str(ms).zfill(3)
+    if h:
+        return str(h) +":" + str(m).zfill(2)+":"+ str(s).zfill(2)
+    else:
+        return str(h) +":" + str(m).zfill(2)+":"+ str(s).zfill(2)# str(m).zfill(2) +":"+ str(s).zfill(2) 
 
 def str_idle(time):
     time, ms = time//1000, time%1000

@@ -96,16 +96,30 @@ class Lobby(object):
                     p.rating = mode(dict_ratings[p.name])
                 else:
                     p.rating = None
-            
-        
 
     def balance_diff(self):
+        """Calculate balanced teams based on (rating) numbers.
+
+        Supports 2-8 players (1v1 to 4v4).
+        Expects a list with an even number of up to 8 values,
+        raises a TypeError when not supplied with a list of integers and
+        raises a ValueError when supplied numbers are violating this rule.
+        Returns a list (values are integers):
+        [[Teams], Difference, [Team1 numbers], [Team2 numbers]]
+        Uses bruteforce for optimal balancing (up to 35 teams for 8 players).
+        """
         if self.up:
             self.update_ratings()
             self.up = False
+
         ratings = list(map(lambda x: x.rating, filter(lambda x: x.rating, self.players)))
         players = list(range(1, len(ratings)+1))
         splitting = len(players)//2
+        
+        if len(ratings) > 8:
+            raise ValueError("No more than 8 players are supported.")
+        if len(ratings) % 2 != 0:
+            raise ValueError("Only an even number of players is supported.")
 
         # Different value between ratings
         diff = float('inf')
@@ -113,16 +127,19 @@ class Lobby(object):
         # Best found team split
         team1 = []
         team2 = []
+        ratings_sum = lambda team: sum(map(lambda x: x[0], team))
+        # Only half of every possible combination is needed because the other half
+        # would redundantly calculate B vs A when A vs B was already calculated.
+        max_number_of_combinations = {2:1, 4:3, 6:10, 8:35}[len(ratings)]
         # Iterate through each combination
-        # Checking out over 70 solutions for 8 players
-        for i in combinations(zip(ratings, players), splitting):
-            current_team1 = i
+        for combination in list(combinations(zip(ratings, players), splitting))[:max_number_of_combinations]:
+            current_team1 = combination
             current_team2 = list(filter(lambda x: not(x in current_team1), zip(ratings, players)))
             # Calculate current different value
-            d = abs(sum(map(lambda x: x[0], current_team1)) - sum(map(lambda x: x[0], current_team2)))
+            current_diff = abs(ratings_sum(current_team1) - ratings_sum(current_team2))
             # Found better solution
-            if d < diff:
-                diff = d
+            if current_diff < diff:
+                diff = current_diff
                 team1 = current_team1
                 team2 = current_team2
         teams = [team1, team2]
@@ -178,21 +195,20 @@ if __name__ == '__main__':
     import time
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        lobby = Lobby()
-        lobby.update()
-        for player in lobby.players:
-            if player.name is None:
-                continue
-            try:
-                name = player.name.decode("utf-8").ljust(32)
-            except:
-                name = f"Player #{player.number}".ljust(32)
-            print(f"{name} {player.rating}")
-        
-        diff, string, teams = lobby.balance_minmax()
-        print(f"{diff}:: {string}:: {teams}")
+    lobby = Lobby()
+    lobby.update()
+    for player in lobby.players:
+        if player.name is None:
+            continue
+        try:
+            name = player.name.decode("utf-8").ljust(32)
+        except:
+            name = f"Player #{player.number}".ljust(32)
+        print(f"{name} {player.rating}")
+    
+    diff, string, teams = lobby.balance_minmax()
+    print(f"{diff}:: {string}:: {teams}")
 
-        diff, string, teams = lobby.balance_diff()
-        print(f"{diff}:: {string}:: {teams}")
+    diff, string, teams = lobby.balance_diff()
+    print(f"{diff}:: {string}:: {teams}")
         

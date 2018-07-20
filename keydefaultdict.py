@@ -10,6 +10,6 @@ class keydefaultdict(defaultdict):
 
 if __name__ == '__main__':
     d = keydefaultdict(list)
-    result = d["Hi"]
-    print(result)
+    result = d["Hire"]
+    print(d)
     print(list("Hi"))

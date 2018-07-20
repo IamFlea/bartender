@@ -4,7 +4,7 @@
 from pymemory import pymemory as pm
 from collections import defaultdict
 
-
+from aoc_time import GTime 
 class Primitive(object): # game object
     """
     Class variables
@@ -37,7 +37,7 @@ class Primitive(object): # game object
             1: "Wood",
             2: "Stone",
             3: "Gold",
-            -1: None
+            -1: ""
         }) 
 
     def __init__(self, ptr, owner, udata): 
@@ -51,19 +51,29 @@ class Primitive(object): # game object
         # Load data
         self.id = pm.int32(ptr + 0x8) # Game ID keeps unchanged, no need for update
         self.hp = pm.float(ptr + 0x34)
+        self.selected = pm.int8(ptr +0x3a)
         self.status = pm.int8(ptr + 0x4C)
         # Load consts
         self.idle = False
         self.idle_time = 0
         self.idle_total_time = 0
+        self.busy_time = 0
+        self.busy_total_time = 0
         self.garrison = []
-
+        self.research = None 
+        self.training = None
+        self.queue = None
+        self.construction = None
+        self.group = 0
+        self.created_time = GTime.time
+        self.resource_amount = 0
+        self.resource_type = ""
+        
     def update(self):
         self.prev_hp = self.hp
         self.hp = pm.float(self.ptr + 0x34)
         self.status = pm.int8(self.ptr + 0x4C)
-        self.resource = (pm.float(self.ptr + 0x48), pm.int8(self.ptr + 0x50)) # ??, type
+        self.resource_amount = pm.float(self.ptr + 0x48)
+        self.resource_type = Primitive.ResourceTable[pm.int8(self.ptr + 0x50)]
         self.position = pm.struct(self.ptr + 0x3c, "ff")
-
-if __name__ == '__main__':
-    import bartender
+        self.selected = pm.int8(self.ptr + 0x3a)

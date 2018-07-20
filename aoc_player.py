@@ -73,6 +73,7 @@ class Player(object):
                             Fills all the lists
 
     """
+    SINGLE_PLAYER = True
     def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
@@ -108,6 +109,8 @@ class Player(object):
         self.selected = None
         
     def __analyze_objects__(self):
+        #import time
+        #now = time.time()
         # This algorithms are optimal in the terms of typing... 
         # else it sucks cuy it has a big time complexity, could be reduced 20 times.. 
         self.buildings_all = list(filter(lambda obj: obj.udata.superclass == SuperclassData.building, self.objects)) 
@@ -119,7 +122,8 @@ class Player(object):
         self.villagers = list(filter(lambda obj: obj.udata.class_ in ClassData.villagers, self.civilians))
         self.military = list(filter(lambda obj: obj.udata.class_ in ClassData.military, self.units))
         #self.military = set(self.units) - set(self.civilians)  # counts sheep as military units too hahahha
-        # Villagers
+        #self.pikes = list(filter(lambda obj: obj.udata.class_ == , self.military))
+        # Villagers (with idles!)
         self.vill_wood = list(filter(lambda obj: obj.udata.id in IdData.vill_wood, self.villagers))
         self.vill_food = list(filter(lambda obj: obj.udata.id in IdData.vill_food, self.villagers))
         self.vill_gold = list(filter(lambda obj: obj.udata.id in IdData.vill_gold, self.villagers))
@@ -141,16 +145,49 @@ class Player(object):
         self.blacksmiths = list(filter(lambda obj: obj.udata.id in IdData.blacksmiths, self.buildings))
         self.university = list(filter(lambda obj: obj.udata.id in IdData.university, self.buildings))
         self.town_centers = list(filter(lambda obj: obj.udata.id in IdData.town_centers, self.buildings))
-        self.towers = list(filter(lambda obj: obj.udata.id in IdData.towers, self.buildings))
-        self.constructions = list(filter(lambda obj: obj.construction, self.buildings_all))
+        self.towers = list(filter(lambda obj: obj.udata.id in IdData.towers, self.buildings_all))
+        self.gates = list(filter(lambda obj: obj.udata.id in IdData.gates, self.buildings_all))
+        self.walls = list(filter(lambda obj: obj.udata.id in IdData.walls, self.buildings_all))
+        self.swordsmen = list(filter(lambda obj: obj.udata.id in IdData.swordsmen, self.units))
+        self.pikemen = list(filter(lambda obj: obj.udata.id in IdData.pikemen, self.units))
+        self.eagles = list(filter(lambda obj: obj.udata.id in IdData.eagles, self.units))
+        self.huskarls = list(filter(lambda obj: obj.udata.id in IdData.huskarls, self.units))
+        self.condottieros = list(filter(lambda obj: obj.udata.id in IdData.condottieros, self.units))
+        self.light_cavalry = list(filter(lambda obj: obj.udata.id in IdData.light_cavalry, self.units))
+        self.heavy_cavalry = list(filter(lambda obj: obj.udata.id in IdData.heavy_cavalry, self.units))
+        self.camels = list(filter(lambda obj: obj.udata.id in IdData.camels, self.units))
+        self.tarkans = list(filter(lambda obj: obj.udata.id in IdData.tarkans, self.units))
+        self.slingers = list(filter(lambda obj: obj.udata.id in IdData.slingers, self.units))
+        self.archers = list(filter(lambda obj: obj.udata.id in IdData.archers, self.units))
+        self.skirmishers = list(filter(lambda obj: obj.udata.id in IdData.skirmishers, self.units))
+        self.cavalry_archers = list(filter(lambda obj: obj.udata.id in IdData.cavalry_archers, self.units))
+        self.genitours = list(filter(lambda obj: obj.udata.id in IdData.genitours, self.units))
+        self.hand_cannoneers = list(filter(lambda obj: obj.udata.id in IdData.hand_cannoneers, self.units))
+        self.siege_rams = list(filter(lambda obj: obj.udata.id in IdData.rams, self.units))
+        self.onagers = list(filter(lambda obj: obj.udata.id in IdData.onagers, self.units))
+        self.scorpions = list(filter(lambda obj: obj.udata.id in IdData.scorpions, self.units))
+        self.bombard_cannons = list(filter(lambda obj: obj.udata.id in IdData.bombard_cannons, self.units))
+        self.siege_towers = list(filter(lambda obj: obj.udata.id in IdData.siege_towers, self.units))
+        self.war_ships = list(filter(lambda obj: obj.udata.id in IdData.war_ships, self.units))
+        self.fire_ships = list(filter(lambda obj: obj.udata.id in IdData.fire_ships, self.units))
+        self.demolition_ships = list(filter(lambda obj: obj.udata.id in IdData.demolition_ships, self.units))
+        self.cannon_galleons = list(filter(lambda obj: obj.udata.id in IdData.cannon_galleons, self.units))
+        self.unique_unit_ships = list(filter(lambda obj: obj.udata.id in IdData.dock_unique_units, self.units))
+        self.petards = list(filter(lambda obj: obj.udata.id in IdData.petards, self.units))
+        self.trebuchets = list(filter(lambda obj: obj.udata.id in IdData.trebuchets, self.units))
+        self.unique_units = list(filter(lambda obj: obj.udata.id in IdData.caslte_unique_units, self.units))
+        self.monks = list(filter(lambda obj: obj.udata.id in IdData.monks, self.units))
+        self.transport_ships = list(filter(lambda obj: obj.udata.id in IdData.transport_ships, self.units))
+        self.livestock = list(filter(lambda obj: obj.udata.class_ in ClassData.livestock, self.units)) 
+        #self.constructions = list(filter(lambda obj: obj.construction, self.buildings_all))
         # get army
-        self.army = {}
-        for unit in self.military:
-            if unit.udata.id in self.army:
-                self.army[unit.udata.id] += [unit]
-            else:
-                self.army[unit.udata.id] = [unit]
-
+        #self.army = {}
+        #for unit in self.military:
+        #    if unit.udata.id in self.army:
+        #        self.army[unit.udata.id] += [unit]
+        #    else:
+        #        self.army[unit.udata.id] = [unit]
+        #print(time.time()-now)
         
     def update(self, market): 
         self.housed = False
@@ -158,13 +195,19 @@ class Player(object):
         self.resources.update()
         self.color.update()
         with self.objects:
-            self.objects.update()
+            if Player.SINGLE_PLAYER:
+                if self.pov:
+                    self.objects.update()    
+            else:
+                self.objects.update()
         self.__analyze_objects__()
         self.research.update()
         self.farm_reseeds = pm.int16(self.ptr + 0x2708)
         self.selected = Objects.selected
         #self.selected = [item for item in objects.selected]  # if buggy
         #print(self.selected)
+
+    
 
         
 if __name__ == '__main__' and True:
@@ -174,8 +217,8 @@ if __name__ == '__main__' and False:
     from aoc_game import Game 
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        game = Game()
-        game.update()
+    
+    game = Game()
+    game.update()
 
 

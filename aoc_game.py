@@ -89,6 +89,7 @@ class Game(object):
         
     def update(self):
         # Check if the game is running 
+        pm.update()
         if not pm.int32(pm.base_address + 0x9C8FB0):
             self.running = False
             return False
@@ -99,7 +100,11 @@ class Game(object):
         except NullAddress:
             self.running = False
             return False
-            
+
+        # Third check. Time
+        if pm.int32(ptr + 0x68) <= 0:
+            return False
+
         self.running = True
         # And get the common stuff
         GTime.set(pm.int32(ptr + 0x68))
@@ -125,7 +130,6 @@ if __name__ == '__main__':
     import time
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    with pm:
-        game = Game()
-        if game is not None:
-            game.update()
+    game = Game()
+    if game is not None:
+        game.update()

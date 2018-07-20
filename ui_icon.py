@@ -1,136 +1,76 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from aoc_time import *
-from time import time
+# Class inherience
+from ui_icon_graphics import IconGraphics
+# For typecheck
+from aoc_object_building import Building
+from aoc_object_building_research import BuildingResearch
+from aoc_object_building_queue import UnitQueue
+from aoc_object_unit import Unit
+from aoc_object_primitive import Primitive
+from aoc_research import Technology
 
-from ui_consts import *
+class Icon(IconGraphics):
+    """Adapter? between the Icon and GameObjects """
+    def __init__(self, parent, x, y, game_object=None, idle_time = True, dont_change_icon = False, highlight_selected=False):
+        """
+        @param parent  - parent widget
+        @param x, y    - position in the grid i.e [0,0] [0,1] .. [1,2].. 
+        """
+        super(Icon, self).__init__(parent, x, y, idle_time)
+        self.object = game_object if game_object is not list else game_object[0]
 
-adj = 20
-class IconCooldownCount(QtWidgets.QWidget):
-    game = None
-    """docstring for IconCooldownCount"""
-    def __init__(self, parent, x, y, obj, show_idle=True):
-        super(IconCooldownCount, self).__init__(parent) 
-        self.adj = adj if show_idle else 0
-        self.show_idle = show_idle
-        self.setGeometry(x*42,  y*42, 42, self.adj + 42)
-        self.position = (x*42, y*42)
-        #print(self.position)
-        self.delete = False
-        self.object = obj
-        self.scn = QtWidgets.QGraphicsScene()
-        #self.owner_color = self.object.owner.color.unique
-        self.owner_color = self.object.owner.color.in_game
-        view = QtWidgets.QGraphicsView(self.scn, self)
-        view.setStyleSheet("border: 0px; background: transparent")
-        view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        view.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
-        view.setGeometry(0, 0, 42, self.adj +42)
-        self.view = view
-    
-        self.show()
+        self.show_training = not dont_change_icon  # Huh? Refactor later.
+        self.show_research = not dont_change_icon  
+        self.highlight_selected = not dont_change_icon or highlight_selected
+
+        self.bottom_text = ""
+        self.top_text = ""
+        self.timer_text = ""
 
 
-    def update_position(self, x, y):
-        self.setGeometry(x*42, y*42, 42, self.adj + 42)
-        self.position = (x*42, y*42)
-    
-    def add_idle_time(self):
-        text = QtWidgets.QGraphicsSimpleTextItem(str_idle(self.object.idle_total_time))
-        text.setFont(font_idle)
-        text.setBrush(brush)
-        br = text.sceneBoundingRect()
-        self.scn.addRect(0,0,41,14, idle_pen, idle_time_brush)
-        x, y = 21 - br.width()//2, 7 - br.height()//2  # 21 21 the center
-        text.setPos(x, y);
-        
-        #print(br.width, br.height)
+    @property
+    def icon(self):
+        # Save self.object into temporary variable
+        obj = self.object
+        # Check the type
+        if type(obj) is Building:
+            directory = "/icons/buildings/"
+            filename = str(obj.udata.icon).zfill(3) + ".bmp"
+            if obj.research and self.show_research:
+                obj = obj.research
+            elif obj.queue and self.show_training: 
+                obj = obj.queue
+        if type(obj) in [Unit, Primitive]:
+            directory = f"/icons/units/color_{self.color}/"
+            filename = str(obj.udata.icon).zfill(3) + ".bmp"
+        if type(obj) is UnitQueue:
+            directory = f"/icons/units/color_{self.color}/"
+            filename = str(obj[0][1]).zfill(3) + ".bmp"
+        if type(obj) in [BuildingResearch, Technology]:
+            directory = "/icons/researches/"
+            filename = str(obj.icon).zfill(3) + ".bmp"
+        #print(obj.name)
+        return directory + filename 
 
-        self.scn.addItem(text)
+    @property
+    def color(self):
+        try:
+            return str(self.object.owner.color.color)
+        except:
+            pass
+        print(f">>>>> Tell me if no error happens. Might be buggy :(")
+        return str(self.parent.parent().game.pov.color.color)
 
-    def select_icon(self):
-        icon_filename = f"/icons/buildings/{str(self.object.udata.icon).zfill(3)}.bmp"
-        if self.object.research:
-            icon_filename = f"/icons/researches/{str(self.object.research.icon).zfill(3)}.bmp"
-        elif self.object.queue:
-            icon_filename = f"/icons/units/color_{self.object.owner.color.unique}/{str(self.object.queue[0][1]).zfill(3)}.bmp"
-        return icon_filename
+    @property
+    def frame_color(self):
+        try:
+            if type(self.object) is not Technology and self.highlight_selected and self.object.selected:
+                return ""
+        except TypeError:
+            pass
+        return self.color
 
-    def get_cooldown(self):
-        cooldown = self.object.construction # None if standing
-        if self.object.training:
-            cooldown = self.object.training.cooldown
-        elif self.object.research:
-            cooldown = self.object.research.cooldown
-        return cooldown
 
-    def get_queue(self):
-        result = None
-        if self.object.queue:
-            result = self.object.queue.length
-        return result
-
-    def add_idle(self, show_idle):
-        if show_idle and self.object.idle and int(time())%2 and self.object.idle_time < 60000:
-            self.scn.addRect(3,self.adj+3,35,35, idle_pen, idle_brush)
-        
-    def add_icon(self, show_idle=False):
-        icon_filename = self.select_icon()
-        stuff = QtGui.QPixmap(ospath + icon_filename)
-        self.scn.addPixmap(stuff).setPos(3,self.adj+3)
-        self.add_idle(show_idle)
-        if self.object in IconCooldownCount.game.player.selected:
-            frame = QtGui.QPixmap(ospath + f"/ui/frame.png")
-        else:
-            frame = QtGui.QPixmap(ospath + f"/ui/frame{self.owner_color}.png")
-        self.scn.addPixmap(frame).setPos(0,self.adj+0)
-
-    def add_cooldown(self):
-        cooldown = self.get_cooldown()
-        if cooldown is None:
-            return
-        text = QtWidgets.QGraphicsSimpleTextItem(str(cooldown))
-        font = font_medium if cooldown < 100 else font_small
-        text.setFont(font_icon)
-        #text.setPen(pen)
-        text.setBrush(brush)
-        boundingRectangle = text.sceneBoundingRect()
-        x, y = 21 - boundingRectangle.width()//2, self.adj+12 - boundingRectangle.height()//2  # 21 21 the center
-        text.setPos(x, y);
-        if not self.shadow:
-            self.scn.addRect(3,self.adj + 3,36,36, invisible_pen, idle_time_brush)
-        self.shadow = True
-        self.scn.addItem(text)
-
-    def add_queue(self):
-        queue = self.get_queue()
-        if queue is None:
-            return
-        text = QtWidgets.QGraphicsSimpleTextItem(str(queue))
-        font = font_medium if queue < 100 else font_small
-        text.setFont(font_icon)
-        #text.setPen(pen)
-        text.setBrush(brush)
-        boundingRectangle = text.sceneBoundingRect()
-        x, y = 21 - boundingRectangle.width()//2, self.adj+30 - boundingRectangle.height()//2  # 21 21 the center
-        text.setPos(x, y);
-        if not self.shadow:
-            self.scn.addRect(3,self.adj + 3,36,36, invisible_pen, idle_time_brush)
-        self.shadow = True
-        self.scn.addItem(text)
-
-    def update_building(self):
-        # removes stuff# Adds icon
-        self.scn.clear()
-        self.delete = False
-        self.shadow = False
-        self.add_icon(show_idle=self.show_idle)
-        self.add_cooldown()
-        self.add_queue()
-        if self.show_idle:
-            self.add_idle_time()
-        #self.show()
 
 if __name__ == '__main__':
     import bartender
-    exit(1)
+
