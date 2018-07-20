@@ -303,14 +303,14 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_groupbox_filter.setGeometry(GEMOETRY_GROUPBOX_FILTER)
 
         
-        self.w_label_filter_min_hp = QtWidgets.QLabel("Minimum Unit HP", self)
+        self.w_label_filter_min_hp = QtWidgets.QLabel("Minimum Object HP", self)
         self.w_label_filter_min_hp.setGeometry(GEMOETRY_GROUPBOX_FILTER_0_0)
         self.w_text_hp_min = QtWidgets.QSpinBox(self)
         self.w_text_hp_min.setGeometry(GEMOETRY_GROUPBOX_FILTER_0_1)
         self.w_text_hp_min.setMaximum(100)
         self.w_text_hp_min.setSuffix(" %")
 
-        self.w_label_filter_max_hp = QtWidgets.QLabel("Maximum Unit HP", self)
+        self.w_label_filter_max_hp = QtWidgets.QLabel("Maximum Object HP", self)
         self.w_label_filter_max_hp.setGeometry(GEMOETRY_GROUPBOX_FILTER_1_0)
         self.w_text_hp_max = QtWidgets.QSpinBox(self)
         self.w_text_hp_max.setGeometry(GEMOETRY_GROUPBOX_FILTER_1_1)

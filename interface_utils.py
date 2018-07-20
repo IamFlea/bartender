@@ -2,6 +2,8 @@ from aoc_object_clist import *
 # functions used in interface_bar.py
 
 def int_to_str(number, allow_zero=True):
+    if number == float('inf'):
+        return "inf"
     if number == 0:
         return "0" if allow_zero else ""
     tostr = lambda x: str(int(x))

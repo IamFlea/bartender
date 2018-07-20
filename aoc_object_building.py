@@ -62,7 +62,7 @@ class Building(Unit):
         time = pm.float(self.ptr + 0x250)       
         # Sets the timer if the building HP has changed.
         time_delta = GTime.time_delta
-        if time != self.constr_prev_time and time_delta > 0:
+        if time != self.constr_prev_time and time_delta > 0: # Tj hra bezi a zaroven 
             self.timer = GTime.time
         # Calculates the timer
         if time == self.constr_prev_time and time_delta > 0:
@@ -74,6 +74,7 @@ class Building(Unit):
             return float("inf")
         elif time_delta: # Changed in time
             # Returns new value
+            self.constr_prev_time = time
             return self.udata.train_time - time
         elif self.construction:
             # Returns previous value

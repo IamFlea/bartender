@@ -26,10 +26,6 @@ class Icon(IconGraphics):
         self.top_text = ""
         self.timer_text = ""
 
-        print("Created")
-
-
-
 
     @property
     def icon(self):

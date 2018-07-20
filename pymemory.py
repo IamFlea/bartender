@@ -433,5 +433,4 @@ if __name__ == '__main__':
     print(f"Base address: {hex(pm.base_address)}")
     result = pm.int32(pm.base_address)
     result = pm.struct(pm.base_address, "II")
-        #result = pm.re(b"\[\d{1,4}\] Kova")
 # EOF
