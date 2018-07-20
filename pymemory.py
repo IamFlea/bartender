@@ -126,7 +126,7 @@ class PyMemory(object):
                 return result
             ret = windll.kernel32.Module32Next(hModuleSnap, pointer(me32))
         windll.kernel32.CloseHandle(hModuleSnap)
-        raise ProcessLookupError(f"Process `{process_name}` not found.")
+        raise ProcessLookupError(f"Process base address not found.")
         
     def load_process(self, process_name, module_name=None, access=None):
         """ Loads PID and base address and set access"""
