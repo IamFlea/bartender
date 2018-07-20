@@ -520,7 +520,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_markets.setEnabled(boolean)
         self.w_checkbox_show_towers.setEnabled(boolean)
         self.w_checkbox_show_gates.setEnabled(boolean)
-        self.w_checkbox_show_walls.setEnabled(boolean)
+        #self.w_checkbox_show_walls.setEnabled(boolean)
 
     def create_set(self):
         result = set()
@@ -579,7 +579,9 @@ class InterfaceBar(QtWidgets.QWidget):
         if self.w_checkbox_show_towers.isChecked():
             result.update(set(player.towers))
         if self.w_checkbox_show_all_buildings.isChecked():
-            result.update(set(player.buildings_all))
+            #result.update(set(player.buildings_all))
+            #print(set(filter(lambda o: o.construction == float("inf"), player.walls)))
+            result.update(set(player.buildings_all) - set(filter(lambda o: o.construction == float("inf"), player.walls)))
         if self.w_checkbox_show_gates.isChecked():
             result.update(set(player.gates))
         if self.w_checkbox_show_walls.isChecked():
