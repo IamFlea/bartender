@@ -302,6 +302,7 @@ class Bartender(QtWidgets.QMainWindow):
         elif self.state == 4:
             if not self.game.running:
                 #self.overlay.set_game(None)
+                save(self)
                 self.overlay.deleteLater()
                 del self.overlay
 
