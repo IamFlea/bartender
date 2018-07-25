@@ -38,7 +38,11 @@ class Lobby(object):
     SKIP_GAIA = 1
     STR_LEFT = "Somebody Left"
     STR_EVEN_NUMBERS = "Requires even number of players"
-
+    REVEAL_MAP_OPTIONS = {0: "Standard", 1:"Explored", 2:"All Visible"}
+    VICTORY_OPTIONS = {9: "Standard", 1: "Conquest", 7: "Time Limit", 8: "Score", 0xb: "Last Man Standing"}
+    STARTING_AGE_OPTIONS = {0: "Standard", 2: "Dark Age", 3: "Feudal Age", 4: "Castle Age", 5: "Imperial Age", 6: "Post-Imperial Age"}
+    RESOURCES_OPTIONS = {0: "Standard", 1: "Low", 2: "Medium", 3: "High"}
+    MAP_SIZE_OPTIONS = {0: "2 players", 1: "3 players", 2: "4 players", 3: "6 players", 4 : "8 players", 5:"Giant", 6:"LudiKRIS" }
     def __init__(self):
         """ Constructor - creates the players list """
         super(Lobby, self).__init__()        
@@ -53,6 +57,18 @@ class Lobby(object):
         self.up = True
         ptr = pm.pointer(pm.base_address + 0x6Da30C) 
         ptr = pm.pointer(ptr + 0xD54) 
+
+        self.victory = Lobby.VICTORY_OPTIONS[pm.int32(ptr + 0x50)] 
+        self.victory_time_or_score = pm.int32(ptr + 0x54) # Time is in years!
+        self.map_size = Lobby.MAP_SIZE_OPTIONS[pm.int32(ptr + 0x90)]
+        self.reveal_map = Lobby.REVEAL_MAP_OPTIONS[pm.int32(ptr + 0x9c)]
+        self.resources = Lobby.RESOURCES_OPTIONS[pm.int32(ptr + 0xa0)]
+        self.starting_age = Lobby.STARTING_AGE_OPTIONS[pm.int32(ptr + 0xa4)]
+        self.ending_age = Lobby.STARTING_AGE_OPTIONS[pm.int32(ptr + 0xa8)]
+        self.game_speed = pm.float(ptr + 0x3b4)
+        self.treaty_length = pm.int32(ptr + 0x3b8)
+        self.population_limit = pm.int32(ptr + 0x3bC)
+        
         for i in range(Lobby.SKIP_GAIA,9):
             p = ptr + 0x50 + 0x60*i
             number = pm.int32(p + 0x48) # Get player number
@@ -66,6 +82,13 @@ class Lobby(object):
                 player.color = pm.int32(p + 0x44)
                 player.ai = False if player.name else True
                 player.name = pm.byte_string(pm.pointer(p + 0xC)) if i > 0 else b"Gaia"
+
+        self.teams_together = not bool(pm.int8(ptr + 0x3c2))
+        self.all_techs = bool(pm.int8(ptr + 0x3c3))
+        self.lock_teams = bool(pm.int8(ptr + 0x3c5))
+        self.lock_speed = bool(pm.int8(ptr + 0x3c6))
+        self.record_game = bool(pm.int8(ptr + 0x3cc))
+        self.allow_cheats = bool(pm.int8(ptr + 0x3cf))
 
     def update_ratings(self):
         dict_ratings = defaultdict(list) 
@@ -205,7 +228,15 @@ if __name__ == '__main__':
         except:
             name = f"Player #{player.number}".ljust(32)
         print(f"{name} {player.rating}")
-    
+    print(f"Teams together: {lobby.teams_together}")
+    print(f"All Techs: {lobby.all_techs}")
+    print(f"Lock teams: {lobby.lock_teams}")
+    print(f"Lock speed: {lobby.lock_speed}")
+    print(f"Rec. game: {lobby.record_game}")
+    print(f"Allow cheats: {lobby.allow_cheats}")
+    print()
+    print(f"{lobby.map_size}")
+    exit(0)
     diff, string, teams = lobby.balance_minmax()
     print(f"{diff}:: {string}:: {teams}")
 
