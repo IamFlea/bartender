@@ -49,7 +49,7 @@ class Game(object):
 
     def __new__(cls):
         # Check if the game is running. 
-        if not pm.int32(pm.base_address + 0x9EE73C) and False: 
+        if not pm.int32(pm.base_address + 0x9EE73C): 
             return None
         # Stupid way how to reset all CLASS variables (not object)
         UnitData.all_names = None
