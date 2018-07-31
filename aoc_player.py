@@ -76,9 +76,10 @@ class Player(object):
     SINGLE_PLAYER = True
     def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
-        ptr = pm.pointer(pm.base_address + 0x6Da30C) 
-        ptr = pm.pointer(ptr + 0xD54) 
-        ptr = pm.pointer(ptr + 0xb0 + 0x60*(number-1) + 0xC)
+        ptr = pm.pointer(pm.base_address + 0x006FD02C) 
+        ptr = pm.pointer(ptr + 0xA20) 
+        ptr = pm.pointer(ptr + 0xD0C) 
+        ptr = pm.pointer(ptr + 0xb0 + 0x68*(number-1) + 0xC)
         try:
             name = pm.string(ptr, 32)
         except:
@@ -92,7 +93,6 @@ class Player(object):
         super(Player, self).__init__()
         self.ptr = ptr
         self.name = "Gaia" if number is None else Player.__get_name__(number, ptr) 
-
         self.pov = False
         self.diplomacy = Diplomacy(self)
         self.resources = Resources(self)

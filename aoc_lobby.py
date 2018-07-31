@@ -14,9 +14,13 @@ from pymemory import NullAddress
 class LobbyPlayer(object):
     def __init__(self):
         self.number = None
-        self.name = None
+        self.team = None
         self.color = None
+        self.deathmatch_rating = None
+        self.rating = None
         self.ai = None
+        self.name = None
+        self.civ = None
         self.rating = None
 
 class LobbyException(Exception):
@@ -55,8 +59,11 @@ class Lobby(object):
     def update(self):
         """ Fills the players list"""
         self.up = True
-        ptr = pm.pointer(pm.base_address + 0x6Da30C) 
-        ptr = pm.pointer(ptr + 0xD54) 
+        ptr = pm.pointer(pm.base_address + 0x006FD02C) 
+        ptr = pm.pointer(ptr + 0xA20) 
+        ptr = pm.pointer(ptr + 0xD0C) 
+        if not ptr: # ptr is null if not in the lobby
+            return False
 
         self.victory = Lobby.VICTORY_OPTIONS[pm.int32(ptr + 0x50)] 
         self.victory_time_or_score = pm.int32(ptr + 0x54) # Time is in years!
@@ -65,13 +72,14 @@ class Lobby(object):
         self.resources = Lobby.RESOURCES_OPTIONS[pm.int32(ptr + 0xa0)]
         self.starting_age = Lobby.STARTING_AGE_OPTIONS[pm.int32(ptr + 0xa4)]
         self.ending_age = Lobby.STARTING_AGE_OPTIONS[pm.int32(ptr + 0xa8)]
-        self.game_speed = pm.float(ptr + 0x3b4)
-        self.treaty_length = pm.int32(ptr + 0x3b8)
-        self.population_limit = pm.int32(ptr + 0x3bC)
+        self.game_speed = pm.float(ptr + 0x3b4 + 8*8)
+        self.treaty_length = pm.int32(ptr + 0x3b8 + 8*8)
+        self.population_limit = pm.int32(ptr + 0x3bC + 8*8)
         
         for i in range(Lobby.SKIP_GAIA,9):
-            p = ptr + 0x50 + 0x60*i
-            number = pm.int32(p + 0x48) # Get player number
+            p = ptr + 0x48 + 0x68*i
+            number = pm.int32(p + 0x50) # Get player number
+
             if number == -1: # A resets it 
                 self.players[i] = LobbyPlayer()
             else:
@@ -79,18 +87,26 @@ class Lobby(object):
                 player = self.players[i]
                 player.number = number
                 player.team = pm.int32(p + 0x0)
-                player.color = pm.int32(p + 0x44)
-                player.ai = False if player.name else True
+                player.deathmatch_rating = pm.int32(p + 0x44)
+                player.rating = pm.int32(p + 0x48)
+                player.color = pm.int32(p + 0x4C)
                 player.name = pm.byte_string(pm.pointer(p + 0xC)) if i > 0 else b"Gaia"
+                player.ai = False if player.name and player.name is not "Gaia" else True
+                player.civ = None
+                
+            
 
-        self.teams_together = not bool(pm.int8(ptr + 0x3c2))
-        self.all_techs = bool(pm.int8(ptr + 0x3c3))
-        self.lock_teams = bool(pm.int8(ptr + 0x3c5))
-        self.lock_speed = bool(pm.int8(ptr + 0x3c6))
-        self.record_game = bool(pm.int8(ptr + 0x3cc))
-        self.allow_cheats = bool(pm.int8(ptr + 0x3cf))
+        self.teams_together = not bool(pm.int8(ptr + 0x3c2 + 8*8))
+        self.all_techs = bool(pm.int8(ptr + 0x3c3 + 8*8))
+        self.lock_teams = bool(pm.int8(ptr + 0x3c5 + 8*8))
+        self.lock_speed = bool(pm.int8(ptr + 0x3c6 + 8*8))
+        self.record_game = bool(pm.int8(ptr + 0x3cc + 8*8))
+        self.allow_cheats = bool(pm.int8(ptr + 0x3cf + 8*8))
+        return True
 
     def update_ratings(self):
+        return
+        # This is no longer needed
         dict_ratings = defaultdict(list) 
         regex = b""
         length = 0
@@ -220,23 +236,42 @@ if __name__ == '__main__':
     pm.load_process(proc_name)
     lobby = Lobby()
     lobby.update()
-    for player in lobby.players:
-        if player.name is None:
+    print(f"victory: {lobby.victory}")
+    print(f"victory_time_or_score: {lobby.victory_time_or_score}")
+    print(f"map_size: {lobby.map_size}")
+    print(f"reveal_map: {lobby.reveal_map}")
+    print(f"resources: {lobby.resources}")
+    print(f"starting_age: {lobby.starting_age}")
+    print(f"ending_age: {lobby.ending_age}")
+    print(f"game_speed: {lobby.game_speed}")
+    print(f"treaty_length: {lobby.treaty_length}")
+    print(f"population_limit: {lobby.population_limit}")
+    print(f"teams_together: {lobby.teams_together}")
+    print(f"all_techs: {lobby.all_techs}")
+    print(f"lock_teams: {lobby.lock_teams}")
+    print(f"lock_speed: {lobby.lock_speed}")
+    print(f"record_game: {lobby.record_game}")
+    print(f"allow_cheats: {lobby.allow_cheats}")
+    print()
+    print("-----------------")
+    
+    for idx, player in enumerate(lobby.players):
+        if player.number is None:
             continue
+        print(f"Processing player {idx}")
         try:
             name = player.name.decode("utf-8").ljust(32)
         except:
             name = f"Player #{player.number}".ljust(32)
-        print(f"{name} {player.rating}")
-    print(f"Teams together: {lobby.teams_together}")
-    print(f"All Techs: {lobby.all_techs}")
-    print(f"Lock teams: {lobby.lock_teams}")
-    print(f"Lock speed: {lobby.lock_speed}")
-    print(f"Rec. game: {lobby.record_game}")
-    print(f"Allow cheats: {lobby.allow_cheats}")
-    print()
-    print(f"{lobby.map_size}")
-    exit(0)
+        print(f"Number: {player.number}")
+        print(f"Name: {name}")
+        print(f"Rating: {player.deathmatch_rating} or {player.rating} ")
+        print(f"Team: {player.team}")
+        print(f"Color: {player.color}")
+        print(f"Civ: {player.civ}")
+        print(f"AI: {player.ai}")
+        print()
+        
     diff, string, teams = lobby.balance_minmax()
     print(f"{diff}:: {string}:: {teams}")
 

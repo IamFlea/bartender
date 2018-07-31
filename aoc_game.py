@@ -48,7 +48,8 @@ class Game(object):
         return list(teams.values())
 
     def __new__(cls):
-        if not pm.int32(pm.base_address + 0x9C8FB0):
+        # Check if the game is running. 
+        if not pm.int32(pm.base_address + 0x9EE73C) and False: 
             return None
         # Stupid way how to reset all CLASS variables (not object)
         UnitData.all_names = None
@@ -63,7 +64,7 @@ class Game(object):
 
     def __init__(self):
         super(Game, self).__init__()
-        ptr = pm.pointer(pm.base_address + 0x006E62D8)
+        ptr = pm.pointer(pm.base_address + 0x0070BA30) # three offsets are avaliable here: 006EA888, 006EBD30, 0070BA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
         ptr_players = pm.pointer(ptr + 0x184)
         # Get gaia firstly and calculate total players
         self.gaia = Player(pm.pointer(ptr_players))
@@ -88,14 +89,15 @@ class Game(object):
 
         
     def update(self):
-        # Check if the game is running 
+        # Check if the game is running: 0 not running, 1 running
         pm.update()
-        if not pm.int32(pm.base_address + 0x9C8FB0):
+        if not pm.int32(pm.base_address + 0x9EE73C):
             self.running = False
             return False
+
         # Second check.
         try:
-            ptr = pm.pointer(pm.base_address + 0x006E62D8) 
+            ptr = pm.pointer(pm.base_address + 0x0070BA30) # three offsets are avaliable here: 006EA888, 006EBD30, 0070BA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
             pm.pointer(ptr + 0x184)
         except NullAddress:
             self.running = False
