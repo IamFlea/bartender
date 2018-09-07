@@ -49,7 +49,7 @@ class Game(object):
 
     def __new__(cls):
         # Check if the game is running. 
-        if not pm.int32(pm.base_address + 0x9EE73C): 
+        if not pm.int32(pm.base_address + 0x9E0708): 
             return None
         # Stupid way how to reset all CLASS variables (not object)
         UnitData.all_names = None
@@ -64,7 +64,7 @@ class Game(object):
 
     def __init__(self):
         super(Game, self).__init__()
-        ptr = pm.pointer(pm.base_address + 0x0070BA30) # three offsets are avaliable here: 006EA888, 006EBD30, 0070BA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
+        ptr = pm.pointer(pm.base_address + 0x006FDA30) # three offsets are avaliable here: 006DC7F8, 006DDCA0, 006FDA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
         ptr_players = pm.pointer(ptr + 0x184)
         # Get gaia firstly and calculate total players
         self.gaia = Player(pm.pointer(ptr_players))
@@ -91,13 +91,13 @@ class Game(object):
     def update(self):
         # Check if the game is running: 0 not running, 1 running
         pm.update()
-        if not pm.int32(pm.base_address + 0x9EE73C):
+        if not pm.int32(pm.base_address + 0x9E0708):
             self.running = False
             return False
 
         # Second check.
         try:
-            ptr = pm.pointer(pm.base_address + 0x0070BA30) # three offsets are avaliable here: 006EA888, 006EBD30, 0070BA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
+            ptr = pm.pointer(pm.base_address + 0x006FDA30) # three offsets are avaliable here: 006DC7F8, 006DDCA0, 006FDA30 each should point to the same address.. if not remove one   You need to check for each address in record game.
             pm.pointer(ptr + 0x184)
         except NullAddress:
             self.running = False
@@ -134,4 +134,4 @@ if __name__ == '__main__':
     pm.load_process(proc_name)
     game = Game()
     if game is not None:
-        game.update()
+        t = game.update()

@@ -59,9 +59,11 @@ class Lobby(object):
     def update(self):
         """ Fills the players list"""
         self.up = True
-        ptr = pm.pointer(pm.base_address + 0x006FD02C) 
-        ptr = pm.pointer(ptr + 0xA20) 
-        ptr = pm.pointer(ptr + 0xD0C) 
+        ptr = pm.pointer(pm.base_address + 0x006EEFB4) 
+        ptr = pm.pointer(ptr + 0x0) 
+        ptr = pm.pointer(ptr + 0x60)
+        ptr = pm.pointer(ptr + 0xCE4)
+        
         if not ptr: # ptr is null if not in the lobby
             return False
 
