@@ -1,5 +1,4 @@
-## Check out dev branch for the new unstable versions!
-
+<!-- ## Check out dev branch for the new unstable versions! -->
 
 # Bartender
 A window addon to game called Age of Empires II (HD). The addon displays additional information of the game, such as buildings, currently researched technologies, or training units.
@@ -33,7 +32,7 @@ Bartender is customizable overlay and it can be divided into four parts.
 
 > Voobly version?
 
-*I don't play on Voobly. Also, I think this won't be possible to use it in MP there.*
+*I don't play on Voobly. Also, it isn't possible to use Bartender in MP there.*
 
 > Why did you create this addon?
 
@@ -49,12 +48,12 @@ Watch for crashes & consistency of displayed data
 
 **UI**
 1) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
+2) Make it more user friendly. It might need rework.
 
 **Mechanics**
-1) IMPORTANT: Find out when the game is in the score screen! 
-2) Detect if the game is a record game or SP/MP game - add training/researches info about other players.
-3) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed) 
-4) Fix warnings during hiding overlay when AoE2HD is not the foreground window. (Maybe not needed)
+1) Detect if the game is a record game or SP/MP game - add training/researches info about other players. (It can be done by comparing three game pointers in `aoc_game.py`, two of them are null while watching recorded game.)
+2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed) 
+
 
 **This file**
 1) Update screenshots.
