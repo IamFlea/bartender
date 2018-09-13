@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_object_unit.py: gets object data of the unit from the game """ 
+""" aoc_object_unit.py: gets object data of the unit from the game """
 
-from pymemory import pymemory as pm
-from pymemory import NullAddress
-from aoc_object_primitive import *
 from aoc_object_data import *
-from aoc_object_consts import SuperclassData
+from aoc_object_primitive import *
 from aoc_time import *
+from pymemory import NullAddress
 
-class Unit(Primitive): # game obje
+
+class Unit(Primitive):  # game obje
     """
     Class variables
         Public
@@ -42,11 +41,11 @@ class Unit(Primitive): # game obje
             _check_idle_time_()          Calculates idle times of the unit if `self.idle` is set 
     """
     graphics_data = {}
-    
+
     def __init__(self, ptr, owner, udata):
         super(Unit, self).__init__(ptr, owner, udata)
-        #self.ptr_graphics = ptr + 0x14 # pointer 
-        #self.ptr_status = ptr + 0x4C   # byte
+        # self.ptr_graphics = ptr + 0x14 # pointer
+        # self.ptr_status = ptr + 0x4C   # byte
 
     def _check_garrison_(self):
         garrison = []
@@ -57,7 +56,7 @@ class Unit(Primitive): # game obje
             ptr, cnt = pm.struct(ptr, "II")
             if not ptr:
                 return garrison
-            arr = pm.struct(ptr, "I"*cnt)
+            arr = pm.struct(ptr, "I" * cnt)
             for ptr in arr:
                 udata = UnitData(pm.pointer(ptr + 0xC), self.owner)
                 """
@@ -66,7 +65,7 @@ class Unit(Primitive): # game obje
                 if udata and udata.superclass == SuperclassData.combatant: # << checks recursion
                     garrison.append(Unit(ptr, self.owner, udata)) # trebuchet shouldnt bug this 
                 """
-                garrison.append(Unit(ptr, self.owner, udata)) # trebuchet shouldnt bug this 
+                garrison.append(Unit(ptr, self.owner, udata))  # trebuchet shouldnt bug this
         except NullAddress:
             return garrison
         self.garrison.clear()
@@ -87,8 +86,8 @@ class Unit(Primitive): # game obje
         else:
             # Load it inot the lookup table
             try:
-                splitted_name = pm.string(pointer+0x50).split("_")
-                result = len(splitted_name) > 1 and "FN" in splitted_name[-1] # idle through graphics.. suuucks
+                splitted_name = pm.string(pointer + 0x50).split("_")
+                result = len(splitted_name) > 1 and "FN" in splitted_name[-1]  # idle through graphics.. suuucks
                 Unit.graphics_data[pointer] = result
                 self.idle = result
             except UnicodeDecodeError:
@@ -105,7 +104,6 @@ class Unit(Primitive): # game obje
             self.busy_time += GTime.time_delta
             self.busy_total_time += GTime.time_delta
 
-
     def update(self):
         super(Unit, self).update()
         self._check_garrison_()
@@ -115,4 +113,4 @@ class Unit(Primitive): # game obje
 
 
 if __name__ == '__main__':
-    import bartender
+    pass

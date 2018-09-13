@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_research.py: researches """ 
-from pymemory import pymemory as pm
+""" aoc_research.py: researches """
 from aoc_time import GTime
-from collections import defaultdict
+from pymemory import pymemory as pm
+
 
 class Technology(object):
     """docstring for Technology"""
+
     def __init__(self, owner, id, icon, time, total_time=None, cooldown=None):
         super(Technology, self).__init__()
         self.update(owner, id, icon, time, total_time, cooldown)
@@ -17,8 +18,8 @@ class Technology(object):
         self.icon = icon
         self.time = time
         self.total_time = total_time
-        self.cooldown = cooldown   
-        
+        self.cooldown = cooldown
+
 
 class Research(object):
     """
@@ -39,14 +40,13 @@ class Research(object):
 
     """
 
-
     def __init__(self, owner):
         super(Research, self).__init__()
         self.owner = owner
         ptr = pm.pointer(owner.ptr + 0x1ae8)
-        self.ptr_times = pm.pointer(ptr) # struct size: 0x10 
+        self.ptr_times = pm.pointer(ptr)  # struct size: 0x10
         self.length = pm.int32(ptr + 0x4)
-        self.ptr_researches  = pm.pointer(pm.pointer(ptr + 0x8))   # struct size: 0x54 
+        self.ptr_researches = pm.pointer(pm.pointer(ptr + 0x8))  # struct size: 0x54
         self.id_list = []
         self.dictionary = {}
         self.progression = []
@@ -56,7 +56,6 @@ class Research(object):
     def add(self, id):
         if id not in self.id_list:
             self.id_list.append(id)
-            
 
     def update(self):
         for key in self.dictionary:
@@ -64,8 +63,8 @@ class Research(object):
         delete = []
         for id in self.id_list:
             time = pm.float(self.ptr_times + 0x10 * id)
-            total_time = pm.int16(self.ptr_researches + 0x54*id + 0x26)
-            icon = pm.int16(self.ptr_researches  + 0x54*id + 0x2C)
+            total_time = pm.int16(self.ptr_researches + 0x54 * id + 0x26)
+            icon = pm.int16(self.ptr_researches + 0x54 * id + 0x2C)
             cooldown = total_time - time
             if time == 0.0:
                 delete.append(id)
@@ -78,7 +77,7 @@ class Research(object):
             else:
                 self.done.append(Technology(self.owner, id, icon, GTime.time))
                 delete.append(id)
-        for id in delete: 
+        for id in delete:
             self.id_list.remove(id)
         delete = []
         for key in self.dictionary:
@@ -88,5 +87,6 @@ class Research(object):
             del self.dictionary[key]
         self.progression = list(self.dictionary.values())
 
+
 if __name__ == '__main__':
-    import bartender
+    pass

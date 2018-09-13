@@ -1,4 +1,5 @@
 import os
+
 # Name of the AoE window
 AOE_WINDOW_TITLE = "Age of Empires II: HD Edition"
 # Process name of AoE

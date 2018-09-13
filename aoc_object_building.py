@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_object_building.py: gets object data of the building from the game """ 
+""" aoc_object_building.py: gets object data of the building from the game """
 
-from pymemory import pymemory as pm
-from aoc_object_building_research import BuildingResearch
 from aoc_object_building_queue import UnitQueue
+from aoc_object_building_research import BuildingResearch
 from aoc_object_building_training import Training
 from aoc_object_unit import *
-
 from aoc_time import *
 
-class Building(Unit): 
+
+class Building(Unit):
     """ INHERITS: Building inherits Unit which inherits Primitive
     Sets `owner.housed` 
     Class variables
@@ -52,41 +51,42 @@ class Building(Unit):
             _check_idle_time_()          Calculates idle times of the unit if `self.idle` is set 
             _check_construction_()       Checks construction.
     """
-    MAX_IDLE_CONSTRUCTION_TIME = 500 
+    MAX_IDLE_CONSTRUCTION_TIME = 500
+
     def __init__(self, ptr, owner, udata):
         super(Building, self).__init__(ptr, owner, udata)
         self.timer = 0.0
         self.constr_prev_time = 0.0
 
     def _check_construction_(self):
-        time = pm.float(self.ptr + 0x250)       
+        time = pm.float(self.ptr + 0x250)
         # Sets the timer if the building HP has changed.
         time_delta = GTime.time_delta
-        if time != self.constr_prev_time and time_delta > 0: # Tj hra bezi a zaroven 
+        if time != self.constr_prev_time and time_delta > 0:  # Tj hra bezi a zaroven
             self.timer = GTime.time
         # Calculates the timer
         if time == self.constr_prev_time and time_delta > 0:
             diff = GTime.time - self.timer
             if diff < Building.MAX_IDLE_CONSTRUCTION_TIME:
                 time_delta = 0
-        if time == self.constr_prev_time and time_delta: 
+        if time == self.constr_prev_time and time_delta:
             # Did not change in time => return infinity
             return float("inf")
-        elif time_delta: # Changed in time
+        elif time_delta:  # Changed in time
             # Returns new value
             self.constr_prev_time = time
             return self.udata.train_time - time
         elif self.construction:
             # Returns previous value
             return self.construction
-    
+
     def _check_idle_(self):
         # Set variables
         # Check if the building is constructed
         if self.status == 0 and self.udata.max_hp:
             self.construction = self._check_construction_()
         # Check if the building is standing
-        if self.status == 2: # Building
+        if self.status == 2:  # Building
             self.research = BuildingResearch(self).create()
             self.queue = UnitQueue(self).create()
             self.training = Training(self).create()
@@ -94,15 +94,14 @@ class Building(Unit):
         ## Set variables
         self.idle = self.research is None and self.training is None and self.construction is None
         self.owner.housed = self.owner.housed or self.queue and self.training is None
-        
 
     def update(self):
         super(Unit, self).update()
         self._check_garrison_()
         self._check_idle_()
-        self._check_idle_time_()    
+        self._check_idle_time_()
         self.group = pm.uint32(self.ptr + 0x158)
 
-if __name__ == '__main__':
-    import bartender
 
+if __name__ == '__main__':
+    pass

@@ -1,14 +1,12 @@
 from collections import defaultdict
 
-from PyQt5 import QtWidgets, QtCore, Qt, QtGui
+from PyQt5 import QtWidgets
 
 from aoc_time import *
-from aoc_object_consts import ClassData
-from aoc_object_consts_unit import UNITS
-from interface_utils import *
 from interface_consts import *
-
+from interface_utils import *
 from ui_iconlist import IconList
+
 
 class InterfaceBar(QtWidgets.QWidget):
     """docstring for InterfaceBar"""
@@ -19,7 +17,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.parent = parent
         self.icon_list = None
         self.setGeometry(GEOMETRY)
-
 
         self.w_label_name = QtWidgets.QLabel("Name:", self)
         self.w_label_name.setGeometry(GEOMETRY_TOP_0_1)
@@ -62,7 +59,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_text_idle_time_for_blinkin.setMaximum(99999)
         self.w_text_idle_time_for_blinkin.setSuffix(" seconds")
         self.w_text_idle_time_for_blinkin.valueChanged.connect(self.blink)
-     
 
         self.w_label__timer_number = QtWidgets.QLabel("Timer:", self)
         self.w_label__timer_number.setGeometry(GEOMETRY_TOP_1_3)
@@ -104,14 +100,14 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_civilians.stateChanged.connect(self.policy)
         self.w_checkbox_show_military = QtWidgets.QCheckBox("Military", self)
         self.w_checkbox_show_military.setGeometry(GEOMETRY_GROUPBOX_POLICY_0_2)
-        self.w_checkbox_show_military.stateChanged.connect(self.policy)        
+        self.w_checkbox_show_military.stateChanged.connect(self.policy)
         self.w_checkbox_show_trade_units = QtWidgets.QCheckBox("Trade Units", self)
         self.w_checkbox_show_trade_units.setGeometry(GEOMETRY_GROUPBOX_POLICY_0_3)
         self.w_checkbox_show_trade_units.stateChanged.connect(self.policy)
         self.w_checkbox_show_fish_ships = QtWidgets.QCheckBox("Fish Ships", self)
         self.w_checkbox_show_fish_ships.setGeometry(GEOMETRY_GROUPBOX_POLICY_0_4)
         self.w_checkbox_show_fish_ships.stateChanged.connect(self.policy)
-        
+
         self.w_checkbox_show_villagers = QtWidgets.QCheckBox("Villagers", self)
         self.w_checkbox_show_villagers.setGeometry(GEOMETRY_GROUPBOX_POLICY_1_0)
         self.w_checkbox_show_villagers.stateChanged.connect(self.policy)
@@ -143,7 +139,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_condottieros = QtWidgets.QCheckBox("Condottieros", self)
         self.w_checkbox_show_condottieros.setGeometry(GEOMETRY_GROUPBOX_POLICY_2_4)
         self.w_checkbox_show_condottieros.stateChanged.connect(self.policy)
-
 
         self.w_checkbox_show_light_cavalry = QtWidgets.QCheckBox("Light Cavalry", self)
         self.w_checkbox_show_light_cavalry.setGeometry(GEOMETRY_GROUPBOX_POLICY_3_0)
@@ -192,7 +187,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_siege_towers = QtWidgets.QCheckBox("Siege Tower", self)
         self.w_checkbox_show_siege_towers.setGeometry(GEOMETRY_GROUPBOX_POLICY_5_4)
         self.w_checkbox_show_siege_towers.stateChanged.connect(self.policy)
-
 
         self.w_checkbox_show_war_ships = QtWidgets.QCheckBox("War Ships", self)
         self.w_checkbox_show_war_ships.setGeometry(GEOMETRY_GROUPBOX_POLICY_6_0)
@@ -257,7 +251,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_monastries = QtWidgets.QCheckBox("Monastries", self)
         self.w_checkbox_show_monastries.setGeometry(GEOMETRY_GROUPBOX_POLICY_9_4)
         self.w_checkbox_show_monastries.stateChanged.connect(self.policy)
-        
+
         self.w_checkbox_show_castles = QtWidgets.QCheckBox("Castles", self)
         self.w_checkbox_show_castles.setGeometry(GEOMETRY_GROUPBOX_POLICY_10_0)
         self.w_checkbox_show_castles.stateChanged.connect(self.policy)
@@ -266,7 +260,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_docks.stateChanged.connect(self.policy)
         self.w_checkbox_show_blacksmiths = QtWidgets.QCheckBox("Blacksmiths", self)
         self.w_checkbox_show_blacksmiths.setGeometry(GEOMETRY_GROUPBOX_POLICY_10_2)
-        self.w_checkbox_show_blacksmiths.stateChanged.connect(self.policy)            
+        self.w_checkbox_show_blacksmiths.stateChanged.connect(self.policy)
         self.w_checkbox_show_universities = QtWidgets.QCheckBox("Universities", self)
         self.w_checkbox_show_universities.setGeometry(GEOMETRY_GROUPBOX_POLICY_10_3)
         self.w_checkbox_show_universities.stateChanged.connect(self.policy)
@@ -282,7 +276,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_slingers.stateChanged.connect(self.policy)
         self.w_checkbox_show_livestock = QtWidgets.QCheckBox("Livestock", self)
         self.w_checkbox_show_livestock.setGeometry(GEOMETRY_GROUPBOX_POLICY_11_2)
-        self.w_checkbox_show_livestock.stateChanged.connect(self.policy)            
+        self.w_checkbox_show_livestock.stateChanged.connect(self.policy)
         self.w_checkbox_show_gates = QtWidgets.QCheckBox("Gates", self)
         self.w_checkbox_show_gates.setGeometry(GEOMETRY_GROUPBOX_POLICY_11_3)
         self.w_checkbox_show_gates.stateChanged.connect(self.policy)
@@ -294,15 +288,12 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_button_remove.setGeometry(GEOMETRY_REMOVE_BUTTON)
         self.w_button_remove.clicked.connect(self.remove)
 
-
-
         ###############################################################################################################################################
         ###############################################################################################################################################
         # FILTERS
         self.w_groupbox_filter = QtWidgets.QGroupBox("Filters", self)
         self.w_groupbox_filter.setGeometry(GEMOETRY_GROUPBOX_FILTER)
 
-        
         self.w_label_filter_min_hp = QtWidgets.QLabel("Minimum Object HP", self)
         self.w_label_filter_min_hp.setGeometry(GEMOETRY_GROUPBOX_FILTER_0_0)
         self.w_text_hp_min = QtWidgets.QSpinBox(self)
@@ -363,61 +354,61 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_filter_selected.setTristate(True)
         self.w_filter_selected.nextCheckState()
         self.w_filter_selected.stateChanged.connect(self.policy)
-                
+
         self.w_filter_group0 = QtWidgets.QCheckBox("In Group 0", self)
         self.w_filter_group0.setGeometry(GEMOETRY_GROUPBOX_FILTER_7_0)
         self.w_filter_group0.setTristate(True)
         self.w_filter_group0.nextCheckState()
         self.w_filter_group0.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group1 = QtWidgets.QCheckBox("In Group 1", self)
         self.w_filter_group1.setGeometry(GEMOETRY_GROUPBOX_FILTER_8_0)
         self.w_filter_group1.setTristate(True)
         self.w_filter_group1.nextCheckState()
         self.w_filter_group1.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group2 = QtWidgets.QCheckBox("In Group 2", self)
         self.w_filter_group2.setGeometry(GEMOETRY_GROUPBOX_FILTER_9_0)
         self.w_filter_group2.setTristate(True)
         self.w_filter_group2.nextCheckState()
         self.w_filter_group2.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group3 = QtWidgets.QCheckBox("In Group 3", self)
         self.w_filter_group3.setGeometry(GEMOETRY_GROUPBOX_FILTER_10_0)
         self.w_filter_group3.setTristate(True)
         self.w_filter_group3.nextCheckState()
         self.w_filter_group3.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group4 = QtWidgets.QCheckBox("In Group 4", self)
         self.w_filter_group4.setGeometry(GEMOETRY_GROUPBOX_FILTER_11_0)
         self.w_filter_group4.setTristate(True)
         self.w_filter_group4.nextCheckState()
         self.w_filter_group4.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group5 = QtWidgets.QCheckBox("In Group 5", self)
         self.w_filter_group5.setGeometry(GEMOETRY_GROUPBOX_FILTER_7_1)
         self.w_filter_group5.setTristate(True)
         self.w_filter_group5.nextCheckState()
         self.w_filter_group5.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group6 = QtWidgets.QCheckBox("In Group 6", self)
         self.w_filter_group6.setGeometry(GEMOETRY_GROUPBOX_FILTER_8_1)
         self.w_filter_group6.setTristate(True)
         self.w_filter_group6.nextCheckState()
         self.w_filter_group6.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group7 = QtWidgets.QCheckBox("In Group 7", self)
         self.w_filter_group7.setGeometry(GEMOETRY_GROUPBOX_FILTER_9_1)
         self.w_filter_group7.setTristate(True)
         self.w_filter_group7.nextCheckState()
         self.w_filter_group7.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group8 = QtWidgets.QCheckBox("In Group 8", self)
         self.w_filter_group8.setGeometry(GEMOETRY_GROUPBOX_FILTER_10_1)
         self.w_filter_group8.setTristate(True)
         self.w_filter_group8.nextCheckState()
         self.w_filter_group8.stateChanged.connect(self.policy)
-        
+
         self.w_filter_group9 = QtWidgets.QCheckBox("In Group 9", self)
         self.w_filter_group9.setGeometry(GEMOETRY_GROUPBOX_FILTER_11_1)
         self.w_filter_group9.setTristate(True)
@@ -443,7 +434,7 @@ class InterfaceBar(QtWidgets.QWidget):
                 self.icon_list.setVisible(False)
             else:
                 self.icon_list.setVisible(True)
-                #self.icon_list.show()
+                # self.icon_list.show()
 
     def rename_tab(self):
         for index in range(self.parent.w_tabs_settings.count()):
@@ -461,7 +452,6 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_trade_units.setEnabled(boolean)
         self.w_checkbox_show_fish_ships.setEnabled(boolean)
         self.w_checkbox_show_villagers.setEnabled(boolean)
-
 
     def lock_military(self, boolean):
         self.w_checkbox_show_swordsmen.setEnabled(boolean)
@@ -494,7 +484,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_unique_units.setEnabled(boolean)
         self.w_checkbox_show_monks.setEnabled(boolean)
         self.w_checkbox_show_battle_elephants.setEnabled(boolean)
-        
+
     def lock_units(self, boolean):
         self.w_checkbox_show_transport_ships.setEnabled(boolean)
         self.w_checkbox_show_civilians.setEnabled(boolean)
@@ -520,7 +510,7 @@ class InterfaceBar(QtWidgets.QWidget):
         self.w_checkbox_show_markets.setEnabled(boolean)
         self.w_checkbox_show_towers.setEnabled(boolean)
         self.w_checkbox_show_gates.setEnabled(boolean)
-        #self.w_checkbox_show_walls.setEnabled(boolean)
+        # self.w_checkbox_show_walls.setEnabled(boolean)
 
     def create_set(self):
         result = set()
@@ -579,9 +569,10 @@ class InterfaceBar(QtWidgets.QWidget):
         if self.w_checkbox_show_towers.isChecked():
             result.update(set(player.towers))
         if self.w_checkbox_show_all_buildings.isChecked():
-            #result.update(set(player.buildings_all))
-            #print(set(filter(lambda o: o.construction == float("inf"), player.walls)))
-            result.update(set(player.buildings_all) - set(filter(lambda o: o.construction == float("inf"), player.walls)))
+            # result.update(set(player.buildings_all))
+            # print(set(filter(lambda o: o.construction == float("inf"), player.walls)))
+            result.update(
+                set(player.buildings_all) - set(filter(lambda o: o.construction == float("inf"), player.walls)))
         if self.w_checkbox_show_gates.isChecked():
             result.update(set(player.gates))
         if self.w_checkbox_show_walls.isChecked():
@@ -667,7 +658,7 @@ class InterfaceBar(QtWidgets.QWidget):
             objects = filter(lambda obj: obj in self.parent.game.pov.selected, objects)
         elif self.w_filter_selected.checkState() == 0:
             objects = filter(lambda obj: obj not in self.parent.game.pov.selected, objects)
-            
+
         if self.w_filter_group0.checkState() == 2:
             objects = filter(lambda obj: obj.group & 0x400, objects)
         elif self.w_filter_group0.checkState() == 0:
@@ -708,11 +699,12 @@ class InterfaceBar(QtWidgets.QWidget):
             objects = filter(lambda obj: obj.group & 0x200, objects)
         elif self.w_filter_group9.checkState() == 0:
             objects = filter(lambda obj: not obj.group & 0x200, objects)
-        objects = filter(lambda obj: obj.hp/obj.udata.max_hp * 100 <= int(self.w_text_hp_max.value()) and  obj.hp/obj.udata.max_hp * 100 >= int(self.w_text_hp_min.value()), objects)
-        objects = filter(lambda obj: obj.idle_time/1000 <= int(self.w_text_idle_max.value()) and  obj.idle_time/1000 >= int(self.w_text_idle_min.value()), objects)
+        objects = filter(lambda obj: obj.hp / obj.udata.max_hp * 100 <= int(
+            self.w_text_hp_max.value()) and obj.hp / obj.udata.max_hp * 100 >= int(self.w_text_hp_min.value()), objects)
+        objects = filter(
+            lambda obj: obj.idle_time / 1000 <= int(self.w_text_idle_max.value()) and obj.idle_time / 1000 >= int(
+                self.w_text_idle_min.value()), objects)
         return list(objects)
-
-
 
     def set_aggregate(self):
         boolean = self.w_checkbox_aggregate.isChecked()
@@ -756,7 +748,6 @@ class InterfaceBar(QtWidgets.QWidget):
         else:
             return set_
 
-
     def game_objects(self):
         return self.aggregate(self.filter(self.create_set()))
 
@@ -764,44 +755,46 @@ class InterfaceBar(QtWidgets.QWidget):
         name = self.w_combo_timer_number.currentText()
         if self.icon_list is not None:
             self.icon_list.set_y_margin(name != "None")
-            self.icon_list.timer_f = {"None"            : lambda obj: "",
-                                      "Idle Time"       : lambda obj: str_time(obj.idle_time),
-                                      "Total Idle Time" : lambda obj: str_time(obj.idle_total_time),
-                                      "Created Time"    : lambda obj: str_time(obj.created_time)}[name]
-
-
+            self.icon_list.timer_f = {"None": lambda obj: "",
+                                      "Idle Time": lambda obj: str_time(obj.idle_time),
+                                      "Total Idle Time": lambda obj: str_time(obj.idle_total_time),
+                                      "Created Time": lambda obj: str_time(obj.created_time)}[name]
 
     def check_stuff_normal(self, dropdown_widget):
         name = dropdown_widget.currentText()
-        function = {"None"             : lambda obj: "",
-                    "Queue"            : lambda obj: int_to_str(obj.queue.length) if obj.queue else "",
-                    "Cooldown"         : lambda obj: str(obj.research.cooldown) if obj.research else (str(obj.training.cooldown) if obj.training else (int_to_str(obj.construction) if obj.construction else "")),
-                    "Carrying Res."    : lambda obj: int_to_str(obj.resource_amount) if obj.resource_amount else "",
-                    "Resource Type"    : lambda obj: str(obj.resource_type)[0] if len(obj.resource_type) else "",
-                    "Hit Points"       : lambda obj: int_to_str(obj.hp) if obj.hp else "",
-                    "Maximal HP"       : lambda obj: int_to_str(obj.udata.max_hp) if obj.udata.max_hp else "",
-                    "Attack"           : lambda obj: int_to_str(get_attack(obj)) if obj.udata.attack else "",
-                    "Armor"            : lambda obj: get_armors(obj) if obj.udata.armor else "",
-                    "Garrisoned Units" : lambda obj: int_to_str(len(obj.garrison)) if obj.garrison else "",
-                    "Max. Garrison"    : lambda obj: int_to_str(obj.udata.max_garrison) if obj.udata.max_garrison else ""}[name]
+        function = {"None": lambda obj: "",
+                    "Queue": lambda obj: int_to_str(obj.queue.length) if obj.queue else "",
+                    "Cooldown": lambda obj: str(obj.research.cooldown) if obj.research else (
+                        str(obj.training.cooldown) if obj.training else (
+                            int_to_str(obj.construction) if obj.construction else "")),
+                    "Carrying Res.": lambda obj: int_to_str(obj.resource_amount) if obj.resource_amount else "",
+                    "Resource Type": lambda obj: str(obj.resource_type)[0] if len(obj.resource_type) else "",
+                    "Hit Points": lambda obj: int_to_str(obj.hp) if obj.hp else "",
+                    "Maximal HP": lambda obj: int_to_str(obj.udata.max_hp) if obj.udata.max_hp else "",
+                    "Attack": lambda obj: int_to_str(get_attack(obj)) if obj.udata.attack else "",
+                    "Armor": lambda obj: get_armors(obj) if obj.udata.armor else "",
+                    "Garrisoned Units": lambda obj: int_to_str(len(obj.garrison)) if obj.garrison else "",
+                    "Max. Garrison": lambda obj: int_to_str(obj.udata.max_garrison) if obj.udata.max_garrison else ""}[
+            name]
         return function
-
 
     def check_stuff_aggr(self, dropdown_widget):
         name = dropdown_widget.currentText()
-        function = {"None"             : lambda obj: "",
-                    "Units Count"      : lambda obj: int_to_str(len(obj.list)),
-                    "Sel. units cnt."  : lambda obj: int_to_str(len(list(filter(lambda r: r in r.owner.selected, obj.list))), allow_zero=True),
-                    "Carrying Res."    : lambda obj: int_to_str(sum(map(lambda o: o.resource_amount, obj.list)), allow_zero=True),
-                    "Resource Type"    : lambda obj: get_res_type_from_list(obj.list),
-                    "Hit Points"       : lambda obj: int_to_str(sum(map(lambda o: o.hp, obj.list))),
-                    "Maximal HP"       : lambda obj: int_to_str(obj.udata.max_hp * len(obj.list), allow_zero=True),
-                    "Attack"           : lambda obj: int_to_str(get_attack(obj) * len(obj.list), allow_zero=True),
-                    "Armor"            : lambda obj: int_to_str(get_armor(obj) * len(obj.list), allow_zero=True),
-                    "Pierce Armor"     : lambda obj: int_to_str(get_pierce_armor(obj) * len(obj.list), allow_zero=True),
-                    "Garrisoned Units" : lambda obj: int_to_str(sum(map(lambda o: len(o.garrison), obj.list))),
-                    "Max. Garrison"    : lambda obj: int_to_str(obj.udata.max_garrison * len(obj.list)),
-                    "Idle Units"       : lambda obj: int_to_str(len(list(filter(lambda o: o.idle, obj.list))))}[name]
+        function = {"None": lambda obj: "",
+                    "Units Count": lambda obj: int_to_str(len(obj.list)),
+                    "Sel. units cnt.": lambda obj: int_to_str(
+                        len(list(filter(lambda r: r in r.owner.selected, obj.list))), allow_zero=True),
+                    "Carrying Res.": lambda obj: int_to_str(sum(map(lambda o: o.resource_amount, obj.list)),
+                                                            allow_zero=True),
+                    "Resource Type": lambda obj: get_res_type_from_list(obj.list),
+                    "Hit Points": lambda obj: int_to_str(sum(map(lambda o: o.hp, obj.list))),
+                    "Maximal HP": lambda obj: int_to_str(obj.udata.max_hp * len(obj.list), allow_zero=True),
+                    "Attack": lambda obj: int_to_str(get_attack(obj) * len(obj.list), allow_zero=True),
+                    "Armor": lambda obj: int_to_str(get_armor(obj) * len(obj.list), allow_zero=True),
+                    "Pierce Armor": lambda obj: int_to_str(get_pierce_armor(obj) * len(obj.list), allow_zero=True),
+                    "Garrisoned Units": lambda obj: int_to_str(sum(map(lambda o: len(o.garrison), obj.list))),
+                    "Max. Garrison": lambda obj: int_to_str(obj.udata.max_garrison * len(obj.list)),
+                    "Idle Units": lambda obj: int_to_str(len(list(filter(lambda o: o.idle, obj.list))))}[name]
         return function
 
     def bottom_text_change(self):
@@ -836,15 +829,10 @@ class InterfaceBar(QtWidgets.QWidget):
         self.blink()
         self.pulse()
         self.timer()
-        
+
     def update_overlay_widget(self):
         self.icon_list.update()
 
 
-
-
-
 if __name__ == '__main__':
-    import bartender
-        
-
+    pass

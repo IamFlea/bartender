@@ -1,22 +1,19 @@
+from PyQt5 import QtCore, QtWidgets
 from win32gui import GetWindowText, GetForegroundWindow
-from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from keydefaultdict import keydefaultdict
 
 from config import *
 from ui_overlay_geometry import OverlayGeometry
-from ui_iconlist import IconList
-from ui_info_panel import InfoPanel
-from ui_research_bars import ResearchBars 
+from ui_research_bars import ResearchBars
 from ui_research_list import ResearchList
-from interface_bar import InterfaceBar
-from interface_info_panel import InterfaceInfoPanel
+
+
 class Overlay(QtWidgets.QMainWindow):
     WINDOW_TITLE = "Bartender Overlay"
-    
-    WINDOW_FPS = 30 # Frames per second of overlay window
-    WINDOW_UPDATE_MS = lambda: int(1000 / Overlay.WINDOW_FPS) 
+
+    WINDOW_FPS = 30  # Frames per second of overlay window
+    WINDOW_UPDATE_MS = lambda: int(1000 / Overlay.WINDOW_FPS)
     WINDOW_GEOMETRY_FPS = 10
-    WINDOW_GEOMETRY_UPDATE_MS = lambda: int(1000 / Overlay.WINDOW_GEOMETRY_FPS) 
+    WINDOW_GEOMETRY_UPDATE_MS = lambda: int(1000 / Overlay.WINDOW_GEOMETRY_FPS)
 
     def __init__(self, settings):
         super(Overlay, self).__init__()
@@ -26,22 +23,21 @@ class Overlay(QtWidgets.QMainWindow):
         self.widgets = {}
         self.research_bars = ResearchBars("Researches", self)
         self.research_list = ResearchList("Technologies", self)
-        #IconCooldownCount.game = game
-        #print("Initing Overlay")
+        # IconCooldownCount.game = game
+        # print("Initing Overlay")
         # Sets windows stuff
         self.setWindowTitle(Overlay.WINDOW_TITLE)
         self.setGeometry(OverlayGeometry())
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground) 
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.prev_window_size = self.width(), self.height()
-    
+
         # Updating window position
         self.geometry_timer = QtCore.QTimer()
         self.geometry_timer.timeout.connect(self.update_geometry)
         self.geometry_timer.start(Overlay.WINDOW_GEOMETRY_UPDATE_MS())
         self.show()
 
-    
     def set_game(self, game):
         self.game = game
         self.game_running = game is not None
@@ -52,27 +48,25 @@ class Overlay(QtWidgets.QMainWindow):
             self.update_timer.timeout.connect(self.update)
             self.update_timer.start(Overlay.WINDOW_UPDATE_MS())
             self.show()
-        
+
         else:
             self.update_timer.stop()
-            
-        
+
     def update(self):
 
-        self.game.update() # Get new data
+        self.game.update()  # Get new data
         for idx in range(self.settings.w_tabs_settings.count()):
             interface_widget = self.settings.w_tabs_settings.widget(idx)
             interface_widget.update_overlay_widget()
         self.research_bars.update()
         self.research_list.update()
-        
 
     def create_overlay_widget(self, widget_type, settings):
         if settings not in self.widgets:
             self.widgets[settings] = widget_type(settings.w_text_name.text(), self)
             settings.bind_widget(self.widgets[settings])
             self.widgets[settings].show()
-    
+
     def update_geometry_of_widgets(self, shift_width, shift_height):
         for idx in range(1, self.settings.w_tabs_settings.count()):
             widget = self.widgets[self.settings.w_tabs_settings.widget(idx)]
@@ -82,7 +76,7 @@ class Overlay(QtWidgets.QMainWindow):
                 widget.setGeometry(widget.x() + shift_width, widget.y(), widget.width(), widget.height())
             if bottom > self.height():
                 widget.setGeometry(widget.x(), widget.y() + shift_height, widget.width(), widget.height())
- 
+
     def update_geometry(self):
         self.setGeometry(OverlayGeometry())
 
@@ -100,7 +94,7 @@ class Overlay(QtWidgets.QMainWindow):
             self.setHidden(False)
         else:
             self.setHidden(True)
-    
+
     def set_movable_widgets(self, boolean):
         for key in self.widgets:
             self.widgets[key].set_movable(boolean)
@@ -116,5 +110,6 @@ class Overlay(QtWidgets.QMainWindow):
         self.research_list.set_movable(boolean)
         self.show()
 
+
 if __name__ == '__main__':
-    import bartender
+    pass

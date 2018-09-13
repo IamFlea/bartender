@@ -1,9 +1,11 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class QOverlayWidget(QtWidgets.QWidget):
     """docstring for QOverlayWidget"""
-    GRIP_PX = 10 # Size of grip for resizing these widgets (in pixels)
+    GRIP_PX = 10  # Size of grip for resizing these widgets (in pixels)
     EXPAND_LIST = ["→↓", "→↑", "←↓", "←↑", "↓←", "↑←", "↓→", "↑→", ]
+
     def __init__(self, name, parent, resizable=True):
         super(QOverlayWidget, self).__init__(parent)
         self.parent = parent
@@ -16,7 +18,7 @@ class QOverlayWidget(QtWidgets.QWidget):
         self.drag_widget.setVisible(False)
         self.label = QtWidgets.QLabel(self.name, self.drag_widget)
         # Sets grip (white area)
-        if resizable: 
+        if resizable:
             self.grip = QtWidgets.QWidget(self.drag_widget)
             self.grip.setStyleSheet("background-color: rgba(255,255,255,255);")
         self.expand = QtWidgets.QLabel("", self.drag_widget)
@@ -30,40 +32,38 @@ class QOverlayWidget(QtWidgets.QWidget):
         self.__moving = False
         self.__resizing = False
         self.__offset = QtCore.QPoint()
-        self.expand_index = 0 
+        self.expand_index = 0
         self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
-
 
     def setGeometry(self, *arg):
         super(QOverlayWidget, self).setGeometry(*arg)
-        self.drag_widget.setGeometry(0,0,self.width(), self.height())
-        if self.resizable: # and self.icon_list :)
-            self.grip.setGeometry(self.width() - QOverlayWidget.GRIP_PX, self.height() - QOverlayWidget.GRIP_PX, QOverlayWidget.GRIP_PX, QOverlayWidget.GRIP_PX)
+        self.drag_widget.setGeometry(0, 0, self.width(), self.height())
+        if self.resizable:  # and self.icon_list :)
+            self.grip.setGeometry(self.width() - QOverlayWidget.GRIP_PX, self.height() - QOverlayWidget.GRIP_PX,
+                                  QOverlayWidget.GRIP_PX, QOverlayWidget.GRIP_PX)
         self.expand.setGeometry(self.width() - 42, self.height() - self.expand.height() - 15, 42, self.expand.height())
-        
-        
+
     def mousePressEvent(self, event):
         pos = event.pos()
-        if event.buttons() == QtCore.Qt.LeftButton and self.movable\
-                    and (pos.x() <= self.width() - QOverlayWidget.GRIP_PX \
-                         or pos.y() <= self.height() - QOverlayWidget.GRIP_PX
-                         or not self.resizable):
+        if event.buttons() == QtCore.Qt.LeftButton and self.movable \
+                and (pos.x() <= self.width() - QOverlayWidget.GRIP_PX \
+                     or pos.y() <= self.height() - QOverlayWidget.GRIP_PX
+                     or not self.resizable):
             # Draging // left click on orange area
             self.__moving = True
             self.__offset = pos
-        elif not (pos.x() <= self.width() - QOverlayWidget.GRIP_PX or pos.y() <= self.height() - QOverlayWidget.GRIP_PX):
+        elif not (
+                pos.x() <= self.width() - QOverlayWidget.GRIP_PX or pos.y() <= self.height() - QOverlayWidget.GRIP_PX):
             # Resizing // left click on the white area (grip)
             self.__resizing = True
         if event.buttons() == QtCore.Qt.RightButton and self.movable:
             # Changing direction // right click on the whole widget 
-            self.expand_index =  (self.expand_index + 1) % len(QOverlayWidget.EXPAND_LIST)
+            self.expand_index = (self.expand_index + 1) % len(QOverlayWidget.EXPAND_LIST)
             self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
 
     def set_expand_index(self, index):
         self.expand_index = index
         self.expand.setText(QOverlayWidget.EXPAND_LIST[self.expand_index])
-
-    
 
     def drag(self, position):
         # Move with it 
@@ -94,15 +94,13 @@ class QOverlayWidget(QtWidgets.QWidget):
             y = QOverlayWidget.GRIP_PX
         self.setGeometry(self.x(), self.y(), x, y)
 
-
     def mouseMoveEvent(self, event):
         if event.buttons() == QtCore.Qt.LeftButton:
             if self.__moving:
-                self.drag(event.pos()) # DO NOT USE NAME "self.move" !!!!
+                self.drag(event.pos())  # DO NOT USE NAME "self.move" !!!!
             elif self.__resizing:
                 self.resize(event.pos())
 
-    
     def mouseReleaseEvent(self, event):
         self.__offset = QtCore.QPoint()
         self.__moving = False
@@ -114,15 +112,6 @@ class QOverlayWidget(QtWidgets.QWidget):
         self.drag_widget.setVisible(boolean)
         self.drag_widget.raise_()
 
-        
-
-
-
-        
-
-
 
 if __name__ == '__main__':
-    import bartender
-        
-        
+    pass

@@ -1,12 +1,10 @@
-from collections import defaultdict
-from PyQt5 import QtWidgets, QtCore, Qt, QtGui
+from PyQt5 import QtWidgets
 
-from interface_utils import *
+from aoc_object_consts import ClassData
 from interface_consts import *
 from ui_offscreen_units import OverlayOffscreenUnits
 
-from config import *
-from aoc_object_consts import ClassData
+
 class InterfaceOffscreenUnits(QtWidgets.QWidget):
     """docstring for InterfaceOffscreenUnits"""
     BIND_TYPE = OverlayOffscreenUnits
@@ -17,18 +15,15 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.parent = parent
         self.widget = None
 
-
         self.w_label_name = QtWidgets.QLabel("Name:", self)
         self.w_label_name.setGeometry(GEOMETRY_TOP_0_1)
         self.w_text_name = QtWidgets.QLineEdit(name, self)
         self.w_text_name.setGeometry(GEOMETRY_TOP_0_2)
         self.w_text_name.textChanged.connect(self.rename_tab)
 
-
         self.w_checkbox_hidden = QtWidgets.QCheckBox("Hidden", self)
         self.w_checkbox_hidden.setGeometry(GEOMETRY_TOP_0_3)
         self.w_checkbox_hidden.stateChanged.connect(self.set_hidden)
-
 
         self.w_checkbox_selected = QtWidgets.QCheckBox("Selected Units", self)
         self.w_checkbox_selected.setGeometry(GEOMETRY_TOP_2_0)
@@ -70,7 +65,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_monks_relic_max.setGeometry(GEOMETRY_TOP_3_5)
         self.w_text_monks_relic_max.setMaximum(99999)
         self.w_text_monks_relic_max.setSuffix(" seconds")
-        self.w_text_monks_relic_max.setValue(self.w_text_monks_relic_max.maximum())        
+        self.w_text_monks_relic_max.setValue(self.w_text_monks_relic_max.maximum())
 
         self.w_checkbox_group1 = QtWidgets.QCheckBox("Group 1", self)
         self.w_checkbox_group1.setGeometry(GEOMETRY_TOP_4_0)
@@ -91,8 +86,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group1_max.setGeometry(GEOMETRY_TOP_4_5)
         self.w_text_group1_max.setMaximum(99999)
         self.w_text_group1_max.setSuffix(" seconds")
-        self.w_text_group1_max.setValue(self.w_text_group1_max.maximum())        
-
+        self.w_text_group1_max.setValue(self.w_text_group1_max.maximum())
 
         self.w_checkbox_group2 = QtWidgets.QCheckBox("Group 2", self)
         self.w_checkbox_group2.setGeometry(GEOMETRY_TOP_5_0)
@@ -113,8 +107,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group2_max.setGeometry(GEOMETRY_TOP_5_5)
         self.w_text_group2_max.setMaximum(99999)
         self.w_text_group2_max.setSuffix(" seconds")
-        self.w_text_group2_max.setValue(self.w_text_group2_max.maximum())        
-
+        self.w_text_group2_max.setValue(self.w_text_group2_max.maximum())
 
         self.w_checkbox_group3 = QtWidgets.QCheckBox("Group 3", self)
         self.w_checkbox_group3.setGeometry(GEOMETRY_TOP_6_0)
@@ -135,8 +128,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group3_max.setGeometry(GEOMETRY_TOP_6_5)
         self.w_text_group3_max.setMaximum(99999)
         self.w_text_group3_max.setSuffix(" seconds")
-        self.w_text_group3_max.setValue(self.w_text_group3_max.maximum())        
-
+        self.w_text_group3_max.setValue(self.w_text_group3_max.maximum())
 
         self.w_checkbox_group4 = QtWidgets.QCheckBox("Group 4", self)
         self.w_checkbox_group4.setGeometry(GEOMETRY_TOP_7_0)
@@ -157,8 +149,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group4_max.setGeometry(GEOMETRY_TOP_7_5)
         self.w_text_group4_max.setMaximum(99999)
         self.w_text_group4_max.setSuffix(" seconds")
-        self.w_text_group4_max.setValue(self.w_text_group4_max.maximum())        
-
+        self.w_text_group4_max.setValue(self.w_text_group4_max.maximum())
 
         self.w_checkbox_group5 = QtWidgets.QCheckBox("Group 5", self)
         self.w_checkbox_group5.setGeometry(GEOMETRY_TOP_8_0)
@@ -179,8 +170,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group5_max.setGeometry(GEOMETRY_TOP_8_5)
         self.w_text_group5_max.setMaximum(99999)
         self.w_text_group5_max.setSuffix(" seconds")
-        self.w_text_group5_max.setValue(self.w_text_group5_max.maximum())        
-
+        self.w_text_group5_max.setValue(self.w_text_group5_max.maximum())
 
         self.w_checkbox_group6 = QtWidgets.QCheckBox("Group 6", self)
         self.w_checkbox_group6.setGeometry(GEOMETRY_TOP_9_0)
@@ -201,8 +191,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group6_max.setGeometry(GEOMETRY_TOP_9_5)
         self.w_text_group6_max.setMaximum(99999)
         self.w_text_group6_max.setSuffix(" seconds")
-        self.w_text_group6_max.setValue(self.w_text_group6_max.maximum())        
-
+        self.w_text_group6_max.setValue(self.w_text_group6_max.maximum())
 
         self.w_checkbox_group7 = QtWidgets.QCheckBox("Group 7", self)
         self.w_checkbox_group7.setGeometry(GEOMETRY_TOP_10_0)
@@ -223,8 +212,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group7_max.setGeometry(GEOMETRY_TOP_10_5)
         self.w_text_group7_max.setMaximum(99999)
         self.w_text_group7_max.setSuffix(" seconds")
-        self.w_text_group7_max.setValue(self.w_text_group7_max.maximum())        
-
+        self.w_text_group7_max.setValue(self.w_text_group7_max.maximum())
 
         self.w_checkbox_group8 = QtWidgets.QCheckBox("Group 8", self)
         self.w_checkbox_group8.setGeometry(GEOMETRY_TOP_11_0)
@@ -245,8 +233,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group8_max.setGeometry(GEOMETRY_TOP_11_5)
         self.w_text_group8_max.setMaximum(99999)
         self.w_text_group8_max.setSuffix(" seconds")
-        self.w_text_group8_max.setValue(self.w_text_group8_max.maximum())        
-
+        self.w_text_group8_max.setValue(self.w_text_group8_max.maximum())
 
         self.w_checkbox_group9 = QtWidgets.QCheckBox("Group 9", self)
         self.w_checkbox_group9.setGeometry(GEOMETRY_TOP_12_0)
@@ -267,8 +254,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group9_max.setGeometry(GEOMETRY_TOP_12_5)
         self.w_text_group9_max.setMaximum(99999)
         self.w_text_group9_max.setSuffix(" seconds")
-        self.w_text_group9_max.setValue(self.w_text_group9_max.maximum())        
-
+        self.w_text_group9_max.setValue(self.w_text_group9_max.maximum())
 
         self.w_checkbox_group0 = QtWidgets.QCheckBox("Group 0", self)
         self.w_checkbox_group0.setGeometry(GEOMETRY_TOP_13_0)
@@ -289,8 +275,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_group0_max.setGeometry(GEOMETRY_TOP_13_5)
         self.w_text_group0_max.setMaximum(99999)
         self.w_text_group0_max.setSuffix(" seconds")
-        self.w_text_group0_max.setValue(self.w_text_group0_max.maximum())        
-
+        self.w_text_group0_max.setValue(self.w_text_group0_max.maximum())
 
         self.w_checkbox_civilians = QtWidgets.QCheckBox("Civilians", self)
         self.w_checkbox_civilians.setGeometry(GEOMETRY_TOP_14_0)
@@ -311,8 +296,7 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_civilians_max.setGeometry(GEOMETRY_TOP_14_5)
         self.w_text_civilians_max.setMaximum(99999)
         self.w_text_civilians_max.setSuffix(" seconds")
-        self.w_text_civilians_max.setValue(self.w_text_civilians_max.maximum())        
-
+        self.w_text_civilians_max.setValue(self.w_text_civilians_max.maximum())
 
         self.w_checkbox_military = QtWidgets.QCheckBox("Military", self)
         self.w_checkbox_military.setGeometry(GEOMETRY_TOP_15_0)
@@ -333,17 +317,15 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_text_military_max.setGeometry(GEOMETRY_TOP_15_5)
         self.w_text_military_max.setMaximum(99999)
         self.w_text_military_max.setSuffix(" seconds")
-        self.w_text_military_max.setValue(self.w_text_military_max.maximum())        
-
+        self.w_text_military_max.setValue(self.w_text_military_max.maximum())
 
         self.update()
 
     def remove(self):
-        print(1/0) # Shouldnt happen
-        
+        print(1 / 0)  # Shouldnt happen
 
     def set_hidden(self):
-        if self.widget is not None: 
+        if self.widget is not None:
             if self.w_checkbox_hidden.isChecked():
                 self.widget.setVisible(False)
             else:
@@ -366,17 +348,18 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         objects = set(self.parent.game.pov.objects)
         # Output
         result = set()
-        
-        
+
         if self.w_checkbox_selected.isChecked():
             all_selected_units = list(self.parent.game.pov.selected)
             if self.w_checkbox_selected_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_selected_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_selected_max.value()
+                f = lambda \
+                    obj: self.w_text_selected_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_selected_max.value()
                 result.update(set(filter(f, all_selected_units)))
             elif self.w_checkbox_selected_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_selected_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_selected_max.value() 
+                f = lambda \
+                    obj: self.w_text_selected_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_selected_max.value()
                 result.update(set(filter(f, all_selected_units)))
             else:
                 # No filter
@@ -384,14 +367,17 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             objects = objects - result
 
         if self.w_checkbox_monks_relic.isChecked():
-            monks = list(filter(lambda obj: obj.udata.class_ == ClassData.monk_with_relic_idx, self.parent.game.pov.monks))
+            monks = list(
+                filter(lambda obj: obj.udata.class_ == ClassData.monk_with_relic_idx, self.parent.game.pov.monks))
             if self.w_checkbox_monks_relic_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_monks_relic_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_monks_relic_max.value()
+                f = lambda \
+                    obj: self.w_text_monks_relic_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_monks_relic_max.value()
                 result.update(set(filter(f, monks)))
             elif self.w_checkbox_monks_relic_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_monks_relic_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_monks_relic_max.value() 
+                f = lambda \
+                    obj: self.w_text_monks_relic_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_monks_relic_max.value()
                 result.update(set(filter(f, monks)))
             else:
                 # No filter
@@ -402,11 +388,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group1 = list(filter(lambda obj: obj.group & 0x002, objects))
             if self.w_checkbox_group1_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group1_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group1_max.value()
+                f = lambda \
+                    obj: self.w_text_group1_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group1_max.value()
                 result.update(set(filter(f, group1)))
             elif self.w_checkbox_group1_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group1_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group1_max.value() 
+                f = lambda \
+                    obj: self.w_text_group1_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group1_max.value()
                 result.update(set(filter(f, group1)))
             else:
                 # No filter
@@ -416,11 +404,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group2 = list(filter(lambda obj: obj.group & 0x004, objects))
             if self.w_checkbox_group2_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group2_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group2_max.value()
+                f = lambda \
+                    obj: self.w_text_group2_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group2_max.value()
                 result.update(set(filter(f, group2)))
             elif self.w_checkbox_group2_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group2_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group2_max.value() 
+                f = lambda \
+                    obj: self.w_text_group2_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group2_max.value()
                 result.update(set(filter(f, group2)))
             else:
                 # No filter
@@ -430,11 +420,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group3 = list(filter(lambda obj: obj.group & 0x008, objects))
             if self.w_checkbox_group3_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group3_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group3_max.value()
+                f = lambda \
+                    obj: self.w_text_group3_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group3_max.value()
                 result.update(set(filter(f, group3)))
             elif self.w_checkbox_group3_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group3_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group3_max.value() 
+                f = lambda \
+                    obj: self.w_text_group3_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group3_max.value()
                 result.update(set(filter(f, group3)))
             else:
                 # No filter
@@ -444,11 +436,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group4 = list(filter(lambda obj: obj.group & 0x010, objects))
             if self.w_checkbox_group4_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group4_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group4_max.value()
+                f = lambda \
+                    obj: self.w_text_group4_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group4_max.value()
                 result.update(set(filter(f, group4)))
             elif self.w_checkbox_group4_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group4_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group4_max.value() 
+                f = lambda \
+                    obj: self.w_text_group4_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group4_max.value()
                 result.update(set(filter(f, group4)))
             else:
                 # No filter
@@ -458,11 +452,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group5 = list(filter(lambda obj: obj.group & 0x020, objects))
             if self.w_checkbox_group5_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group5_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group5_max.value()
+                f = lambda \
+                    obj: self.w_text_group5_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group5_max.value()
                 result.update(set(filter(f, group5)))
             elif self.w_checkbox_group5_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group5_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group5_max.value() 
+                f = lambda \
+                    obj: self.w_text_group5_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group5_max.value()
                 result.update(set(filter(f, group5)))
             else:
                 # No filter
@@ -472,11 +468,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group6 = list(filter(lambda obj: obj.group & 0x040, objects))
             if self.w_checkbox_group6_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group6_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group6_max.value()
+                f = lambda \
+                    obj: self.w_text_group6_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group6_max.value()
                 result.update(set(filter(f, group6)))
             elif self.w_checkbox_group6_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group6_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group6_max.value() 
+                f = lambda \
+                    obj: self.w_text_group6_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group6_max.value()
                 result.update(set(filter(f, group6)))
             else:
                 # No filter
@@ -486,11 +484,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group7 = list(filter(lambda obj: obj.group & 0x080, objects))
             if self.w_checkbox_group7_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group7_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group7_max.value()
+                f = lambda \
+                    obj: self.w_text_group7_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group7_max.value()
                 result.update(set(filter(f, group7)))
             elif self.w_checkbox_group7_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group7_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group7_max.value() 
+                f = lambda \
+                    obj: self.w_text_group7_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group7_max.value()
                 result.update(set(filter(f, group7)))
             else:
                 # No filter
@@ -500,11 +500,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group8 = list(filter(lambda obj: obj.group & 0x100, objects))
             if self.w_checkbox_group8_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group8_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group8_max.value()
+                f = lambda \
+                    obj: self.w_text_group8_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group8_max.value()
                 result.update(set(filter(f, group8)))
             elif self.w_checkbox_group8_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group8_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group8_max.value() 
+                f = lambda \
+                    obj: self.w_text_group8_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group8_max.value()
                 result.update(set(filter(f, group8)))
             else:
                 # No filter
@@ -514,11 +516,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group9 = list(filter(lambda obj: obj.group & 0x200, objects))
             if self.w_checkbox_group9_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group9_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group9_max.value()
+                f = lambda \
+                    obj: self.w_text_group9_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group9_max.value()
                 result.update(set(filter(f, group9)))
             elif self.w_checkbox_group9_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group9_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group9_max.value() 
+                f = lambda \
+                    obj: self.w_text_group9_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group9_max.value()
                 result.update(set(filter(f, group9)))
             else:
                 # No filter
@@ -528,11 +532,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             group0 = list(filter(lambda obj: obj.group & 0x400, objects))
             if self.w_checkbox_group0_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_group0_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_group0_max.value()
+                f = lambda \
+                    obj: self.w_text_group0_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_group0_max.value()
                 result.update(set(filter(f, group0)))
             elif self.w_checkbox_group0_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_group0_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_group0_max.value() 
+                f = lambda \
+                    obj: self.w_text_group0_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_group0_max.value()
                 result.update(set(filter(f, group0)))
             else:
                 # No filter
@@ -542,11 +548,13 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             civilians = objects & set(self.parent.game.pov.civilians)
             if self.w_checkbox_civilians_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_civilians_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_civilians_max.value()
+                f = lambda \
+                    obj: self.w_text_civilians_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_civilians_max.value()
                 result.update(set(filter(f, civilians)))
             elif self.w_checkbox_civilians_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_civilians_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_civilians_max.value() 
+                f = lambda \
+                    obj: self.w_text_civilians_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_civilians_max.value()
                 result.update(set(filter(f, civilians)))
             else:
                 # No filter
@@ -556,19 +564,20 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
             military = objects & set(self.parent.game.pov.military)
             if self.w_checkbox_military_policy.checkState() == 0:
                 # Idle
-                f = lambda obj: self.w_text_military_min.value() < obj.busy_time/1000 and obj.busy_time/1000 < self.w_text_military_max.value()
+                f = lambda \
+                    obj: self.w_text_military_min.value() < obj.busy_time / 1000 and obj.busy_time / 1000 < self.w_text_military_max.value()
                 result.update(set(filter(f, military)))
             elif self.w_checkbox_military_policy.checkState() == 2:
                 # Busy
-                f = lambda obj: self.w_text_military_min.value() < obj.idle_time/1000 and obj.idle_time/1000 < self.w_text_military_max.value() 
+                f = lambda \
+                    obj: self.w_text_military_min.value() < obj.idle_time / 1000 and obj.idle_time / 1000 < self.w_text_military_max.value()
                 result.update(set(filter(f, military)))
             else:
                 # No filter
                 result.update(set(military))
             objects = objects - result
         return result
-        #return self.parent.game.pov.selected
-
+        # return self.parent.game.pov.selected
 
     def lock_unlock(self):
         self.w_checkbox_selected_policy.setEnabled(self.w_checkbox_selected.isChecked())
@@ -586,65 +595,121 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_checkbox_civilians_policy.setEnabled(self.w_checkbox_civilians.isChecked())
         self.w_checkbox_military_policy.setEnabled(self.w_checkbox_military.isChecked())
 
-        self.w_text_selected_min.setEnabled(self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
-        self.w_text_monks_relic_min.setEnabled(self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
-        self.w_text_group1_min.setEnabled(self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
-        self.w_text_group2_min.setEnabled(self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
-        self.w_text_group3_min.setEnabled(self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
-        self.w_text_group4_min.setEnabled(self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
-        self.w_text_group5_min.setEnabled(self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
-        self.w_text_group6_min.setEnabled(self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
-        self.w_text_group7_min.setEnabled(self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
-        self.w_text_group8_min.setEnabled(self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
-        self.w_text_group9_min.setEnabled(self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
-        self.w_text_group0_min.setEnabled(self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
-        self.w_text_civilians_min.setEnabled(self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
-        self.w_text_military_min.setEnabled(self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
+        self.w_text_selected_min.setEnabled(
+            self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
+        self.w_text_monks_relic_min.setEnabled(
+            self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
+        self.w_text_group1_min.setEnabled(
+            self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
+        self.w_text_group2_min.setEnabled(
+            self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
+        self.w_text_group3_min.setEnabled(
+            self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
+        self.w_text_group4_min.setEnabled(
+            self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
+        self.w_text_group5_min.setEnabled(
+            self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
+        self.w_text_group6_min.setEnabled(
+            self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
+        self.w_text_group7_min.setEnabled(
+            self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
+        self.w_text_group8_min.setEnabled(
+            self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
+        self.w_text_group9_min.setEnabled(
+            self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
+        self.w_text_group0_min.setEnabled(
+            self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
+        self.w_text_civilians_min.setEnabled(
+            self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
+        self.w_text_military_min.setEnabled(
+            self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
 
-        self.w_text_selected_max.setEnabled(self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
-        self.w_text_monks_relic_max.setEnabled(self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
-        self.w_text_group1_max.setEnabled(self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
-        self.w_text_group2_max.setEnabled(self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
-        self.w_text_group3_max.setEnabled(self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
-        self.w_text_group4_max.setEnabled(self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
-        self.w_text_group5_max.setEnabled(self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
-        self.w_text_group6_max.setEnabled(self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
-        self.w_text_group7_max.setEnabled(self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
-        self.w_text_group8_max.setEnabled(self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
-        self.w_text_group9_max.setEnabled(self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
-        self.w_text_group0_max.setEnabled(self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
-        self.w_text_civilians_max.setEnabled(self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
-        self.w_text_military_max.setEnabled(self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
+        self.w_text_selected_max.setEnabled(
+            self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
+        self.w_text_monks_relic_max.setEnabled(
+            self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
+        self.w_text_group1_max.setEnabled(
+            self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
+        self.w_text_group2_max.setEnabled(
+            self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
+        self.w_text_group3_max.setEnabled(
+            self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
+        self.w_text_group4_max.setEnabled(
+            self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
+        self.w_text_group5_max.setEnabled(
+            self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
+        self.w_text_group6_max.setEnabled(
+            self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
+        self.w_text_group7_max.setEnabled(
+            self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
+        self.w_text_group8_max.setEnabled(
+            self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
+        self.w_text_group9_max.setEnabled(
+            self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
+        self.w_text_group0_max.setEnabled(
+            self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
+        self.w_text_civilians_max.setEnabled(
+            self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
+        self.w_text_military_max.setEnabled(
+            self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
 
-        self.w_label_selected_min.setEnabled(self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
-        self.w_label_monks_relic_min.setEnabled(self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
-        self.w_label_group1_min.setEnabled(self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
-        self.w_label_group2_min.setEnabled(self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
-        self.w_label_group3_min.setEnabled(self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
-        self.w_label_group4_min.setEnabled(self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
-        self.w_label_group5_min.setEnabled(self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
-        self.w_label_group6_min.setEnabled(self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
-        self.w_label_group7_min.setEnabled(self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
-        self.w_label_group8_min.setEnabled(self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
-        self.w_label_group9_min.setEnabled(self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
-        self.w_label_group0_min.setEnabled(self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
-        self.w_label_civilians_min.setEnabled(self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
-        self.w_label_military_min.setEnabled(self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled()) #x
+        self.w_label_selected_min.setEnabled(
+            self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
+        self.w_label_monks_relic_min.setEnabled(
+            self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
+        self.w_label_group1_min.setEnabled(
+            self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
+        self.w_label_group2_min.setEnabled(
+            self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
+        self.w_label_group3_min.setEnabled(
+            self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
+        self.w_label_group4_min.setEnabled(
+            self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
+        self.w_label_group5_min.setEnabled(
+            self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
+        self.w_label_group6_min.setEnabled(
+            self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
+        self.w_label_group7_min.setEnabled(
+            self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
+        self.w_label_group8_min.setEnabled(
+            self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
+        self.w_label_group9_min.setEnabled(
+            self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
+        self.w_label_group0_min.setEnabled(
+            self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
+        self.w_label_civilians_min.setEnabled(
+            self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
+        self.w_label_military_min.setEnabled(
+            self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())  # x
 
-        self.w_label_selected_max.setEnabled(self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
-        self.w_label_monks_relic_max.setEnabled(self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
-        self.w_label_group1_max.setEnabled(self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
-        self.w_label_group2_max.setEnabled(self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
-        self.w_label_group3_max.setEnabled(self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
-        self.w_label_group4_max.setEnabled(self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
-        self.w_label_group5_max.setEnabled(self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
-        self.w_label_group6_max.setEnabled(self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
-        self.w_label_group7_max.setEnabled(self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
-        self.w_label_group8_max.setEnabled(self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
-        self.w_label_group9_max.setEnabled(self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
-        self.w_label_group0_max.setEnabled(self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
-        self.w_label_civilians_max.setEnabled(self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
-        self.w_label_military_max.setEnabled(self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
+        self.w_label_selected_max.setEnabled(
+            self.w_checkbox_selected_policy.checkState() != 1 and self.w_checkbox_selected_policy.isEnabled())
+        self.w_label_monks_relic_max.setEnabled(
+            self.w_checkbox_monks_relic_policy.checkState() != 1 and self.w_checkbox_monks_relic_policy.isEnabled())
+        self.w_label_group1_max.setEnabled(
+            self.w_checkbox_group1_policy.checkState() != 1 and self.w_checkbox_group1_policy.isEnabled())
+        self.w_label_group2_max.setEnabled(
+            self.w_checkbox_group2_policy.checkState() != 1 and self.w_checkbox_group2_policy.isEnabled())
+        self.w_label_group3_max.setEnabled(
+            self.w_checkbox_group3_policy.checkState() != 1 and self.w_checkbox_group3_policy.isEnabled())
+        self.w_label_group4_max.setEnabled(
+            self.w_checkbox_group4_policy.checkState() != 1 and self.w_checkbox_group4_policy.isEnabled())
+        self.w_label_group5_max.setEnabled(
+            self.w_checkbox_group5_policy.checkState() != 1 and self.w_checkbox_group5_policy.isEnabled())
+        self.w_label_group6_max.setEnabled(
+            self.w_checkbox_group6_policy.checkState() != 1 and self.w_checkbox_group6_policy.isEnabled())
+        self.w_label_group7_max.setEnabled(
+            self.w_checkbox_group7_policy.checkState() != 1 and self.w_checkbox_group7_policy.isEnabled())
+        self.w_label_group8_max.setEnabled(
+            self.w_checkbox_group8_policy.checkState() != 1 and self.w_checkbox_group8_policy.isEnabled())
+        self.w_label_group9_max.setEnabled(
+            self.w_checkbox_group9_policy.checkState() != 1 and self.w_checkbox_group9_policy.isEnabled())
+        self.w_label_group0_max.setEnabled(
+            self.w_checkbox_group0_policy.checkState() != 1 and self.w_checkbox_group0_policy.isEnabled())
+        self.w_label_civilians_max.setEnabled(
+            self.w_checkbox_civilians_policy.checkState() != 1 and self.w_checkbox_civilians_policy.isEnabled())
+        self.w_label_military_max.setEnabled(
+            self.w_checkbox_military_policy.checkState() != 1 and self.w_checkbox_military_policy.isEnabled())
 
         name = ["Busy", "Whatever", "Idle"]
         self.w_checkbox_selected_policy.setText(name[self.w_checkbox_selected_policy.checkState()])
@@ -661,15 +726,15 @@ class InterfaceOffscreenUnits(QtWidgets.QWidget):
         self.w_checkbox_group0_policy.setText(name[self.w_checkbox_group0_policy.checkState()])
         self.w_checkbox_civilians_policy.setText(name[self.w_checkbox_civilians_policy.checkState()])
         self.w_checkbox_military_policy.setText(name[self.w_checkbox_military_policy.checkState()])
-        
+
     def update(self):
         self.lock_unlock()
         # Just update if over_panel is set
         if type(self.widget) is OverlayOffscreenUnits:
             self.widget.get_icons = self.settings
             # Printing the shown icons
-            #print(self.widget.panel_info_f())
+            # print(self.widget.panel_info_f())
 
 
 if __name__ == '__main__':
-    import bartender
+    pass

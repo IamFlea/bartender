@@ -1,19 +1,15 @@
-from collections import defaultdict
-
-from PyQt5 import QtWidgets, QtCore, Qt, QtGui
+from PyQt5 import QtWidgets
 
 from aoc_time import *
-from aoc_object_consts_unit import UNITS
-from interface_utils import *
+from config import *
 from interface_consts import *
+from interface_utils import *
 from ui_info_panel import InfoPanel
 
-from config import *
 
 class InterfaceInfoPanel(QtWidgets.QWidget):
     """docstring for InterfaceInfoPanel"""
     BIND_TYPE = InfoPanel
-
 
     def __init__(self, name, parent):
         super(InterfaceInfoPanel, self).__init__(parent)
@@ -21,13 +17,11 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.overlay_panel = None
         self.setGeometry(GEOMETRY)
 
-
         self.w_label_name = QtWidgets.QLabel("Name:", self)
         self.w_label_name.setGeometry(GEOMETRY_TOP_0_1)
         self.w_text_name = QtWidgets.QLineEdit(name, self)
         self.w_text_name.setGeometry(GEOMETRY_TOP_0_2)
         self.w_text_name.textChanged.connect(self.rename_tab)
-
 
         self.w_checkbox_hidden = QtWidgets.QCheckBox("Hidden", self)
         self.w_checkbox_hidden.setGeometry(GEOMETRY_TOP_0_3)
@@ -40,7 +34,6 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.w_button_remove = QtWidgets.QPushButton("Remove", self)
         self.w_button_remove.setGeometry(GEOMETRY_REMOVE_BUTTON)
         self.w_button_remove.clicked.connect(self.remove)
-
 
         self.w_checkbox_wood = QtWidgets.QCheckBox("Wood Vills", self)
         self.w_checkbox_wood.setGeometry(GEOMETRY_TOP_2_0)
@@ -61,7 +54,6 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.w_checkbox_trade.setGeometry(GEOMETRY_TOP_2_5)
         self.w_checkbox_trade.stateChanged.connect(self.update_info_panel)
 
-
         self.w_checkbox_resources = QtWidgets.QCheckBox("# Vills on Resource", self)
         self.w_checkbox_resources.setGeometry(GEOMETRY_TOP_3_2)
         self.w_checkbox_resources.stateChanged.connect(self.update_info_panel)
@@ -75,7 +67,6 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.w_checkbox_idle_vills_time = QtWidgets.QCheckBox("Idle Time of Vills", self)
         self.w_checkbox_idle_vills_time.setGeometry(GEOMETRY_TOP_5_2)
         self.w_checkbox_idle_vills_time.stateChanged.connect(self.update_info_panel)
-
 
         self.w_checkbox_farm_reseeds = QtWidgets.QCheckBox("Farm Reseeds", self)
         self.w_checkbox_farm_reseeds.setGeometry(GEOMETRY_TOP_5_3)
@@ -101,9 +92,8 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         self.w_checkbox_game_time.setGeometry(GEOMETRY_TOP_6_5)
         self.w_checkbox_game_time.stateChanged.connect(self.update_info_panel)
 
-
     def remove(self):
-        if self.overlay_panel is not None: 
+        if self.overlay_panel is not None:
             self.overlay_panel.deleteLater()
         self.deleteLater()
         if self.parent.overlay is not None:
@@ -116,7 +106,7 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
             self.overlay_panel.raise_()
 
     def set_hidden(self):
-        if self.overlay_panel is not None: 
+        if self.overlay_panel is not None:
             if self.w_checkbox_hidden.isChecked():
                 self.overlay_panel.setVisible(False)
             else:
@@ -143,17 +133,18 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         filter_remove_idle = lambda unit_list: list(filter(lambda unit: not unit.idle, unit_list))
         filter_show_idle = lambda unit_list: list(filter(lambda unit: unit.idle, unit_list))
 
-        #wtf #omg
+        # wtf #omg
         def select_function(unit_list):
-            get_len = lambda : int_to_str(len(filter_remove_idle(unit_list)))
-            get_amount = lambda : int_to_str(sum(map(lambda vill: vill.resource_amount, unit_list)))
+            get_len = lambda: int_to_str(len(filter_remove_idle(unit_list)))
+            get_amount = lambda: int_to_str(sum(map(lambda vill: vill.resource_amount, unit_list)))
             if count and amount:
-                f = lambda : get_len() + "; " + get_amount()
+                f = lambda: get_len() + "; " + get_amount()
             elif count:
-                f = lambda : get_len()
+                f = lambda: get_len()
             elif amount:
-                f = lambda : get_amount()
+                f = lambda: get_amount()
             return f
+
         # Adds the functions
         if self.w_checkbox_wood.isChecked() and (count or amount):
             result += [(WOOD, select_function(player.vill_wood))]
@@ -168,11 +159,11 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
         if self.w_checkbox_trade.isChecked() and (count or amount):
             result += [(TRADE, select_function(player.trade))]
 
-
         if self.w_checkbox_idle_vills.isChecked() and self.w_checkbox_idle_vills_time.isChecked():
-            result += [(IDLE, lambda: int_to_str(len(filter_show_idle(player.civilians))) + " (" + str_idle(sum(map(lambda unit: unit.idle_total_time,  player.civilians))) + ")")]
+            result += [(IDLE, lambda: int_to_str(len(filter_show_idle(player.civilians))) + " (" + str_idle(
+                sum(map(lambda unit: unit.idle_total_time, player.civilians))) + ")")]
         elif self.w_checkbox_idle_vills_time.isChecked():
-            result += [(IDLE, lambda: str_idle(sum(map(lambda unit: unit.idle_total_time,  player.civilians))))]
+            result += [(IDLE, lambda: str_idle(sum(map(lambda unit: unit.idle_total_time, player.civilians))))]
         elif self.w_checkbox_idle_vills.isChecked():
             result += [(IDLE, lambda: int_to_str(len(filter_show_idle(player.civilians))))]
 
@@ -180,26 +171,31 @@ class InterfaceInfoPanel(QtWidgets.QWidget):
             result += [(FARM_RESEEDS, lambda: int_to_str(player.farm_reseeds))]
         # These values are in double so i need to do: double > int > bartender string conversion
         if self.w_checkbox_relics.isChecked():
-            result += [(RELICS, lambda: str(int(player.resources.values[player.resources.keys.index("RelicsCaptured")])))] 
+            result += [
+                (RELICS, lambda: str(int(player.resources.values[player.resources.keys.index("RelicsCaptured")])))]
         if self.w_checkbox_civilians.isChecked():
             result += [(CIVILIANS, lambda: int_to_str(len(player.civilians)))]
         if self.w_checkbox_military.isChecked():
             result += [(MILITARY, lambda: int_to_str(len(player.military)))]
         if self.w_checkbox_kd_units.isChecked():
-            result += [(KD_RATIO, lambda: int_to_str(int(player.resources.values[player.resources.keys.index("Units Killed")])) + "/" + int_to_str(int(player.resources.values[player.resources.keys.index("Units Lost")])))]
+            result += [(KD_RATIO, lambda: int_to_str(
+                int(player.resources.values[player.resources.keys.index("Units Killed")])) + "/" + int_to_str(
+                int(player.resources.values[player.resources.keys.index("Units Lost")])))]
         if self.w_checkbox_kd_buildings.isChecked():
-            result += [(KD_RAZINGS_RATIO, lambda: int_to_str(int(player.resources.values[player.resources.keys.index("Razings")])) + "/"+ int_to_str(int(player.resources.values[player.resources.keys.index("Buildings Lost")])) )]
+            result += [(KD_RAZINGS_RATIO, lambda: int_to_str(
+                int(player.resources.values[player.resources.keys.index("Razings")])) + "/" + int_to_str(
+                int(player.resources.values[player.resources.keys.index("Buildings Lost")])))]
         if self.w_checkbox_game_time.isChecked():
             result += [(EMPTY_BACKGROUND, lambda: str_time(GTime.time) + f" ({self.parent.game.speed})")]
         return result
+
     def update_info_panel(self):
         # Just update if over_panel is set
         if type(self.overlay_panel) is InfoPanel:
             self.overlay_panel.panel_info_f = self.settings
             # Printing the shown icons
-            #print(self.overlay_panel.panel_info_f())
-  
-if __name__ == '__main__':
-    import bartender
-        
+            # print(self.overlay_panel.panel_info_f())
 
+
+if __name__ == '__main__':
+    pass

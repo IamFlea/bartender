@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_game.py: parsing aoc memory of recordgames by Flea """ 
-from pymemory import pymemory as pm
-from aoc_diplomacy import *
-from aoc_resources import *
-from aoc_color import *
+""" aoc_game.py: parsing aoc memory of recordgames by Flea """
 from aoc_civ import *
-from aoc_object_building_research import BuildingResearch
+from aoc_color import *
+from aoc_diplomacy import *
 from aoc_object_consts import *
 from aoc_objects import Objects
-from aoc_research import Research 
+from aoc_research import Research
+from aoc_resources import *
+
 
 class Player(object):
     """ Player strucutre 
@@ -74,56 +73,58 @@ class Player(object):
 
     """
     SINGLE_PLAYER = True
+
     def __get_name__(number, ptr_ai):
         """ Get players name, if AI grabs """
-        ptr = pm.pointer(pm.base_address + 0x006EEFB4) 
-        ptr = pm.pointer(ptr + 0x0) 
+        ptr = pm.pointer(pm.base_address + 0x006EEFB4)
+        ptr = pm.pointer(ptr + 0x0)
         ptr = pm.pointer(ptr + 0x60)
-        ptr = pm.pointer(ptr + 0xCE4) 
-        ptr = pm.pointer(ptr + 0xb0 + 0x68*(number-1) + 0xC)
+        ptr = pm.pointer(ptr + 0xCE4)
+        ptr = pm.pointer(ptr + 0xb0 + 0x68 * (number - 1) + 0xC)
         try:
             name = pm.string(ptr, 32)
         except:
             name = ""
         name = name if name else f"Player #{number}"
-        if pm.int32(ptr_ai + 0x8) == 3: 
+        if pm.int32(ptr_ai + 0x8) == 3:
             name += " [AI]"
         return name
 
     def __init__(self, ptr, number=None):
         super(Player, self).__init__()
         self.ptr = ptr
-        self.name = "Gaia" if number is None else Player.__get_name__(number, ptr) 
+        self.name = "Gaia" if number is None else Player.__get_name__(number, ptr)
         self.pov = False
         self.diplomacy = Diplomacy(self)
         self.resources = Resources(self)
         self.color = Color(self)
         self.civ = Civilization(self)
         self.research = Research(self)
-        #self.map = Map(ptr)
+        # self.map = Map(ptr)
         self.objects = Objects(pm.pointer(ptr + 0x18), self)
-        self.log = [] 
-        #BuildingResearch.log[self] = [] # Better access for researches
-        Objects._all[self] = {} # Dictionary of used objects
+        self.log = []
+        # BuildingResearch.log[self] = [] # Better access for researches
+        Objects._all[self] = {}  # Dictionary of used objects
         self.housed = False
-        self.farm_reseeds  = 0
+        self.farm_reseeds = 0
         self.selected = None
-        
+
     def __analyze_objects__(self):
-        #import time
-        #now = time.time()
+        # import time
+        # now = time.time()
         # This algorithms are optimal in the terms of typing... 
         # else it sucks cuy it has a big time complexity, could be reduced 20 times.. 
-        self.buildings_all = list(filter(lambda obj: obj.udata.superclass == SuperclassData.building, self.objects)) 
-        self.buildings = list(filter(lambda obj: obj.udata.class_ in ClassData.building, self.objects)) # filters walls, gates, twoers.. 
+        self.buildings_all = list(filter(lambda obj: obj.udata.superclass == SuperclassData.building, self.objects))
+        self.buildings = list(
+            filter(lambda obj: obj.udata.class_ in ClassData.building, self.objects))  # filters walls, gates, twoers..
         self.units = list(filter(lambda obj: obj.udata.superclass == SuperclassData.combatant, self.objects))
         # We need to filter units... 
-        #self.units = list(filter(lambda obj: obj.status in [0,1,2], self.units)) # meeh  i am lazy to do comparasion logic
+        # self.units = list(filter(lambda obj: obj.status in [0,1,2], self.units)) # meeh  i am lazy to do comparasion logic
         self.civilians = list(filter(lambda obj: obj.udata.class_ in ClassData.civilians, self.units))
         self.villagers = list(filter(lambda obj: obj.udata.class_ in ClassData.villagers, self.civilians))
         self.military = list(filter(lambda obj: obj.udata.class_ in ClassData.military, self.units))
-        #self.military = set(self.units) - set(self.civilians)  # counts sheep as military units too hahahha
-        #self.pikes = list(filter(lambda obj: obj.udata.class_ == , self.military))
+        # self.military = set(self.units) - set(self.civilians)  # counts sheep as military units too hahahha
+        # self.pikes = list(filter(lambda obj: obj.udata.class_ == , self.military))
         # Villagers (with idles!)
         self.vill_wood = list(filter(lambda obj: obj.udata.id in IdData.vill_wood, self.villagers))
         self.vill_food = list(filter(lambda obj: obj.udata.id in IdData.vill_food, self.villagers))
@@ -179,18 +180,18 @@ class Player(object):
         self.unique_units = list(filter(lambda obj: obj.udata.id in IdData.caslte_unique_units, self.units))
         self.monks = list(filter(lambda obj: obj.udata.id in IdData.monks, self.units))
         self.transport_ships = list(filter(lambda obj: obj.udata.id in IdData.transport_ships, self.units))
-        self.livestock = list(filter(lambda obj: obj.udata.class_ in ClassData.livestock, self.units)) 
-        #self.constructions = list(filter(lambda obj: obj.construction, self.buildings_all))
+        self.livestock = list(filter(lambda obj: obj.udata.class_ in ClassData.livestock, self.units))
+        # self.constructions = list(filter(lambda obj: obj.construction, self.buildings_all))
         # get army
-        #self.army = {}
-        #for unit in self.military:
+        # self.army = {}
+        # for unit in self.military:
         #    if unit.udata.id in self.army:
         #        self.army[unit.udata.id] += [unit]
         #    else:
         #        self.army[unit.udata.id] = [unit]
-        #print(time.time()-now)
-        
-    def update(self, market): 
+        # print(time.time()-now)
+
+    def update(self, market):
         self.housed = False
         self.diplomacy.update(self.log)
         self.resources.update()
@@ -198,28 +199,25 @@ class Player(object):
         with self.objects:
             if Player.SINGLE_PLAYER:
                 if self.pov:
-                    self.objects.update()    
+                    self.objects.update()
             else:
                 self.objects.update()
         self.__analyze_objects__()
         self.research.update()
         self.farm_reseeds = pm.int16(self.ptr + 0x2708)
         self.selected = Objects.selected
-        #self.selected = [item for item in objects.selected]  # if buggy
-        #print(self.selected)
+        # self.selected = [item for item in objects.selected]  # if buggy
+        # print(self.selected)
 
-    
 
-        
 if __name__ == '__main__' and True:
-    import bartender
+    pass
 
 if __name__ == '__main__' and False:
-    from aoc_game import Game 
+    from aoc_game import Game
+
     proc_name = "AoK HD.exe"
     pm.load_process(proc_name)
-    
+
     game = Game()
     game.update()
-
-
