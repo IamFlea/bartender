@@ -64,6 +64,8 @@ class Primitive(object):  # game object
         self.garrison = []
         self.research = None
         self.training = None
+        self.position = None
+        self.prev_hp = None
         self.queue = None
         self.construction = None
         self.group = 0

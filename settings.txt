@@ -9,7 +9,7 @@
 0
 9
 1
-1027
+988
 33
 0
 Offscreen Units
@@ -140,8 +140,8 @@ TopRightPanel
 2
 2
 0
-1175
-3
+876
+94
 484
 20
 0
@@ -1740,7 +1740,7 @@ Army composition
 1
 8
 4
-1239
+1030
 912
 5
 InterfaceBar
@@ -1834,7 +1834,7 @@ Group1
 1
 5
 1
-1710
+1156
 131
 2
 InterfaceBar
@@ -1928,7 +1928,7 @@ Group 2
 1
 5
 1
-1710
+1156
 173
 2
 InterfaceBar
@@ -2022,7 +2022,7 @@ Group 3
 1
 5
 1
-1710
+1156
 215
 2
 InterfaceBar
@@ -2116,7 +2116,7 @@ Group 4
 1
 5
 1
-1710
+1156
 257
 2
 InterfaceInfoPanel

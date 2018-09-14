@@ -75,6 +75,8 @@ class Game(object):
         self.teams = self.__get_teams__()
         self.t1 = []
         self.t2 = []
+        self.screen_position = None
+        self.speed = None
         self.player = None
         self.pov = None
         self.running = False
