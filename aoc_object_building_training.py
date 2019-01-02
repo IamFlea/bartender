@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_training.py: parsing aoc memory of recordgames by Flea """ 
-from pymemory import pymemory as pm
-from pymemory import NullAddress
+""" aoc_training.py: parsing aoc memory of recordgames by Flea """
 from math import isnan
+
+from pymemory import NullAddress
+from pymemory import pymemory as pm
+
+
 class Training(object):
     """Building trianings. 
 
@@ -24,13 +27,14 @@ class Training(object):
         if r: 
             print(r.icon, r.id, r.cooldown)
     """
+
     def __init__(self, building):
         # Building sturcts
         super(Training, self).__init__()
         self.building = building
-        
+
     def create(self):
-        try: 
+        try:
             # load id and time
             ptr = pm.pointer(self.building.ptr + 0x220)
             ptr = pm.pointer(ptr + 0x8)
@@ -45,13 +49,14 @@ class Training(object):
             ptr = pm.pointer(ptr + 0x4 * self.id)
         except NullAddress:
             return None
-        self.icon =  pm.int16(ptr + 0x54)
+        self.icon = pm.int16(ptr + 0x54)
         self.total_time = pm.int16(ptr + 0x19e)
         self.time = 1 if isnan(time) else time
         self.cooldown = int(self.total_time - self.time)
-        return self        
+        return self
+
+    # self.ptr_training = pm.read_address(ptr + 0x220)
 
 
-#self.ptr_training = pm.read_address(ptr + 0x220)
 if __name__ == '__main__':
-    import bartender
+    pass

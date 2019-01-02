@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_object_building_queue.py: gets unit queue from a building """ 
-from pymemory import pymemory as pm
+""" aoc_object_building_queue.py: gets unit queue from a building """
 from pymemory import NullAddress
-from aoc_object_building_training import Training
+from pymemory import pymemory as pm
+
 
 class UnitQueue(list):
     """ 
@@ -22,10 +22,11 @@ class UnitQueue(list):
         if q: 
             print(q.length, q[0])
     """
+
     def __init__(self, building):
         super(UnitQueue, self).__init__()
         self.building = building
-        
+
     def create(self):
         self.length = pm.int16(self.building.ptr + 0x21c)
         try:
@@ -35,7 +36,7 @@ class UnitQueue(list):
         while len(self) < self.length:
             uid, units_amount = pm.struct(ptr, "hh")
             for i in range(units_amount):
-                try: 
+                try:
                     ptr_icon = self.building.owner.ptr
                     ptr_icon = pm.pointer(ptr_icon + 0x14)
                     ptr_icon = pm.pointer(ptr_icon + 0x4 * uid)
@@ -46,7 +47,8 @@ class UnitQueue(list):
             ptr += 4
         return self
 
-#self.building.ptr_queue = ptr + 0x214        # pointer
-#self.building.ptr_queue_units = ptr + 0x21C  # word
+
+# self.building.ptr_queue = ptr + 0x214        # pointer
+# self.building.ptr_queue_units = ptr + 0x21C  # word
 if __name__ == '__main__':
-    import aoc_game
+    pass

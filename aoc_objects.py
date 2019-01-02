@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_objects.py: List of player|s objects """ 
-from pymemory import pymemory as pm
-from pymemory import NullAddress
-from aoc_object_consts import SuperclassData
-from aoc_object_data import *
+""" aoc_objects.py: List of player|s objects """
 from aoc_object_building import *
-from aoc_object_unit import *
 from aoc_object_primitive import *
-from aoc_time import *
+from aoc_object_unit import *
+
 
 class Objects(list):
     """ List of objects 
@@ -42,6 +38,7 @@ class Objects(list):
     _all = {}
     selected = []
     selected_pointers = []
+
     def __init__(self, ptr, owner):
         # ptr Pointer to objects
         # owner Player struct
@@ -51,10 +48,10 @@ class Objects(list):
 
     def update(self):
         """Creates a list of objects."""
-        self.clear() # sucks but ok
+        self.clear()  # sucks but ok
         ptr_array = pm.pointer(self.ptr + 0x4)
         length = pm.uint32(self.ptr + 0x8)
-        object_pointers = pm.struct(ptr_array, "I"*length)
+        object_pointers = pm.struct(ptr_array, "I" * length)
         length = pm.int8(self.owner.ptr + 0x254)
         Objects.selected_pointers += pm.struct(self.owner.ptr + 0x160, "I" * length)
         for ptr in object_pointers:
@@ -84,18 +81,18 @@ class Objects(list):
     def _create_(ptr_object, owner):
         """Creates an element of the list. """
         # Checks if the pointer is correct OR the object is deleted
-        if ptr_object == 0 or pm.int16(ptr_object+10) == -1:
+        if ptr_object == 0 or pm.int16(ptr_object + 10) == -1:
             return None
         # Load new data
         try:
             ptr = pm.uint32(ptr_object + 0xC)
             udata = UnitData(pm.pointer(ptr_object + 0xC), owner)
-        except: 
-            print(f"BEEP - Wrong address obj.udata = {hex(ptr)} (For object: {hex(ptr_object)} Object ID: {(pm.int16(ptr_object+10))})")
+        except:
+            print(
+                f"BEEP - Wrong address obj.udata = {hex(ptr)} (For object: {hex(ptr_object)} Object ID: {(pm.int16(ptr_object+10))})")
             return None
         if udata is None:
             return None
-
 
         if ptr_object in Objects._all[owner]:
             Objects._all[owner][ptr_object][1] = False
@@ -103,15 +100,14 @@ class Objects(list):
             # Sometimes it might create a new object with the same address!! 
             if pm.int32(ptr_object + 0x8) == Objects._all[owner][ptr_object][0].id:
                 return Objects._all[owner][ptr_object][0]
-        
+
         if udata.superclass == SuperclassData.building:
             return Building(ptr_object, owner, udata)
         elif udata.superclass == SuperclassData.combatant:
             return Unit(ptr_object, owner, udata)
         else:
             return Primitive(ptr_object, owner, udata)
-        
+
 
 if __name__ == '__main__':
-    import bartender
-
+    pass

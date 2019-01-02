@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" aoc_object_primitive.py: parsing the most primitive game object """ 
-from pymemory import pymemory as pm
+""" aoc_object_primitive.py: parsing the most primitive game object """
 from collections import defaultdict
 
-from aoc_time import GTime 
-class Primitive(object): # game object
+from aoc_time import GTime
+from pymemory import pymemory as pm
+
+
+class Primitive(object):  # game object
     """
     Class variables
         Public
@@ -34,13 +36,13 @@ class Primitive(object): # game object
     """
 
     ResourceTable = defaultdict(lambda: "Food", {
-            1: "Wood",
-            2: "Stone",
-            3: "Gold",
-            -1: ""
-        }) 
+        1: "Wood",
+        2: "Stone",
+        3: "Gold",
+        -1: ""
+    })
 
-    def __init__(self, ptr, owner, udata): 
+    def __init__(self, ptr, owner, udata):
         # ptr - pointer to the object
         # owner - Player datastructure who has this unit
         # udata - metadata, see `aoc_object_data.py` 
@@ -49,9 +51,9 @@ class Primitive(object): # game object
         self.owner = owner
         self.udata = udata
         # Load data
-        self.id = pm.int32(ptr + 0x8) # Game ID keeps unchanged, no need for update
+        self.id = pm.int32(ptr + 0x8)  # Game ID keeps unchanged, no need for update
         self.hp = pm.float(ptr + 0x34)
-        self.selected = pm.int8(ptr +0x3a)
+        self.selected = pm.int8(ptr + 0x3a)
         self.status = pm.int8(ptr + 0x4C)
         # Load consts
         self.idle = False
@@ -60,15 +62,17 @@ class Primitive(object): # game object
         self.busy_time = 0
         self.busy_total_time = 0
         self.garrison = []
-        self.research = None 
+        self.research = None
         self.training = None
+        self.position = None
+        self.prev_hp = None
         self.queue = None
         self.construction = None
         self.group = 0
         self.created_time = GTime.time
         self.resource_amount = 0
         self.resource_type = ""
-        
+
     def update(self):
         self.prev_hp = self.hp
         self.hp = pm.float(self.ptr + 0x34)

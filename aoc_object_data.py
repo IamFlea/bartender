@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" unitdata.py: parsing aoc memory of recordgames by Flea """ 
-from pymemory import PyMemory
-from pymemory import pymemory as pm
-from aoc_object_consts import * 
-from aoc_resources import *
+""" unitdata.py: parsing aoc memory of recordgames by Flea """
 from aoc_object_clist import *
 from config import ospath
+
 
 class UnitData(object):
     """ Returns none if the class is annexed building  (Gate is composed of three buldings )
@@ -39,14 +36,14 @@ class UnitData(object):
 
     """
     all_names = None
-        
+
     def __new__(cls, ptr, owner):
         if pm.int16(ptr + 0x4) == SuperclassData.building:
             # Main unit in TC has 4 buildings.. 
-            annex = list(pm.struct(ptr + 0x1F4, "hhhh")) 
+            annex = list(pm.struct(ptr + 0x1F4, "hhhh"))
             annex += [pm.int16(ptr + 0x21c)]
-            annex = list(filter(lambda x: x != -1, annex)) 
-            if len(annex) == 1: # part of TC or gate
+            annex = list(filter(lambda x: x != -1, annex))
+            if len(annex) == 1:  # part of TC or gate
                 return None
         return super(UnitData, cls).__new__(cls)
 
@@ -55,7 +52,7 @@ class UnitData(object):
         # Save the address
         self.ptr = ptr
         self.owner = owner
-        
+
         # constants
         self.__name = None
         self.name_id = pm.int32(ptr + 0x8)
@@ -72,21 +69,21 @@ class UnitData(object):
         self.armor = Armor(self)
         self.attack = Attack(self)
         self.costs = Costs(self)
-        self.speed = 0.0 
+        self.speed = 0.0
         self.train_time = 0
         if self.superclass in [SuperclassData.building, SuperclassData.combatant]:
             self.speed = pm.float(ptr + 0xe8)
             self.train_time = pm.int16(ptr + 0x19e)
-        
+
     @property
     def name(self):
         name_id = str(self.name_id) + " "
         with open(ospath + "/game_strings.txt", encoding="utf8") as file:
             for line in file:
                 if line[:len(name_id)] == name_id:
-                    return line[len(name_id) +1:-2]
+                    return line[len(name_id) + 1:-2]
 
 
 if __name__ == '__main__':
-    import bartender
-    #import aoc_game
+    pass
+    # import aoc_game
