@@ -32,11 +32,11 @@ Bartender is customizable overlay and it can be divided into four parts.
 
 > Voobly version?
 
-*I don't play on Voobly. Also, it isn't possible to use Bartender in MP there.*
+*Soon TM*
 
 > Why did you create this addon?
 
-*Age of Empires: II uses engine from the previous century. I just wanted to simplify UI to me and to other players.*
+*Age of Empires: II uses UI from the previous century. I just wanted to simplify UI to me and to other players.*
 
 > This is cheating!
 
@@ -48,12 +48,11 @@ Watch for crashes & consistency of displayed data
 
 **UI**
 1) Fix lag problems caused by transparency of the window. (In my case, it decreases AoE's FPS to 25) 
-2) Make it more user friendly. It might need rework.
+2) Make it more user friendly. 
 
 **Mechanics**
 1) Detect if the game is a record game or SP/MP game - add training/researches info about other players. (It can be done by comparing three game pointers in `aoc_game.py`, two of them are null while watching recorded game.)
-2) Improve performance of `Player`'s method `__analyze_objects__()` in file `aoc_player.py`. (Maybe not needed) 
-
+2) It gets laggy if the game loads a lot of data. We need to change the approach used for memory reading. 
 
 **This file**
 1) Update screenshots.
@@ -61,6 +60,7 @@ Watch for crashes & consistency of displayed data
 
 # Known Limitations
 1) Needs update when the AoE2HD version changes.
+
 
 # License
 Bartender, Copyright (C) 2018 Flea, blk_panther
