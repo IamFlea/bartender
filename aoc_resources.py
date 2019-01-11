@@ -39,7 +39,7 @@ class Resources(object):
             'Starting Wood', 'Starting Stone', 'Starting Gold', 'Enable PTWC / Kidnap / Loot', 'Berserker Healing Rate',
             'Dominant Sheep Control (Celtic bonus)', 'Building Cost Sum', 'Tech Cost Sum', 'Relic Income Sum',
             'Trade Income Sum', 'To P1', 'To P2', 'To P2', 'To P3', 'To P4', 'To P5', 'To P6', 'To P7', 'To P8',
-            'P2 Kill value', 'P3 Kill value', 'P4 Kill value', 'P5 Kill value', 'P6 Kill value', 'P7 Kill value',
+            'P1 Kill value', 'P2 Kill value', 'P3 Kill value', 'P4 Kill value', 'P5 Kill value', 'P6 Kill value', 'P7 Kill value',
             'P8 Kill value', 'P1 Razings', 'P2 Razings', 'P3 Razings', 'P4 Razings', 'P5 Razings', 'P6 Razings',
             'P7 Razings', 'P8 Razings', 'P1 Razing Value', 'P2 Razing Value', 'P3 Razing Value', 'P4 Razing Value',
             'P5 Razing Value', 'P6 Razing Value', 'P7 Razing Value', 'P8 Razing Value', 'Standing Castles',
