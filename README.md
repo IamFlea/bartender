@@ -30,9 +30,9 @@ Bartender is customizable overlay and it can be divided into four parts.
 
 *Bartender reads memory of the game. (There is no API! Boo at you Forgotten Empires!)*
 
-> Voobly version?
+> Voobly version, or AoE 2 DE version?
 
-*Soon TM*
+Voobly is possible to do, just replace some offsets :) AoE 2 de nah, the game crashes as soon as you attach the debugger :)
 
 > Why did you create this addon?
 
