@@ -24,7 +24,7 @@ Bartender is customizable overlay and it can be divided into four parts.
 # FAQ
 > Can I use it in singleplayer/records/multiplayer?
 
-*Yes, yes, maybe.*
+*Yes, yes, no but it works.*
 
 > How does it work?
 
@@ -32,15 +32,11 @@ Bartender is customizable overlay and it can be divided into four parts.
 
 > Voobly version, or AoE 2 DE version?
 
-Voobly is possible to do, just replace some offsets :) AoE 2 de nah, the game crashes as soon as you attach the debugger :)
+*Voobly is possible to do, just replace some offsets :) AoE 2 de nah, the game crashes as soon as you attach the debugger :)*
 
 > Why did you create this addon?
 
 *Age of Empires: II uses UI from the previous century. I just wanted to simplify UI to me and to other players.*
-
-> This is cheating!
-
-*It is not. Bartender does not provide you information about your enemy.*
 
 # TODO
 
