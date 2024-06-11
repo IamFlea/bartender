@@ -1,4 +1,5 @@
 <!-- ## Check out dev branch for the new unstable versions! -->
+## This addon has been archived
 
 # Bartender
 A window addon to game called Age of Empires II (HD). The addon displays additional information of the game, such as buildings, currently researched technologies, or training units.
